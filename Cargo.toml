@@ -1,0 +1,53 @@
+[package]
+name = "skein"
+description = "Process glTF extras when spawning Scenes to insert Components using Reflection, such as when using Blender as an editor"
+version = "0.1.0"
+authors = ["Chris Biscardi"]
+repository = "https://github.com/rust-adventure/skein"
+homepage = "https://rustadventure.dev/"
+license = "MIT OR Apache-2.0"
+edition = "2021"
+categories = ["games", "game-development"]
+keywords = ["bevy"]
+exclude = [
+    "assets/**/*",
+    "test-project/**/*",
+    ".github/**/*",
+    "extension/**/*",
+    "Justfile",
+    "DESIGN.md",
+]
+
+[dependencies]
+bevy_app = { git = "https://github.com/bevyengine/bevy", rev = "5e9da92" }
+bevy_log = { git = "https://github.com/bevyengine/bevy", rev = "5e9da92" }
+bevy_ecs = { git = "https://github.com/bevyengine/bevy", rev = "5e9da92" }
+bevy_gltf = { git = "https://github.com/bevyengine/bevy", rev = "5e9da92" }
+bevy_reflect = { git = "https://github.com/bevyengine/bevy", rev = "5e9da92" }
+bevy_scene = { git = "https://github.com/bevyengine/bevy", rev = "5e9da92" }
+bevy_remote = { git = "https://github.com/bevyengine/bevy", rev = "5e9da92" }
+serde = "1.0"
+serde_json = "1.0"
+tracing = "0.1"
+
+[dev-dependencies]
+bevy = { git = "https://github.com/bevyengine/bevy", rev = "5e9da92" }
+serde = { version = "1.0", features = ["derive"] }
+
+
+# Idiomatic Bevy code often triggers these lints, and the CI workflow treats them as errors.
+# In some cases they may still signal poor code quality however, so consider commenting out these lines.
+[lints.clippy]
+# Bevy supplies arguments to systems via dependency injection, so it's natural for systems to
+# request more than 7 arguments -- which triggers this lint.
+too_many_arguments = "allow"
+# Queries that access many components may trigger this lint.
+type_complexity = "allow"
+# links in documentation
+doc_markdown = "deny"
+
+[lints.rust]
+missing_docs = "deny"
+
+[package.metadata.bevy_lint]
+missing_reflect = "deny"

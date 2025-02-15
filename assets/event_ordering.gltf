@@ -1,0 +1,28 @@
+{
+  "asset": {
+    "generator": "Khronos glTF Blender I/O v4.2.57",
+    "version": "2.0"
+  },
+  "scene": 0,
+  "scenes": [
+    {
+      "extras": {
+        "qbaker": {}
+      },
+      "name": "Scene",
+      "nodes": [0]
+    }
+  ],
+  "nodes": [
+    {
+      "extras": {
+        "skein": {
+          "event_ordering::Character": {
+            "name": "Hollow Knight"
+          }
+        }
+      },
+      "name": "Empty"
+    }
+  ]
+}

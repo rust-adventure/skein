@@ -14,14 +14,24 @@ class ComponentData(bpy.types.PropertyGroup):
 class PGSkeinWindowProps(bpy.types.PropertyGroup):
     registry: bpy.props.StringProperty(name="Bevy Registry", default="{}")
     components: bpy.props.CollectionProperty(type=ComponentData)
-    # selected_component = bpy.props.StringProperty(name="Selected Component")
 
 
 
 def on_select_new_component(self, context):
-    print("#######")
-    print(context.object.name, context.window_manager.selected_component)
-    print("######")
+    """Executed when a new component is selected for insertion onto an object"""
+    print("\n####### on_select_new_component")
+    selected_component = context.window_manager.selected_component;
+    global_skein = context.window_manager.skein
+    if global_skein.registry:
+        print("\nregistry character:")
+        data = json.loads(global_skein.registry)
+        if len(data.keys()) > 0:
+            # print(data["event_ordering::PowerLevel"])
+            print(data[selected_component])
+        else:
+            print("no data in registry")
+    print("######\n")
+    
 
 # --------------------------------- #
 #  Fetch and store the bevy type    #
@@ -60,18 +70,15 @@ class FetchBevyTypeRegistry(bpy.types.Operator):
         component_list = []
 
         global_skein.components.clear()
-        # bpy.context.window_manager.skein_components_prop_search.clear()
         for k, value in brp_response["result"].items():
             if "reflectTypes" in value and "Component" in value["reflectTypes"]:
-                # global_skein.components.append(k)
+
                 component = global_skein.components.add()
                 component.name = k
                 component.value = k
                 component.type_path = k
                 component.short_path = value["shortPath"]
-                # bpy.types.WindowManager.skein_components_prop_search.append(k)
-                # bpy.types.WindowManager.components.append(k)
-                # bpy.types.WindowManager.skein_components.append(k)
+
                 component_list.append((k, value["shortPath"], k))
 
         bpy.types.WindowManager.skein_components = bpy.props.EnumProperty(
@@ -140,13 +147,13 @@ class SkeinPanel(bpy.types.Panel):
         global_skein = context.window_manager.skein
 
 
-        row = layout.row()
-        row.label(text="Testing Skein!", icon='WORLD_DATA')
+        # row = layout.row()
+        # row.label(text="Testing Skein!", icon='WORLD_DATA')
 
-        row = layout.row()
-        row.label(text="Active object is: " + obj.name)
-        row = layout.row()
-        row.prop(obj, "name")
+        # row = layout.row()
+        # row.label(text="Active object is: " + obj.name)
+        # row = layout.row()
+        # row.prop(obj, "name")
         row = layout.row()
         
         if "skein" in obj.id_data:
@@ -156,11 +163,11 @@ class SkeinPanel(bpy.types.Panel):
 
         # print(bpy.types.WindowManager.skein.registry)
         if global_skein.registry:
-            print("\nregistry character:")
-            data = json.loads(global_skein.registry)
-            if len(data.keys()) > 0:
-                # print(data["event_ordering::PowerLevel"])
-                print(data["event_ordering::Character"])
+            print("\n# Components On Object:")
+            registry = json.loads(global_skein.registry)
+            if list(registry) and "skein" in obj.id_data:
+                for key in obj.id_data["skein"]:
+                    print(registry[key])
             else:
                 print("no data in registry")
 
@@ -202,19 +209,7 @@ def register():
     # for quick access.
     bpy.utils.register_class(ComponentData)
     bpy.utils.register_class(PGSkeinWindowProps)
-
-    # setup global skein property group
     bpy.types.WindowManager.skein = bpy.props.PointerProperty(type=PGSkeinWindowProps)
-
-    # test prop_search compatible data
-    # bpy.types.WindowManager.skein_components_prop_search = bpy.props.PointerProperty(
-    #     type=bpy.props.CollectionProperty(
-    #         type=bpy.props.StringProperty(name="Component Type Path")
-    #     )
-    # )
-    bpy.types.WindowManager.skein_components_prop_search = bpy.props.CollectionProperty(type=ComponentData)
-    # bpy.types.WindowManager.skein_components_prop_search = []
-    # bpy.types.WindowManager.components = bpy.types.WindowManager.skein.components
 
     # TODO: move this to common property group for all object, material, mesh, etc extras
     bpy.types.WindowManager.selected_component = bpy.props.StringProperty(
@@ -222,10 +217,6 @@ def register():
         description="The component that will be added if selected",
         update=on_select_new_component
     )
-    #ComponentData
-    # skein_components_prop_search
-    # bpy.types.WindowManager.selected_component = ""
-
 
     # operations
     bpy.utils.register_class(FetchBevyTypeRegistry)

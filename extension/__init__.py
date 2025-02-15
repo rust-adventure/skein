@@ -4,11 +4,24 @@ import json
 
 registry_filepath = "/Users/chris/github/christopherbiscardi/skein/skein-registry.json"
 
-class PGSkeinWindowProps(bpy.types.PropertyGroup):
-    registry = bpy.props.StringProperty(name="Bevy Registry")
-    components = bpy.props.CollectionProperty(type=bpy.props.StringProperty(name="Component Type Path", default=[]))
-    selected_component = bpy.props.StringProperty(name="Selected Component")
+class ComponentData(bpy.types.PropertyGroup):
+    name: bpy.props.StringProperty(name="Name", default="Unknown")
+    value: bpy.props.StringProperty(name="Value", default="Unknown")
+    type_path: bpy.props.StringProperty(name="Type Path", default="Unknown")
+    short_path: bpy.props.StringProperty(name="Short Path", default="Unknown")
 
+
+class PGSkeinWindowProps(bpy.types.PropertyGroup):
+    registry: bpy.props.StringProperty(name="Bevy Registry", default="{}")
+    components: bpy.props.CollectionProperty(type=ComponentData)
+    # selected_component = bpy.props.StringProperty(name="Selected Component")
+
+
+
+def on_select_new_component(self, context):
+    print("#######")
+    print(context.object.name, context.window_manager.selected_component)
+    print("######")
 
 # --------------------------------- #
 #  Fetch and store the bevy type    #
@@ -23,9 +36,11 @@ class FetchBevyTypeRegistry(bpy.types.Operator):
 
     # execute is called to run the operator
     def execute(self, context):
+        print("\nexecute: FetchBevyTypeRegistry")
         # scene = context.scene
         # cursor = scene.cursor.location
         # obj = context.active_object
+        global_skein = context.window_manager.skein
 
         data = {"jsonrpc": "2.0", "method": "bevy/registry/schema", "params": {}}
         r = requests.post('http://127.0.0.1:15702', json=data)
@@ -40,15 +55,22 @@ class FetchBevyTypeRegistry(bpy.types.Operator):
             json.dump(brp_response["result"], outfile)
             print(outfile)
 
-        bpy.types.WindowManager.skein.registry = json.dumps(brp_response["result"])
-
+        global_skein.registry = json.dumps(brp_response["result"])
 
         component_list = []
 
+        global_skein.components.clear()
+        # bpy.context.window_manager.skein_components_prop_search.clear()
         for k, value in brp_response["result"].items():
             if "reflectTypes" in value and "Component" in value["reflectTypes"]:
-                bpy.types.WindowManager.skein.components.append(k)
-                bpy.types.WindowManager.components.append(k)
+                # global_skein.components.append(k)
+                component = global_skein.components.add()
+                component.name = k
+                component.value = k
+                component.type_path = k
+                component.short_path = value["shortPath"]
+                # bpy.types.WindowManager.skein_components_prop_search.append(k)
+                # bpy.types.WindowManager.components.append(k)
                 # bpy.types.WindowManager.skein_components.append(k)
                 component_list.append((k, value["shortPath"], k))
 
@@ -59,7 +81,7 @@ class FetchBevyTypeRegistry(bpy.types.Operator):
             # update=execute_operator
         )
 
-        print("Executed Bevy Registry Fetch")
+        print("execute/end: FetchBevyTypeRegistry\n")
 
         # blender uses strings to indicate when operation is done
         return {'FINISHED'}
@@ -77,6 +99,7 @@ class InsertBevyComponent(bpy.types.Operator):
 
     # execute is called to run the operator
     def execute(self, context):
+        print("\nexecute: InsertBevyComponent")
         # scene = context.scene
         # cursor = scene.cursor.location
         obj = context.active_object
@@ -94,6 +117,7 @@ class InsertBevyComponent(bpy.types.Operator):
             "name": "Hollow Knight"
         }
 
+        print("execute/end: InsertBevyComponent\n")
         # blender uses strings to indicate when operation is done
         return {'FINISHED'}
 
@@ -110,9 +134,11 @@ class SkeinPanel(bpy.types.Panel):
     bl_context = 'object'
 
     def draw(self, context):
+        print("\ndraw: SkeinPanel")
         layout = self.layout
-
         obj = context.object
+        global_skein = context.window_manager.skein
+
 
         row = layout.row()
         row.label(text="Testing Skein!", icon='WORLD_DATA')
@@ -129,17 +155,24 @@ class SkeinPanel(bpy.types.Panel):
                 print(key)
 
         # print(bpy.types.WindowManager.skein.registry)
-        if context.window_manager.skein.registry:
+        if global_skein.registry:
             print("\nregistry character:")
-            data = json.loads(context.window_manager.skein.registry)
+            data = json.loads(global_skein.registry)
             if len(data.keys()) > 0:
                 # print(data["event_ordering::PowerLevel"])
                 print(data["event_ordering::Character"])
             else:
                 print("no data in registry")
 
-        row.prop(context.window_manager, "skein_components")
-        row.prop_search(context.window_manager, 'selected_component', context.window_manager, "skein_components")
+        # row.prop(context.window_manager, "skein_components")
+        row.prop_search(
+            context.window_manager,
+            'selected_component',
+            global_skein,
+            "components",
+            text="C:"
+        )
+        # row.prop(context.window_manager, "skein_components_prop_search")
 
         # row.prop_search(bpy.types.WindowManager.skein.id_data, 'selected_component', bpy.types.WindowManager.skein, 'components')
         # row.prop(bpy.types.WindowManager.skein, "selected_component")
@@ -151,6 +184,7 @@ class SkeinPanel(bpy.types.Panel):
 
         row = layout.row()
         row.operator("bevy.insert_bevy_component")
+        print("draw/end: SkeinPanel\n")
 
 
 # --------------------------------- #
@@ -162,19 +196,34 @@ def menu_func(self, context):
     self.layout.operator(FetchBevyTypeRegistry.bl_idname)
 
 def register():
+    print("\n--------\nregister")
     # data types that are stored on the window because blender
     # doesn't seem to have any other good way of storing data
     # for quick access.
+    bpy.utils.register_class(ComponentData)
     bpy.utils.register_class(PGSkeinWindowProps)
-    bpy.types.WindowManager.skein = PGSkeinWindowProps
-    print(dir(bpy.types.WindowManager.skein))
-    bpy.types.WindowManager.skein.registry = "{}"
-    bpy.types.WindowManager.skein.components = []
-    bpy.types.WindowManager.skein.selected_component = ""
 
-    bpy.types.WindowManager.components = bpy.props.PointerProperty(type=bpy.props.CollectionProperty(type=bpy.props.StringProperty(name="Component Type Path")))
-    bpy.types.WindowManager.components = bpy.types.WindowManager.skein.components
-    bpy.types.WindowManager.selected_component = bpy.props.StringProperty(name="Selected Component")
+    # setup global skein property group
+    bpy.types.WindowManager.skein = bpy.props.PointerProperty(type=PGSkeinWindowProps)
+
+    # test prop_search compatible data
+    # bpy.types.WindowManager.skein_components_prop_search = bpy.props.PointerProperty(
+    #     type=bpy.props.CollectionProperty(
+    #         type=bpy.props.StringProperty(name="Component Type Path")
+    #     )
+    # )
+    bpy.types.WindowManager.skein_components_prop_search = bpy.props.CollectionProperty(type=ComponentData)
+    # bpy.types.WindowManager.skein_components_prop_search = []
+    # bpy.types.WindowManager.components = bpy.types.WindowManager.skein.components
+
+    # TODO: move this to common property group for all object, material, mesh, etc extras
+    bpy.types.WindowManager.selected_component = bpy.props.StringProperty(
+        name="component type path",
+        description="The component that will be added if selected",
+        update=on_select_new_component
+    )
+    #ComponentData
+    # skein_components_prop_search
     # bpy.types.WindowManager.selected_component = ""
 
 
@@ -185,12 +234,14 @@ def register():
     bpy.utils.register_class(SkeinPanel)
     # adds the menu_func layout to an existing menu
     bpy.types.TOPBAR_MT_edit.append(menu_func)
+    print("\nregister/end")
 
 def unregister():
     # data types that are stored on the window because blender
     # doesn't seem to have any other good way of storing data
     # for quick access.
-    bpy.utils.register_class(PGSkeinWindowProps)
+    bpy.utils.unregister_class(PGSkeinWindowProps)
+    bpy.utils.unregister_class(ComponentData)
     # operations
     bpy.utils.unregister_class(FetchBevyTypeRegistry)
     bpy.utils.unregister_class(InsertBevyComponent)
@@ -268,3 +319,4 @@ def component_to_ui(registry, component_key):
 # 'PointerProperty'
 # 'RemoveProperty'
 # 'StringProperty'
+

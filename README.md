@@ -1,3 +1,6 @@
+> [!CAUTION]
+> in-progress crate. Not published yet.
+
 # Skein
 
 A Blender extension for improving the efficiency of Bevy/Blender workflows.

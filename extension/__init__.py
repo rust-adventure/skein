@@ -6,6 +6,33 @@ import inspect
 
 registry_filepath = "/Users/chris/github/christopherbiscardi/skein/skein-registry.json"
 
+def update_component_data(self, context):
+    # context.obj.skein.something
+    print("updating component data")
+    obj = context.object
+    obj_skein = obj["skein"]
+    active_component_index = obj.active_component_index
+    global_skein = context.window_manager.skein
+    registry = json.loads(global_skein.registry)
+    skein_property_groups = context.window_manager.skein_property_groups
+    active_component = obj_skein[active_component_index]
+    type_path = active_component["type_path"]
+    active_editor = context.window_manager.active_editor
+
+    if obj_skein:
+        active_component_data = obj_skein[active_component_index]
+        type_path = active_component_data["type_path"]
+        registry_component_reflection_data = registry[type_path]
+        
+        if type_path in skein_property_groups:
+            # TODO: this may only work for Structs
+            component_fields = inspect.get_annotations(skein_property_groups[type_path])
+            new_data = {}
+            for key in component_fields:
+                new_data[key] = active_editor[key]
+                print(new_data)
+                active_component["value"] = json.dumps(new_data)
+
 class ComponentTypeData(bpy.types.PropertyGroup):
     name: bpy.props.StringProperty(name="Name", default="Unknown")
     value: bpy.props.StringProperty(name="Value", default="Unknown")
@@ -15,7 +42,7 @@ class ComponentTypeData(bpy.types.PropertyGroup):
 class ComponentData(bpy.types.PropertyGroup):
     type_path: bpy.props.StringProperty(name="type_path", default="Unknown")
     name: bpy.props.StringProperty(name="Name", default="Unknown")
-    # value: bpy.props.StringProperty(name="Component Data")
+    value: bpy.props.StringProperty(name="Component Data")
 
 class PGSkeinWindowProps(bpy.types.PropertyGroup):
     registry: bpy.props.StringProperty(name="Bevy Registry", default="{}")
@@ -33,11 +60,15 @@ def update_component_form(self, context):
     active_component = obj_skein[active_component_index]
     type_path = active_component["type_path"]
 
+    # active_component.__dict__["value"] = bpy.props.StringProperty(default="hello")
     # print(skein_property_groups[type_path])
     # print(skein_property_groups[type_path].__annotations__)
     # TODO: What happens when we get data from object
     # and insert it
-    bpy.types.WindowManager.active_editor = bpy.props.PointerProperty(type=skein_property_groups[type_path])
+    bpy.types.WindowManager.active_editor = bpy.props.PointerProperty(
+        type=skein_property_groups[type_path],
+        update=update_component_data
+    )
     print("active_component_index", active_component_index)
 
 def on_select_new_component(self, context):
@@ -292,7 +323,8 @@ class SkeinPanel(bpy.types.Panel):
                     print("key in component_fields: ", key)
                     # box.prop(obj_skein[active_component_index], key)
                     box.prop(context.window_manager.active_editor, key)
-                
+                if "value" in active_component_data:
+                    box.prop(active_component_data, "value")
             else:
                 box.label(text="No property group for " + type_path)
         # match registry_component_reflection_data["kind"]:
@@ -518,13 +550,13 @@ def make_property(skein_property_groups, registry, type_path):
             print("component[type]", component["type"])
             match component["type"]:
                 case "uint":
-                    return bpy.props.IntProperty()
+                    return bpy.props.IntProperty(update=update_component_data)
                 case "int":
-                    return bpy.props.IntProperty()
+                    return bpy.props.IntProperty(update=update_component_data)
                 case "float":
-                    return bpy.props.FloatProperty()
+                    return bpy.props.FloatProperty(update=update_component_data)
                 case "string":
-                    return bpy.props.StringProperty()
+                    return bpy.props.StringProperty(update=update_component_data)
                 case _:
                     print("unhandled: ", component["type"])
             return

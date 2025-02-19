@@ -158,6 +158,7 @@ class InsertBevyComponent(bpy.types.Operator):
         obj = context.active_object
         global_skein = context.window_manager.skein
         selected_component = context.window_manager.selected_component
+        obj_skein = obj.skein
         # if the skein custom property doesn't exist,
         # create it.
         # if "skein" not in obj.id_data:
@@ -183,6 +184,11 @@ class InsertBevyComponent(bpy.types.Operator):
                 # component.value = json.dumps({
                 #     "name": "Hollow Knight"
                 # })
+                # If we inserted a new component, update the 
+                # active_component_index to show the right editor
+                # for the newly inserted component
+                obj.active_component_index = len(obj_skein) - 1
+
             else:
                 print("no data in registry")
         else:

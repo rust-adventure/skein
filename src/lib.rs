@@ -184,10 +184,22 @@ fn postprocess_scene(
 /// your gltf file to be applied first.
 ///
 /// ```rust
+/// use bevy::prelude::*;
+/// use skein::SkeinSceneInstanceReady;
+/// use serde::{Serialize, Deserialize};
+///
+/// #[derive(
+///   Component, Reflect, Serialize, Deserialize, Debug,
+/// )]
+/// #[reflect(Component, Serialize, Deserialize)]
+/// struct Character {
+///     name: String,
+/// }
+///
 /// fn check_insertions(
 ///     trigger: Trigger<SkeinSceneInstanceReady>,
 ///     children: Query<&Children>,
-///     levels: Query<&PowerLevel>,
+///     levels: Query<&Character>,
 /// ) {
 ///     for entity in
 ///         children.iter_descendants(trigger.target())
@@ -241,6 +253,48 @@ mod tests {
         assert_eq!(
             json_string,
             r#"{"skein::tests::Player":{"name":"Chris Biscardi","power":100.0,"test":4}}"#
+        );
+    }
+
+    #[derive(
+        Component, Reflect, Serialize, Deserialize, Debug,
+    )]
+    #[reflect(Component, Serialize, Deserialize)]
+    struct TeamMember {
+        player: Player,
+        team: Team,
+    }
+
+    #[derive(Reflect, Serialize, Deserialize, Debug)]
+    enum Team {
+        Green,
+        Red,
+        Blue,
+    }
+
+    #[test]
+    fn deep_struct_fields() {
+        let value = TeamMember {
+            player: Player {
+                name: "Chris Biscardi".to_string(),
+                power: 100.,
+                test: 4,
+            },
+            team: Team::Green,
+        };
+
+        let type_registry = TypeRegistry::new();
+
+        // serialize
+        let serializer =
+            ReflectSerializer::new(&value, &type_registry);
+        let json_string =
+            serde_json::ser::to_string(&serializer)
+                .unwrap();
+
+        assert_eq!(
+            json_string,
+            r#"{"skein::tests::TeamMember":{"player":{"name":"Chris Biscardi","power":100.0,"test":4},"team":"Green"}}"#
         );
     }
 

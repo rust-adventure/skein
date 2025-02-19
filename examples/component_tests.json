@@ -1,0 +1,136 @@
+{
+  "u32": {
+    "kind": "Value",
+    "reflectTypes": ["Default", "Serialize", "Deserialize"],
+    "shortPath": "u32",
+    "type": "uint",
+    "typePath": "u32"
+  },
+  "f32": {
+    "kind": "Value",
+    "reflectTypes": ["Default", "Serialize", "Deserialize"],
+    "shortPath": "f32",
+    "type": "float",
+    "typePath": "f32"
+  },
+  "i32": {
+    "kind": "Value",
+    "reflectTypes": ["Default", "Serialize", "Deserialize"],
+    "shortPath": "i32",
+    "type": "int",
+    "typePath": "i32"
+  },
+  "alloc::string::String": {
+    "crateName": "alloc",
+    "kind": "Value",
+    "modulePath": "alloc::string",
+    "reflectTypes": ["Default", "Serialize", "Deserialize"],
+    "shortPath": "String",
+    "type": "string",
+    "typePath": "alloc::string::String"
+  },
+  "component_tests::Marker": {
+    "additionalProperties": false,
+    "crateName": "component_tests",
+    "kind": "Struct",
+    "modulePath": "component_tests",
+    "reflectTypes": ["Component", "Serialize", "Deserialize"],
+    "shortPath": "Marker",
+    "type": "object",
+    "typePath": "component_tests::Marker"
+  },
+  "component_tests::Player": {
+    "additionalProperties": false,
+    "crateName": "component_tests",
+    "kind": "Struct",
+    "modulePath": "component_tests",
+    "properties": {
+      "name": { "type": { "$ref": "#/$defs/alloc::string::String" } },
+      "power": { "type": { "$ref": "#/$defs/f32" } },
+      "test": { "type": { "$ref": "#/$defs/i32" } }
+    },
+    "reflectTypes": ["Component", "Serialize", "Deserialize"],
+    "required": ["name", "power", "test"],
+    "shortPath": "Player",
+    "type": "object",
+    "typePath": "component_tests::Player"
+  },
+  "component_tests::SomeThings": {
+    "crateName": "component_tests",
+    "kind": "Enum",
+    "modulePath": "component_tests",
+    "oneOf": [
+      {
+        "additionalProperties": false,
+        "kind": "Struct",
+        "properties": {
+          "name": {
+            "type": { "$ref": "#/$defs/alloc::string::String" },
+            "typePath": "name"
+          }
+        },
+        "required": ["name"],
+        "shortPath": "OneThing",
+        "type": "object",
+        "typePath": "component_tests::SomeThings::OneThing"
+      },
+      {
+        "items": false,
+        "kind": "Tuple",
+        "prefixItems": [{ "type": { "$ref": "#/$defs/i32" } }],
+        "shortPath": "Low",
+        "type": "array",
+        "typePath": "component_tests::SomeThings::Low"
+      }
+    ],
+    "reflectTypes": ["Component", "Serialize", "Deserialize"],
+    "shortPath": "SomeThings",
+    "type": "object",
+    "typePath": "component_tests::SomeThings"
+  },
+  "component_tests::TaskPriority": {
+    "crateName": "component_tests",
+    "kind": "Enum",
+    "modulePath": "component_tests",
+    "oneOf": ["High", "Medium", "Low"],
+    "reflectTypes": ["Component", "Serialize", "Deserialize"],
+    "shortPath": "TaskPriority",
+    "type": "string",
+    "typePath": "component_tests::TaskPriority"
+  },
+  "component_tests::Team": {
+    "crateName": "component_tests",
+    "kind": "Enum",
+    "modulePath": "component_tests",
+    "oneOf": ["Green", "Red", "Blue"],
+    "shortPath": "Team",
+    "type": "string",
+    "typePath": "component_tests::Team"
+  },
+  "component_tests::TeamMember": {
+    "additionalProperties": false,
+    "crateName": "component_tests",
+    "kind": "Struct",
+    "modulePath": "component_tests",
+    "properties": {
+      "player": { "type": { "$ref": "#/$defs/component_tests::Player" } },
+      "team": { "type": { "$ref": "#/$defs/component_tests::Team" } }
+    },
+    "reflectTypes": ["Component", "Serialize", "Deserialize"],
+    "required": ["player", "team"],
+    "shortPath": "TeamMember",
+    "type": "object",
+    "typePath": "component_tests::TeamMember"
+  },
+  "component_tests::TupleStruct": {
+    "crateName": "component_tests",
+    "items": false,
+    "kind": "TupleStruct",
+    "modulePath": "component_tests",
+    "prefixItems": [{ "type": { "$ref": "#/$defs/u32" } }],
+    "reflectTypes": ["Component", "Serialize", "Deserialize"],
+    "shortPath": "TupleStruct",
+    "type": "array",
+    "typePath": "component_tests::TupleStruct"
+  }
+}

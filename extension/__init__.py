@@ -25,13 +25,16 @@ def update_component_data(self, context):
         registry_component_reflection_data = registry[type_path]
         
         if type_path in skein_property_groups:
-            # TODO: this may only work for Structs
-            component_fields = inspect.get_annotations(skein_property_groups[type_path])
-            new_data = {}
-            for key in component_fields:
-                new_data[key] = active_editor[key]
-                print(new_data)
-                active_component["value"] = json.dumps(new_data)
+            if inspect.isclass(skein_property_groups[type_path]):
+                # TODO: this may only work for Structs
+                component_fields = inspect.get_annotations(skein_property_groups[type_path])
+                new_data = {}
+                for key in component_fields:
+                    new_data[key] = active_editor[key]
+                    print(new_data)
+                    active_component["value"] = json.dumps(new_data)
+            else:
+                active_component["value"] = json.dumps(active_editor)
 
 class ComponentTypeData(bpy.types.PropertyGroup):
     name: bpy.props.StringProperty(name="Name", default="Unknown")
@@ -65,10 +68,12 @@ def update_component_form(self, context):
     # print(skein_property_groups[type_path].__annotations__)
     # TODO: What happens when we get data from object
     # and insert it
-    bpy.types.WindowManager.active_editor = bpy.props.PointerProperty(
-        type=skein_property_groups[type_path],
-        update=update_component_data
-    )
+    if inspect.isclass(skein_property_groups[type_path]):
+        bpy.types.WindowManager.active_editor = bpy.props.PointerProperty(
+            type=skein_property_groups[type_path],
+        )
+    else:
+        bpy.types.WindowManager.active_editor = skein_property_groups[type_path]
     print("active_component_index", active_component_index)
 
 def on_select_new_component(self, context):
@@ -129,18 +134,23 @@ class FetchBevyTypeRegistry(bpy.types.Operator):
             # TODO: this must apply to all components
             # make_property is recursive, so all dependent types
             # should make it into the skein_property_groups
-            if k == "component_tests::Player":
+            if k == "component_tests::Player" or k == "component_tests::TaskPriority":
                 # TODO: is registering classes here enough, or
                 # are there more types in the recursive make_property
                 # that need to be registered?
-                print("\n make_property", "component_tests::Player")
-                bpy.utils.register_class(
-                    make_property(
-                        skein_property_groups,
-                        brp_response["result"],
-                        "component_tests::Player"
-                    )
+                print("\n make_property", k)
+                new_property = make_property(
+                    skein_property_groups,
+                    brp_response["result"],
+                    k
                 )
+                # if its a class we constructed, it has
+                # to be registered. If its not, it can't
+                # be registered without errors
+                if inspect.isclass(new_property):
+                    bpy.utils.register_class(
+                        new_property
+                    )
 
             if "reflectTypes" in value and "Component" in value["reflectTypes"]:
                 component = global_skein.components.add()
@@ -157,13 +167,6 @@ class FetchBevyTypeRegistry(bpy.types.Operator):
             # default="()",
             # update=execute_operator
         )
-
-        # new_component_type = make_property(brp_response["result"], "component_tests::Player")
-        # TupleStructPropGroup = type('TupleStructPropGroup', (ComponentData,), {
-        #     '__annotations__': {'value': bpy.props.IntProperty(name="The Latter")},
-        # })
-        # bpy.utils.register_class(new_component_type)
-        # bpy.types.WindowManager.my_prop_grp = new_component_type #bpy.props.PointerProperty(type=new_component_type)
 
         print("execute/end: FetchBevyTypeRegistry\n")
 
@@ -313,16 +316,19 @@ class SkeinPanel(bpy.types.Panel):
             registry_component_reflection_data = registry[type_path]
             active_editor = active_component_data
             # Marker component
-            if "properties" not in registry_component_reflection_data:
+            if "properties" not in registry_component_reflection_data and registry_component_reflection_data["kind"] == "Struct":
                 box.label(text="Marker components have no data")
             
             if type_path in skein_property_groups:
                 # TODO: this may only work for Structs
                 component_fields = inspect.get_annotations(skein_property_groups[type_path])
-                for key in component_fields:
-                    print("key in component_fields: ", key)
-                    # box.prop(obj_skein[active_component_index], key)
-                    box.prop(context.window_manager.active_editor, key)
+                if inspect.isclass(context.window_manager.active_editor):
+                    for key in component_fields:
+                        print("key in component_fields: ", key)
+                        # box.prop(obj_skein[active_component_index], key)
+                        box.prop(context.window_manager.active_editor, key)
+                else:
+                    box.prop(context.window_manager, "active_editor")
                 if "value" in active_component_data:
                     box.prop(active_component_data, "value")
             else:
@@ -360,7 +366,7 @@ class SkeinPanel(bpy.types.Panel):
         # print(dir(context.window_manager.my_prop_grp.__annotations__))
 
 
-        print("draw/end: SkeinPanel\n")
+        # print("draw/end: SkeinPanel\n")
 
 
 # --------------------------------- #
@@ -515,16 +521,32 @@ def make_property(skein_property_groups, registry, type_path):
     type_path = type_path.removeprefix("#/$defs/")
     component = registry[type_path]
     print("\nmake_property::", type_path)
-    # annotations = {
-    #     'something': bpy.props.IntProperty(name="The Latter")
-    # }
     annotations = {}
 
     match component["kind"]:
         case "Array":
             return
         case "Enum":
-            return
+            print("Enum: ", component["type"])
+            match component["type"]:
+                case "string":
+                    items = []
+                    for item in component["oneOf"]:
+                        items.append((item, item, ""))
+
+                    print(items)
+
+                    skein_property_groups[type_path] = bpy.props.EnumProperty(
+                        items=items,
+                        update=update_component_data
+                    )
+
+                    return skein_property_groups[type_path]
+                case "object":
+                    print("Enum.object is unimplemented")
+                case _:
+                    print("unknown Enum type")
+                    return
         case "List":
             return
         case "Map":
@@ -536,23 +558,96 @@ def make_property(skein_property_groups, registry, type_path):
             # annotations should be an empty object
             if "properties" in component:
                 for key in component["properties"]:
-                    print("key: ", key)
+                    print("- key: ", key)
                     annotations[key] = make_property(
                         skein_property_groups,
                         registry,
                         component["properties"][key]["type"]["$ref"]
                     )
+
+            skein_property_groups[type_path] = type(capitalize_path(type_path), (ComponentData,), {
+                '__annotations__': annotations,
+            })
+
+            return skein_property_groups[type_path]
         case "Tuple":
             return
         case "TupleStruct":
             return
         case "Value":
-            print("component[type]", component["type"])
+            print("- component[type]:  ", component["type"])
             match component["type"]:
                 case "uint":
-                    return bpy.props.IntProperty(update=update_component_data)
+                    match type_path:
+                        case "u8":
+                            return bpy.props.IntProperty(
+                                min=0,
+                                max=255,
+                                update=update_component_data
+                            )
+                        case "u16":
+                            return bpy.props.IntProperty(
+                                min=0,
+                                max=65535,
+                                update=update_component_data
+                            )
+                        case "u32":
+                            return bpy.props.IntProperty(
+                                min=0,
+                                # blender actually sets the default hard maximum to
+                                # 2^31, not 2^32, so not sure if we can even set
+                                # those numbers from inside blender
+                                # max=4294967295,
+                                update=update_component_data
+                        )
+                        case "u64":
+                            return bpy.props.IntProperty(
+                                min=0,
+                                # blender actually sets the default hard maximum to
+                                # 2^31, not 2^32, so not sure if we can even set
+                                # those numbers from inside blender
+                                # max=4294967295,
+                                update=update_component_data
+                        )
+                        case "usize":
+                            return bpy.props.IntProperty(
+                                min=0,
+                                # blender actually sets the default hard maximum to
+                                # 2^31, not 2^32, so not sure if we can even set
+                                # those numbers from inside blender
+                                # max=4294967295,
+                                update=update_component_data
+                        )
+                        case _:
+                            print("unknown uint type: ", type_path)
+                            return bpy.props.IntProperty(min=0, update=update_component_data)
                 case "int":
-                    return bpy.props.IntProperty(update=update_component_data)
+                    match type_path:
+                        case "i8":
+                            return bpy.props.IntProperty(
+                                min=-128,
+                                max=127,
+                                update=update_component_data
+                            )
+                        case "i16":
+                            return bpy.props.IntProperty(
+                                min=-32_768,
+                                max=32_767,
+                                update=update_component_data
+                            )
+                        case "i32":
+                            return bpy.props.IntProperty(
+                                min=-2_147_483_648,
+                                max=2_147_483_647,
+                                update=update_component_data
+                        )
+                        case "i64":
+                            return bpy.props.IntProperty(update=update_component_data)
+                        case "isize":
+                            return bpy.props.IntProperty(update=update_component_data)
+                        case _:
+                            print("unknown iint type: ", type_path)
+                            return bpy.props.IntProperty(min=0, update=update_component_data)
                 case "float":
                     return bpy.props.FloatProperty(update=update_component_data)
                 case "string":
@@ -563,19 +658,6 @@ def make_property(skein_property_groups, registry, type_path):
         # If an exact match is not confirmed, this last case will be used if provided
         case _:
             return "Something's wrong with the world"
-    print("component", component)
-    print("annotations:\n", annotations)
-
-    # make_property(registry, type_path)
-    skein_property_groups[type_path] = type(capitalize_path(type_path), (ComponentData,), {
-        '__annotations__': annotations,
-    })
-
-    # bpy.props.FloatProperty()
-    # scene = bpy.context.scene
-    # scene.test_float = 12.34
-    # print('test_float:', scene.test_float)
-    # return bpy.props.FloatProperty()
-    return skein_property_groups[type_path]
-
-
+    # print("component", component)
+    # print("annotations:\n", annotations)
+    

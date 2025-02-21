@@ -68,6 +68,7 @@ def update_component_form(self, context):
     # print(skein_property_groups[type_path].__annotations__)
     # TODO: What happens when we get data from object
     # and insert it
+    print("isclass", inspect.isclass(skein_property_groups[type_path]), skein_property_groups[type_path])
     if inspect.isclass(skein_property_groups[type_path]):
         bpy.types.WindowManager.active_editor = bpy.props.PointerProperty(
             type=skein_property_groups[type_path],
@@ -317,18 +318,21 @@ class SkeinPanel(bpy.types.Panel):
             active_editor = active_component_data
             # Marker component
             if "properties" not in registry_component_reflection_data and registry_component_reflection_data["kind"] == "Struct":
-                box.label(text="Marker components have no data")
+                box.label(text="Marker components have no data to modify")
             
             if type_path in skein_property_groups:
                 # TODO: this may only work for Structs
                 component_fields = inspect.get_annotations(skein_property_groups[type_path])
-                if inspect.isclass(context.window_manager.active_editor):
+                print(component_fields)
+                print("isclass: ", inspect.isclass(context.window_manager.active_editor), context.window_manager.active_editor)
+                if component_fields:
                     for key in component_fields:
                         print("key in component_fields: ", key)
                         # box.prop(obj_skein[active_component_index], key)
                         box.prop(context.window_manager.active_editor, key)
                 else:
                     box.prop(context.window_manager, "active_editor")
+
                 if "value" in active_component_data:
                     box.prop(active_component_data, "value")
             else:
@@ -503,9 +507,6 @@ def component_to_ui(registry, component_key):
 #     IntProperty
 # }
 
-def inc(x):
-    return x + 1
-
 
 def cap(val):
   return val.capitalize()
@@ -514,9 +515,9 @@ def cap(val):
 def capitalize_path(s):
     return "".join(map(cap, re.split('[:_]+', s)))
 
-# build a subclass of ComponentData which will yield PropertyGroups
-# that we can build up when we fetch the registry,
-# then build automatic UI from
+# build a subclass of ComponentData or return a "scalar" property
+# The subclass is a PropertyGroup that we can build up when we fetch the registry,
+# The UI to editor a type is built from these PropertyGroup classes
 def make_property(skein_property_groups, registry, type_path):
     type_path = type_path.removeprefix("#/$defs/")
     component = registry[type_path]

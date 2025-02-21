@@ -334,7 +334,8 @@ class SkeinPanel(bpy.types.Panel):
                     box.prop(context.window_manager, "active_editor")
 
                 if "value" in active_component_data:
-                    box.prop(active_component_data, "value")
+                    row = layout.row()
+                    row.prop(active_component_data, "value")
             else:
                 box.label(text="No property group for " + type_path)
         # match registry_component_reflection_data["kind"]:

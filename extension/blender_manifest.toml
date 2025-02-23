@@ -67,8 +67,10 @@ files = "Export GLTF to disk/import Bevy type registry"
 # [build]
 # # These are the default build excluded patterns.
 # # You only need to edit them if you want different options.
-# paths_exclude_pattern = [
-#   "__pycache__/",
-#   "/.git/",
-#   "/*.zip",
-# ]
+paths_exclude_pattern = [
+    "__pycache__/",
+    "extension/__pycache__/",
+    "extension/test.py",
+    "/.git/",
+    "/*.zip",
+]

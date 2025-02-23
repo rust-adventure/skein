@@ -4,7 +4,86 @@ import json
 import re
 import inspect
 
+# glTF extensions are named following a convention with known prefixes.
+# See: https://github.com/KhronosGroup/glTF/tree/main/extensions#about-gltf-extensions
+# also: https://github.com/KhronosGroup/glTF/blob/main/extensions/Prefixes.md
+glTF_extension_name = "EXT_skein"
+
+extension_is_required = False
+
 registry_filepath = "/Users/chris/github/christopherbiscardi/skein/skein-registry.json"
+
+## gltf exporter extension
+## Goal: to rewrite skein data directly into the format bevy can parse and reflect
+class SkeinExtensionProperties(bpy.types.PropertyGroup):
+    enabled: bpy.props.BoolProperty(
+        name="skein",
+        description='Rewrite Skein data into a directly Bevy reflectable format',
+        default=True
+        )
+
+def draw_export(context, layout):
+
+    # Note: If you are using Collection Exporter, you may want to restrict UI for some collections
+    # You can access the collection like this: context.collection
+    # So you can check if you want to show the UI for this collection or not, using
+    # if context.collection.name != "Coll":
+    #     return
+
+
+    header, body = layout.panel("GLTF_addon_example_exporter", default_closed=False)
+    header.use_property_split = False
+
+    props = bpy.context.scene.skein_extension_properties
+
+    header.prop(props, 'enabled')
+    # if body != None:
+    #     body.prop(props, 'float_property', text="Some float value")
+
+
+# Note: the class must have this exact name
+class glTF2ExportUserExtension:
+    def pre_export_hook(self, export_settings):
+        print("pre_export_hook in class", export_settings)
+
+    def __init__(self):
+        print("initgltf2 export user extension")
+        # We need to wait until we create the gltf2UserExtension to import the gltf2 modules
+        # Otherwise, it may fail because the gltf2 may not be loaded yet
+        from io_scene_gltf2.io.com.gltf2_io_extensions import Extension
+        self.Extension = Extension
+        self.properties = bpy.context.scene.skein_extension_properties
+
+    def gather_node_hook(self, gltf2_object, blender_object, export_settings):
+        print("gather_node_hook")
+        # Note: If you are using Collection Exporters, you may want to restrict the export for some collections
+        # You can access the collection like this: export_settings['gltf_collection']
+        # So you can check if you want to use this hook for this collection or not, using
+        # if export_settings['gltf_collection'] != "Coll":
+        #     return
+
+        if self.properties.enabled:
+            if gltf2_object.extensions is None:
+                gltf2_object.extensions = {}
+            gltf2_object.extensions[glTF_extension_name] = self.Extension(
+                name=glTF_extension_name,
+                # extension={"float": self.properties.float_property},
+                extension={"float": 2.0},
+                required=extension_is_required
+            )
+
+    def glTF2_pre_export_callback(export_settings):
+        print("This will be called before exporting the glTF file.")
+
+    def glTF2_post_export_callback(export_settings):
+        print("This will be called after exporting the glTF file.")
+
+# def pre_export_hook(self, export_settings):
+#     print("pre_export_hook", export_settings)
+# def glTF2_pre_export_callback():
+#     print("idk")
+# /end gltf exporter extension
+
 
 def update_component_data(self, context):
     # context.obj.skein.something
@@ -32,9 +111,12 @@ def update_component_data(self, context):
                 for key in component_fields:
                     new_data[key] = active_editor[key]
                     print(new_data)
-                    active_component["value"] = json.dumps(new_data)
+                    active_component["value"] = new_data
+                    print("\n---\n")
+                    active_component["testing"] = True
+                    print("\n---\n")
             else:
-                active_component["value"] = json.dumps(active_editor)
+                active_component["value"] = active_editor
 
 class ComponentTypeData(bpy.types.PropertyGroup):
     name: bpy.props.StringProperty(name="Name", default="Unknown")
@@ -45,7 +127,7 @@ class ComponentTypeData(bpy.types.PropertyGroup):
 class ComponentData(bpy.types.PropertyGroup):
     type_path: bpy.props.StringProperty(name="type_path", default="Unknown")
     name: bpy.props.StringProperty(name="Name", default="Unknown")
-    value: bpy.props.StringProperty(name="Component Data")
+    # value: bpy.props.StringProperty(name="Component Data")
 
 class PGSkeinWindowProps(bpy.types.PropertyGroup):
     registry: bpy.props.StringProperty(name="Bevy Registry", default="{}")
@@ -73,6 +155,7 @@ def update_component_form(self, context):
         bpy.types.WindowManager.active_editor = bpy.props.PointerProperty(
             type=skein_property_groups[type_path],
         )
+        # TODO: get data from custom properties
     else:
         bpy.types.WindowManager.active_editor = skein_property_groups[type_path]
     print("active_component_index", active_component_index)
@@ -333,9 +416,10 @@ class SkeinPanel(bpy.types.Panel):
                 else:
                     box.prop(context.window_manager, "active_editor")
 
-                if "value" in active_component_data:
-                    row = layout.row()
-                    row.prop(active_component_data, "value")
+                # regular python values can't be rendered in the UI
+                # if "value" in active_component_data:
+                #     row = layout.row()
+                #     row.prop(active_component_data, "value")
             else:
                 box.label(text="No property group for " + type_path)
         # match registry_component_reflection_data["kind"]:
@@ -415,6 +499,14 @@ def register():
     bpy.utils.register_class(SkeinPanel)
     # adds the menu_func layout to an existing menu
     bpy.types.TOPBAR_MT_edit.append(menu_func)
+
+    # gltf extension
+    bpy.utils.register_class(SkeinExtensionProperties)
+    bpy.types.Scene.skein_extension_properties = bpy.props.PointerProperty(type=SkeinExtensionProperties)
+
+    # Use the following 2 lines to register the UI for the gltf extension hook
+    from io_scene_gltf2 import exporter_extension_layout_draw
+    exporter_extension_layout_draw['Example glTF Extension'] = draw_export # Make sure to use the same name in unregister()
     print("\nregister/end")
 
 def unregister():
@@ -429,6 +521,14 @@ def unregister():
     bpy.utils.unregister_class(InsertBevyComponent)
     # panel
     bpy.utils.unregister_class(SkeinPanel)
+
+    # gltf extension
+    bpy.utils.unregister_class(SkeinExtensionProperties)
+    del bpy.types.Scene.skein_extension_properties
+
+    # Use the following 2 lines to unregister the UI for this hook
+    from io_scene_gltf2 import exporter_extension_layout_draw
+    del exporter_extension_layout_draw['Example glTF Extension'] # Make sure to use the same name in register()
 
 # This is for testing, which allows running this script directly from Blender's Text editor
 # It enables running this script without installing

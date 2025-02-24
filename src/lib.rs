@@ -121,7 +121,7 @@ fn postprocess_scene(
         };
 
         let skein = match obj.get("skein") {
-            Some(Value::Object(components)) => components,
+            Some(Value::Array(components)) => components,
             Some(value) => {
                 let name = names.get(entity).ok();
                 error!(?entity, ?name, parsed_as=?value, "the skein gltf extra field could not be parsed as a serde_json::Value::Object");
@@ -138,14 +138,7 @@ fn postprocess_scene(
         // construct a Value::Object for each component entry because Bevy's reflection expects an
         // Value::Object with a single-key where the key is the component path and the value is the
         // component value
-        for (key, value) in skein.iter() {
-            let mut json_component_inner =
-                serde_json::Map::new();
-            json_component_inner
-                .insert(key.clone(), value.clone());
-            let json_component =
-                Value::Object(json_component_inner);
-
+        for json_component in skein.iter() {
             let type_registry = type_registry.read();
 
             // deserialize

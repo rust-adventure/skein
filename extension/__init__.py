@@ -62,26 +62,38 @@ class glTF2ExportUserExtension:
         # if export_settings['gltf_collection'] != "Coll":
         #     return
 
-        if self.properties.enabled:
-            if gltf2_object.extensions is None:
-                gltf2_object.extensions = {}
-            gltf2_object.extensions[glTF_extension_name] = self.Extension(
-                name=glTF_extension_name,
-                # extension={"float": self.properties.float_property},
-                extension={"float": 2.0},
-                required=extension_is_required
-            )
 
-    def glTF2_pre_export_callback():
-        print("This will be called before exporting the glTF file.")
+
+        # TODO: can we report needing custom_properties enabled
+        # self.report()?
+        if self.properties.enabled and "skein" in gltf2_object.extras:
+            objs = []
+            for node in gltf2_object.extras["skein"]:
+                obj = {}
+                type_path = node["type_path"]
+                obj[type_path] = node["value"]
+                objs.append(obj)
+            gltf2_object.extras["skein"] = objs
+            
+            # if gltf2_object.extensions is None:
+            #     gltf2_object.extensions = {}
+            # gltf2_object.extensions[glTF_extension_name] = self.Extension(
+            #     name=glTF_extension_name,
+            #     # extension={"float": self.properties.float_property},
+            #     extension={"float": 2.0},
+            #     required=extension_is_required
+            # )
+
+    def glTF2_pre_export_callback(export_settings):
+        print("This will be called before exporting the glTF file.2")
 
     def glTF2_post_export_callback(export_settings):
         print("This will be called after exporting the glTF file.")
 
 def pre_export_hook(self, export_settings):
     print("pre_export_hook", export_settings)
-def glTF2_pre_export_callback():
-    print("idk")
+def glTF2_pre_export_callback(export_settings):
+    print("idk2")
 # /end gltf exporter extension
 
 

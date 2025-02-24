@@ -16,11 +16,13 @@
   "nodes": [
     {
       "extras": {
-        "skein": {
-          "debug::PowerLevel": {
-            "energy": 10
+        "skein": [
+          {
+            "debug::PowerLevel": {
+              "energy": 10
+            }
           }
-        }
+        ]
       },
       "name": "Empty"
     }

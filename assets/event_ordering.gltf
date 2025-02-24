@@ -16,11 +16,13 @@
   "nodes": [
     {
       "extras": {
-        "skein": {
-          "event_ordering::Character": {
-            "name": "Hollow Knight"
+        "skein": [
+          {
+            "event_ordering::Character": {
+              "name": "Hollow Knight"
+            }
           }
-        }
+        ]
       },
       "name": "Empty"
     }

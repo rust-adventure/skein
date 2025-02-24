@@ -64,7 +64,7 @@ files = "Export GLTF to disk/import Bevy type registry"
 
 # # Optional: advanced build settings.
 # # https://docs.blender.org/manual/en/dev/advanced/extensions/command_line_arguments.html#command-line-args-extension-build
-# [build]
+[build]
 # # These are the default build excluded patterns.
 # # You only need to edit them if you want different options.
 paths_exclude_pattern = [

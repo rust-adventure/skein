@@ -72,16 +72,16 @@ class glTF2ExportUserExtension:
                 required=extension_is_required
             )
 
-    def glTF2_pre_export_callback(export_settings):
+    def glTF2_pre_export_callback():
         print("This will be called before exporting the glTF file.")
 
     def glTF2_post_export_callback(export_settings):
         print("This will be called after exporting the glTF file.")
 
-# def pre_export_hook(self, export_settings):
-#     print("pre_export_hook", export_settings)
-# def glTF2_pre_export_callback():
-#     print("idk")
+def pre_export_hook(self, export_settings):
+    print("pre_export_hook", export_settings)
+def glTF2_pre_export_callback():
+    print("idk")
 # /end gltf exporter extension
 
 
@@ -406,11 +406,11 @@ class SkeinPanel(bpy.types.Panel):
             if type_path in skein_property_groups:
                 # TODO: this may only work for Structs
                 component_fields = inspect.get_annotations(skein_property_groups[type_path])
-                print(component_fields)
-                print("isclass: ", inspect.isclass(context.window_manager.active_editor), context.window_manager.active_editor)
+                # print(component_fields)
+                # print("isclass: ", inspect.isclass(context.window_manager.active_editor), context.window_manager.active_editor)
                 if component_fields:
                     for key in component_fields:
-                        print("key in component_fields: ", key)
+                        # print("key in component_fields: ", key)
                         # box.prop(obj_skein[active_component_index], key)
                         box.prop(context.window_manager.active_editor, key)
                 else:

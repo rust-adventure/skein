@@ -186,6 +186,7 @@ def get_data_from_active_editor(context, context_key, component_data):
 
     if component_fields:
         for key in component_fields:
+            print("key in component_fields: ", key, component_fields[key])
             if "PointerProperty" == component_fields[key].function.__name__:
                 print("  - is PointerProperty")                
                 data[key] = get_data_from_active_editor(getattr(context, context_key), key, component_fields[key])
@@ -245,58 +246,27 @@ def update_component_form(self, context):
     # TODO: What happens when we get data from object
     # and insert it
     # print("isclass", inspect.isclass(skein_property_groups[type_path]), skein_property_groups[type_path])
+
     if inspect.isclass(skein_property_groups[type_path]):
-        # test_dynamic_wrapper = type("TestDynamicWrapperComponentData", (ComponentData,), {
-        #         '__annotations__': {
-        #             "type_path": bpy.props.StringProperty(name="type_path", default="Unknown"),
-        #             "name": bpy.props.StringProperty(name="Name", default="Unknown"),
-        #             "value": bpy.props.PointerProperty(type=TestInnerComponentData)
-        #         },
-        #     })
-        # bpy.utils.register_class(
-        #     TestInnerComponentData
-        # )
-        # bpy.utils.register_class(
-        #     test_dynamic_wrapper
-        # )
-        # bpy.utils.register_class(
-        #     TestWrapperComponentData
-        # )
-        # bpy.types.WindowManager.test_nested = bpy.props.PointerProperty(type=TestWrapperComponentData)
-        # bpy.types.WindowManager.test_nested = bpy.props.PointerProperty(type=test_dynamic_wrapper)
-        # PointerProperty(type=TeamMember)
-        # TeamMemberPropGroup {
-        #     player: PlayerPropGroup,
-        #     team: enum
-        # }
         bpy.types.WindowManager.active_editor = bpy.props.PointerProperty(
             type=skein_property_groups[type_path],
         )
-        # setattr(bpy.types.WindowManager, "testing", bpy.props.IntProperty(default=2))
-        # bpy.types.WindowManager.active_editor_list = bpy.props.CollectionProperty(type=ComponentData)
-        # form_a = context.WindowManager.active_editor_list.add()
-        # form_a
 
-
-        # bpy.props.PointerProperty(
-        #     type=skein_property_groups[type_path],
-        # )
         # TODO: get data from custom properties
         # TODO: set up recursive/nested forms
-        component_fields = inspect.get_annotations(skein_property_groups[type_path])
-        print("-- component_fields:")
-        for key, value in component_fields.items():
+        # component_fields = inspect.get_annotations(skein_property_groups[type_path])
+        # print("-- component_fields:")
+        # for key, value in component_fields.items():
 
-            # if key not in bpy.types.WindowManager.active_editor:
-            #     print("next key not in active_editor; this usually means its a PropertyGroup class and not a primitive")
-            print("   - " + key)
-            print(registry[type_path])
-            print(registry[type_path]["properties"]["player"]["type"]["$ref"])
-            registry_component_data = registry[type_path]
-            # We kind of already know this is a Struct because its an inspect.isclass from earlier
-            if registry_component_data["kind"] == "Struct":
-                # TODO: switch on registry[type_path]'s type
-                field_type_path = registry[type_path]["properties"][key]["type"]["$ref"].removeprefix("#/$defs/")
+        #     # if key not in bpy.types.WindowManager.active_editor:
+        #     #     print("next key not in active_editor; this usually means its a PropertyGroup class and not a primitive")
+        #     print("   - " + key)
+        #     print(registry[type_path])
+        #     registry_component_data = registry[type_path]
+        #     # We kind of already know this is a Struct because its an inspect.isclass from earlier
+        #     if registry_component_data["kind"] == "Struct":
+        #         # TODO: switch on registry[type_path]'s type
+        #         field_type_path = registry[type_path]["properties"][key]["type"]["$ref"].removeprefix("#/$defs/")
 
 
                 # if inspect.isclass(skein_property_groups[field_type_path]):
@@ -375,6 +345,9 @@ class FetchBevyTypeRegistry(bpy.types.Operator):
                 "component_tests::Player",
                 "component_tests::TaskPriority",
                 "component_tests::TeamMember",
+                "component_tests::TupleStruct",
+                "component_tests::Marker",
+                "component_tests::SomeThings",
                 "test_project::Rotate"
             ]:
                 # TODO: is registering classes here enough, or
@@ -405,12 +378,12 @@ class FetchBevyTypeRegistry(bpy.types.Operator):
 
                 component_list.append((k, value["shortPath"], k))
 
-        bpy.types.WindowManager.skein_components = bpy.props.EnumProperty(
-            items=component_list,
-            description="A Component to add to the object",
-            # default="()",
-            # update=execute_operator
-        )
+        # bpy.types.WindowManager.skein_components = bpy.props.EnumProperty(
+        #     items=component_list,
+        #     description="A Component to add to the object",
+        #     # default="()",
+        #     # update=execute_operator
+        # )
 
         print("execute/end: FetchBevyTypeRegistry\n")
 
@@ -660,6 +633,7 @@ def render_props(layout, context, context_key, component_data):
     # print("\n")
     # TODO: match on group type
     # TODO: this may only work for Structs
+    # print("component_data", component_data)
     component_fields = inspect.get_annotations(component_data)
     # print(component_fields)
     # print("\n")
@@ -685,9 +659,12 @@ def render_props(layout, context, context_key, component_data):
                 # print("  - not PointerProperty")
                 layout.prop(getattr(context, context_key), key)
     else:
-        # print("no component fields, not rendering: ", context, context_key)
-        # TODO: figure out if this actually means there's nothing to render
-        pass
+        if context_key == "active_editor":
+            layout.prop(context, context_key)
+        else:
+            # print("not rendering something", context, context_key)
+            pass
+
 
 
 # capitalize a word without lowercasing the result
@@ -699,12 +676,25 @@ def cap(val):
 def capitalize_path(s):
     return "".join(map(cap, re.split('[:_]+', s)))
 
-# build a subclass of ComponentData or return a "scalar" property
-# The subclass is a PropertyGroup that we can build up when we fetch the registry,
-# The UI to editor a type is built from these PropertyGroup classes
-def make_property(skein_property_groups, registry, type_path):
-    type_path = type_path.removeprefix("#/$defs/")
-    component = registry[type_path]
+def make_property(
+        skein_property_groups,
+        registry,
+        original_type_path,
+        override_component=None
+):
+    """build a subclass of ComponentData or return a "scalar" property
+    The subclass is a PropertyGroup that we can build up when we fetch the registry,
+    The UI to editor a type is built from these PropertyGroup classes
+
+    @param: skein_property_groups All of the property groups constructed so far. Will mutate this to add more property groups.
+    @param: registry dict representation of the Bevy registry information
+    @param: original_type_path Either a full type_path (`component_tests::SomeThings::OneThing`) or a type_path with `#/#defs/alloc` on the front
+    @param: override_component An optional value that is used when you have access to the registry type information but that registry type information is not directly accessible by registry[type_path]. This happens in complex enums. (default None)
+    """
+
+    type_path = original_type_path.removeprefix("#/$defs/")
+    component = override_component if override_component != None else registry[type_path]
+
     if type_path in skein_property_groups:
         # The type was already constructed and can be 
         # returned from the "cache" instead of being
@@ -712,10 +702,10 @@ def make_property(skein_property_groups, registry, type_path):
         return skein_property_groups[type_path]
 
     print("\nmake_property::", type_path)
-    annotations = {}
 
     match component["kind"]:
         case "Array":
+            print("Array is unimplemented in make_property")
             return
         case "Enum":
             print("Enum: ", component["type"])
@@ -734,17 +724,64 @@ def make_property(skein_property_groups, registry, type_path):
 
                     return skein_property_groups[type_path]
                 case "object":
-                    print("Enum.object is unimplemented")
+                    annotations = {}
+                    # print("Enum.object is unimplemented")
+                    # items = []
+                    # for item in component["oneOf"]:
+                    #     items.append((item["shortPath"], item["shortPath"], ""))
+
+                    # print(items)
+
+                    # skein_property_groups[type_path] = bpy.props.EnumProperty(
+                    #     items=items,
+                    #     update=update_component_data
+                    # )
+                                # only recurse if we have properties to set, otherwise
+                    # annotations should be an empty object
+
+                    for option in component["oneOf"]:
+                        print("- option: ", option["shortPath"])
+                        key = option["shortPath"]
+                        property = make_property(
+                            skein_property_groups,
+                            registry,
+                            option["typePath"],
+                            option
+                        )
+                        if inspect.isclass(property):
+                            annotations[key] = bpy.props.PointerProperty(type=property)
+                        else:
+                            annotations[key] = property
+
+                    # add this struct type to the skein_property_groups so it 
+                    # can be accessed elsewhere by type_path
+                    skein_property_groups[type_path] = type(capitalize_path(type_path), (ComponentData,), {
+                        '__annotations__': annotations,
+                    })
+
+                    # registering the class is required for certain Blender
+                    # functionality to work.
+                    print("REGISTERING: " + type_path)
+                    bpy.utils.register_class(
+                        skein_property_groups[type_path]
+                    )
+
+                    # return the type we just constructed
+                    return skein_property_groups[type_path]
                 case _:
                     print("unknown Enum type")
                     return
         case "List":
+            print("List is unimplemented in make_property")
             return
         case "Map":
+            print("Map is unimplemented in make_property")
             return
         case "Set":
+            print("Set is unimplemented in make_property")
             return
         case "Struct":
+            annotations = {}
             # only recurse if we have properties to set, otherwise
             # annotations should be an empty object
             if "properties" in component:
@@ -776,11 +813,35 @@ def make_property(skein_property_groups, registry, type_path):
             # return the type we just constructed
             return skein_property_groups[type_path]
         case "Tuple":
-            return
+            if len(component["prefixItems"]) == 1:
+                skein_property_groups[type_path] = make_property(
+                    skein_property_groups,
+                    registry,
+                    component["prefixItems"][0]["type"]["$ref"]
+                )
+                return skein_property_groups[type_path]
+            else:
+                print("Tuple is unimplemented in make_property for lengths longer than 1 element")
+                return
         case "TupleStruct":
-            return
+            # single element tuple struct is a special case
+            # because the reflection format treats it as a
+            # single value for the type_path key
+            # ```
+            # { "skein::tests::TupleStruct": 12 }
+            # ```
+            if len(component["prefixItems"]) == 1:
+                skein_property_groups[type_path] = make_property(
+                    skein_property_groups,
+                    registry,
+                    component["prefixItems"][0]["type"]["$ref"]
+                )
+                return skein_property_groups[type_path]
+            else:
+                print("TupleStruct is unimplemented in make_property for lengths longer than 1 element")
+                return
         case "Value":
-            print("- component[type]:  ", component["type"])
+            # print("- component[type]:  ", component["type"])
             match component["type"]:
                 case "uint":
                     match type_path:
@@ -857,10 +918,18 @@ def make_property(skein_property_groups, registry, type_path):
                     return bpy.props.FloatProperty(update=update_component_data)
                 case "string":
                     return bpy.props.StringProperty(update=update_component_data)
+                case "object":
+                    match component["type_path"]:
+                        case "core::time::Duration":
+                            print("core::time::Duration is currently not handled")
+                            return
+                        case _:
+                            print("unhandled `Value` of `object` type: ", component["type_path"])
+                            return
                 case _:
                     print("unhandled type: ", component["type"])
                     return
         # If an exact match is not confirmed, this last case will be used if provided
         case _:
             print("unhandled kind:", component["kind"])
-            return "Something's wrong with the world"    
+            return "Something's wrong with the world"

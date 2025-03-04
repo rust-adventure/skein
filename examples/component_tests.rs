@@ -19,6 +19,9 @@ fn main() {
         .register_type::<Marker>()
         .register_type::<TaskPriority>()
         .register_type::<SomeThings>()
+        .register_type::<MultiElementTupleStruct>()
+        // TODO types
+        .register_type::<TimerContainer>()
         .add_plugins((
             DefaultPlugins,
             SkeinPlugin::default(),
@@ -62,6 +65,16 @@ enum Team {
 #[reflect(Component, Serialize, Deserialize)]
 struct TupleStruct(u32);
 
+/// MultiElementTupleStruct is not currently supported in the
+/// Blender addon. if you have a use case for this that isn't
+/// solvable by converting to a named field struct, open an
+/// issue or a PR
+#[derive(
+    Component, Reflect, Serialize, Deserialize, Debug,
+)]
+#[reflect(Component, Serialize, Deserialize)]
+struct MultiElementTupleStruct(u32, Vec3, i32, String);
+
 #[derive(
     Component, Reflect, Serialize, Deserialize, Debug,
 )]
@@ -86,3 +99,7 @@ enum SomeThings {
     OneThing { name: String },
     Low(i32),
 }
+
+#[derive(Component, Reflect, Debug)]
+#[reflect(Component)]
+struct TimerContainer(Timer);

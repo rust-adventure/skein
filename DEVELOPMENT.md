@@ -52,3 +52,51 @@ pip install -U pytest
 - type_path
 - name
 - value
+
+## Value types
+
+There are "primitive" types in the Bevy reflection data that have a `kind` of `Value`, but do not have additional information about what values they contain. We can not build UI for these without hardcoding assumptions into the python addon. Some examples include
+
+- third party types:
+  - `smol_str::SmolStr`
+- std or core types
+  - `std::path::PathBuf`
+- other Bevy types
+  - `Entity`.
+
+```json
+{
+  "smol_str::SmolStr": {
+    "crateName": "smol_str",
+    "kind": "Value",
+    "modulePath": "smol_str",
+    "reflectTypes": ["Default", "Serialize", "Deserialize"],
+    "shortPath": "SmolStr",
+    "type": "object",
+    "typePath": "smol_str::SmolStr"
+  },
+  "std::path::PathBuf": {
+    "crateName": "std",
+    "kind": "Value",
+    "modulePath": "std::path",
+    "reflectTypes": ["Default", "Serialize", "Deserialize"],
+    "shortPath": "PathBuf",
+    "type": "object",
+    "typePath": "std::path::PathBuf"
+  },
+  "bevy_ecs::entity::Entity": {
+    "crateName": "bevy_ecs",
+    "kind": "Value",
+    "modulePath": "bevy_ecs::entity",
+    "reflectTypes": ["Serialize", "Deserialize"],
+    "shortPath": "Entity",
+    "type": "object",
+    "typePath": "bevy_ecs::entity::Entity"
+  }
+}
+```
+
+## Interesting Future Work
+
+- Can we add any reflected `Default` data to the registry information and use that in Blender for default values?
+- Relationships: How can we support a good Blender UI for assigning custom Bevy Relationships

@@ -322,6 +322,40 @@ mod tests {
         );
     }
 
+    // MultiElementTupleStruct is not currently supported in the
+    // Blender addon. if you have a use case for this that isn't
+    // solvable by converting to a named field struct, open an
+    // issue or a PR
+    #[derive(
+        Component, Reflect, Serialize, Deserialize, Debug,
+    )]
+    #[reflect(Component, Serialize, Deserialize)]
+    struct MultiElementTupleStruct(u32, Vec3, i32, String);
+
+    #[test]
+    fn multi_element_tuple_struct() {
+        let value = MultiElementTupleStruct(
+            12,
+            Vec3::ZERO,
+            2,
+            "testing".to_string(),
+        );
+
+        let type_registry = TypeRegistry::new();
+
+        // serialize
+        let serializer =
+            ReflectSerializer::new(&value, &type_registry);
+        let json_string =
+            serde_json::ser::to_string(&serializer)
+                .unwrap();
+
+        assert_eq!(
+            json_string,
+            r#"{"skein::tests::MultiElementTupleStruct":[12,{"x":0.0,"y":0.0,"z":0.0},2,"testing"]}"#
+        );
+    }
+
     #[derive(
         Component, Reflect, Serialize, Deserialize, Debug,
     )]
@@ -403,6 +437,25 @@ mod tests {
         assert_eq!(
             json_string,
             r#"{"skein::tests::SomeThings":{"OneThing":{"name":"testing"}}}"#
+        );
+    }
+
+    #[test]
+    fn enum_component_with_fields_alt() {
+        let value = SomeThings::Low(12);
+
+        let type_registry = TypeRegistry::new();
+
+        // serialize
+        let serializer =
+            ReflectSerializer::new(&value, &type_registry);
+        let json_string =
+            serde_json::ser::to_string(&serializer)
+                .unwrap();
+
+        assert_eq!(
+            json_string,
+            r#"{"skein::tests::SomeThings":{"Low":12}}"#
         );
     }
 }

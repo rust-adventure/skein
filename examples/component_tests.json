@@ -29,6 +29,34 @@
     "type": "string",
     "typePath": "alloc::string::String"
   },
+  "glam::Vec3": {
+    "additionalProperties": false,
+    "crateName": "glam",
+    "kind": "Struct",
+    "modulePath": "glam",
+    "properties": {
+      "x": {
+        "type": {
+          "$ref": "#/$defs/f32"
+        }
+      },
+      "y": {
+        "type": {
+          "$ref": "#/$defs/f32"
+        }
+      },
+      "z": {
+        "type": {
+          "$ref": "#/$defs/f32"
+        }
+      }
+    },
+    "reflectTypes": ["Default", "Serialize", "Deserialize"],
+    "required": ["x", "y", "z"],
+    "shortPath": "Vec3",
+    "type": "object",
+    "typePath": "glam::Vec3"
+  },
   "component_tests::Marker": {
     "additionalProperties": false,
     "crateName": "component_tests",
@@ -132,5 +160,37 @@
     "shortPath": "TupleStruct",
     "type": "array",
     "typePath": "component_tests::TupleStruct"
+  },
+  "component_tests::MultiElementTupleStruct": {
+    "crateName": "component_tests",
+    "items": false,
+    "kind": "TupleStruct",
+    "modulePath": "component_tests",
+    "prefixItems": [
+      {
+        "type": {
+          "$ref": "#/$defs/u32"
+        }
+      },
+      {
+        "type": {
+          "$ref": "#/$defs/glam::Vec3"
+        }
+      },
+      {
+        "type": {
+          "$ref": "#/$defs/i32"
+        }
+      },
+      {
+        "type": {
+          "$ref": "#/$defs/alloc::string::String"
+        }
+      }
+    ],
+    "reflectTypes": ["Component", "Serialize", "Deserialize"],
+    "shortPath": "MultiElementTupleStruct",
+    "type": "array",
+    "typePath": "component_tests::MultiElementTupleStruct"
   }
 }

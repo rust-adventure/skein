@@ -14,4 +14,4 @@ clippy:
     cargo clippy
 
 copy-for-dev:
-    cp -r ./extension/* /Users/chris/Library/Application\ Support/Blender/4.2/extensions/user_default/bevy_skein 
+    cp -r ./extension/* /Users/chris/Library/Application\ Support/Blender/4.2/extensions/user_default/bevy_skein/

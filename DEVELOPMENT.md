@@ -100,3 +100,6 @@ There are "primitive" types in the Bevy reflection data that have a `kind` of `V
 
 - Can we add any reflected `Default` data to the registry information and use that in Blender for default values?
 - Relationships: How can we support a good Blender UI for assigning custom Bevy Relationships
+
+- How does it handle 6-level nested structs?
+- If a variant of a complex enum is not constructible, what happens? can we just drop the non-constructible one? or render a note in the UI

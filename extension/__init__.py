@@ -184,14 +184,25 @@ def get_data_from_active_editor(context, context_key, component_data):
 
     component_fields = inspect.get_annotations(component_data)
 
+    # TODO: move skein_enum_index logic to exporter maybe?
+    # possibly useful for moving active_form to components list
+    # This `if` changes the fields that are fetched, specifically
+    # so that we only export one of the variants in an enum (all variants
+    # have their own key in the object)
+    if "skein_enum_index" in component_fields:
+        active_enum_variant = getattr(getattr(context, context_key), "skein_enum_index")
+        component_fields = {
+            active_enum_variant: component_fields[active_enum_variant]
+        }
+
     if component_fields:
         for key in component_fields:
-            print("key in component_fields: ", key, component_fields[key])
+            # print("key in component_fields: ", key, component_fields[key])
             if "PointerProperty" == component_fields[key].function.__name__:
-                print("  - is PointerProperty")                
+                # print("  - is PointerProperty")                
                 data[key] = get_data_from_active_editor(getattr(context, context_key), key, component_fields[key])
             else:
-                print("  - not PointerProperty")
+                # print("  - not PointerProperty")
                 data[key] = getattr(getattr(context, context_key), key)
     else:
         # print("no component fields, not rendering: ", context, context_key)
@@ -635,6 +646,12 @@ def render_props(layout, context, context_key, component_data):
     # TODO: this may only work for Structs
     # print("component_data", component_data)
     component_fields = inspect.get_annotations(component_data)
+    if "skein_enum_index" in component_fields:
+        active_enum_variant = getattr(getattr(context, context_key), "skein_enum_index")
+        component_fields = {
+            "skein_enum_index": component_fields["skein_enum_index"],
+            active_enum_variant: component_fields[active_enum_variant]
+        }
     # print(component_fields)
     # print("\n")
     if component_fields:
@@ -717,6 +734,7 @@ def make_property(
 
                     print(items)
 
+                    # TODO: make an enum default value
                     skein_property_groups[type_path] = bpy.props.EnumProperty(
                         items=items,
                         update=update_component_data
@@ -726,16 +744,17 @@ def make_property(
                 case "object":
                     annotations = {}
                     # print("Enum.object is unimplemented")
-                    # items = []
-                    # for item in component["oneOf"]:
-                    #     items.append((item["shortPath"], item["shortPath"], ""))
+                    items = []
+                    for item in component["oneOf"]:
+                        items.append((item["shortPath"], item["shortPath"], ""))
 
-                    # print(items)
+                    print(items)
 
-                    # skein_property_groups[type_path] = bpy.props.EnumProperty(
-                    #     items=items,
-                    #     update=update_component_data
-                    # )
+                    annotations["skein_enum_index"] = bpy.props.EnumProperty(
+                        name="variant",
+                        items=items,
+                        update=update_component_data
+                    )
                                 # only recurse if we have properties to set, otherwise
                     # annotations should be an empty object
 

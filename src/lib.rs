@@ -144,9 +144,15 @@ fn postprocess_scene(
             // deserialize
             let reflect_deserializer =
                 ReflectDeserializer::new(&type_registry);
-            let reflect_value = reflect_deserializer
+            let reflect_value = match reflect_deserializer
                 .deserialize(json_component)
-                .unwrap();
+            {
+                Ok(value) => value,
+                Err(err) => {
+                    error!(?err, "failed to instantiate component data from blender");
+                    continue;
+                }
+            };
 
             // TODO: can we do this insert without panic
             // if the intended component

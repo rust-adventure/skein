@@ -45,9 +45,13 @@ struct TeamMember {
     team: Team,
 }
 
-#[derive(Reflect, Serialize, Deserialize, Debug)]
+#[derive(
+    Reflect, Serialize, Deserialize, Debug, Default,
+)]
+#[reflect(Default)]
 enum Team {
     Green,
+    #[default]
     Red,
     Blue,
 }

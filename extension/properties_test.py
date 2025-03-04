@@ -9,6 +9,7 @@ import inspect
 class TestClass:
     def test_capitalize(self):
         assert capitalize_path("component_tests::Player") == "ComponentTestsPlayer"
+        assert capitalize_path("component_tests::TeamMember") == "ComponentTestsTeamMember"
 
     def test_player_struct(self):
         with open("./examples/component_tests.json") as registry_json:
@@ -24,9 +25,9 @@ class TestClass:
             scene = bpy.context.scene
 
             test_data = inspect.get_annotations(scene.test_data)
-            print(scene.test_data.path_from_id())
+            # print(scene.test_data.path_from_id())
             assert "name" in test_data
-            assert "psower" in test_data
+            assert "power" in test_data
             assert "test" in test_data
 
     def test_marker(self):

@@ -30,3 +30,25 @@ source skein-dev/bin/activate
 pip install bpy requests
 pip install -U pytest
 ```
+
+## The Python Dataflow
+
+#### WindowManager
+
+- registry
+  - holds the json registry data as a string from the brp request
+- components
+  - a Collection of component data used for creating lists the user can select a component from
+- skein_property_groups
+  - The property groups created after fetching the registry data
+
+#### Object
+
+- skein
+  - Collection of component data
+
+##### ComponentData
+
+- type_path
+- name
+- value

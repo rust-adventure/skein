@@ -3,7 +3,8 @@ import requests
 import json
 import re
 import inspect
-import string
+import os
+from bpy.app.handlers import persistent
 
 # glTF extensions are named following a convention with known prefixes.
 # See: https://github.com/KhronosGroup/glTF/tree/main/extensions#about-gltf-extensions
@@ -174,6 +175,7 @@ def update_component_data(self, context):
             else:
                 active_component["value"] = active_editor
 
+
 def get_data_from_active_editor(context, context_key, component_data):
 
     data = {}
@@ -199,7 +201,7 @@ def get_data_from_active_editor(context, context_key, component_data):
         for key in component_fields:
             # print("key in component_fields: ", key, component_fields[key])
             if "PointerProperty" == component_fields[key].function.__name__:
-                # print("  - is PointerProperty")                
+                # print("  - is PointerProperty")
                 data[key] = get_data_from_active_editor(getattr(context, context_key), key, component_fields[key])
             else:
                 # print("  - not PointerProperty")
@@ -239,6 +241,7 @@ class TestWrapperComponentData(bpy.types.PropertyGroup):
 
 
 def update_component_form(self, context):
+    """Executed when the currently selected active_component_index is changed"""
     print("\n## update component form")
     obj = context.object
     obj_skein = obj["skein"]
@@ -324,82 +327,73 @@ class FetchBevyTypeRegistry(bpy.types.Operator):
     # execute is called to run the operator
     def execute(self, context):
         print("\nexecute: FetchBevyTypeRegistry")
-        # scene = context.scene
-        # cursor = scene.cursor.location
-        # obj = context.active_object
-        global_skein = context.window_manager.skein
-        skein_property_groups = context.window_manager.skein_property_groups
 
-        data = {"jsonrpc": "2.0", "method": "bevy/registry/schema", "params": {}}
-        r = requests.post('http://127.0.0.1:15702', json=data)
-        brp_response = r.json()
+        brp_response = brp_fetch_registry_schema()
 
         # If the bevy remote protocol returns an error, report it to the user
         if "error" in brp_response:
             print("bevy request errored out", brp_response["error"])
-            self.report({"ERROR"}, "request for Bevy registry data errored out, is the Bevy Remote Protocol Plugin added and is the Bevy app running? :: " + json["error"]["message"])
+            self.report({"ERROR"}, "request for Bevy registry data errored out, is the Bevy Remote Protocol Plugin added and is the Bevy app running? :: " + brp_response["error"]["message"])
+
+        registry_filepath = bpy.path.abspath(os.path.join("//", "skein-registry.json"))
 
         with open(registry_filepath,"w") as outfile:
             json.dump(brp_response["result"], outfile)
-            print(outfile)
 
-        global_skein.registry = json.dumps(brp_response["result"])
+        process_registry(context, brp_response["result"])
 
-        component_list = []
-
-        global_skein.components.clear()
-        for k, value in brp_response["result"].items():
-            # TODO: this must apply to all components
-            # make_property is recursive, so all dependent types
-            # should make it into the skein_property_groups
-            if k in [
-                "component_tests::Player",
-                "component_tests::TaskPriority",
-                "component_tests::TeamMember",
-                "component_tests::TupleStruct",
-                "component_tests::Marker",
-                "component_tests::SomeThings",
-                "test_project::Rotate"
-            ]:
-                # TODO: is registering classes here enough, or
-                # are there more types in the recursive make_property
-                # that need to be registered?
-                print("\n make_property", k)
-                new_property = make_property(
-                    skein_property_groups,
-                    brp_response["result"],
-                    k
-                )
-                # # if its a class we constructed, it has
-                # # to be registered. If its not, it can't
-                # # be registered without errors
-                # print("registering")
-                # print(new_property)
-                # if inspect.isclass(new_property):
-                #     bpy.utils.register_class(
-                #         new_property
-                #     )
-
-            if "reflectTypes" in value and "Component" in value["reflectTypes"]:
-                component = global_skein.components.add()
-                component.name = k
-                component.value = k
-                component.type_path = k
-                component.short_path = value["shortPath"]
-
-                component_list.append((k, value["shortPath"], k))
-
-        # bpy.types.WindowManager.skein_components = bpy.props.EnumProperty(
-        #     items=component_list,
-        #     description="A Component to add to the object",
-        #     # default="()",
-        #     # update=execute_operator
-        # )
-
-        print("execute/end: FetchBevyTypeRegistry\n")
-
-        # blender uses strings to indicate when operation is done
         return {'FINISHED'}
+
+# TODO: allow configuration of url via addon settings or
+# custom fetch operator?
+def brp_fetch_registry_schema(host="http://127.0.0.1", port=15702):
+    """Fetch the registry schema from a running Bevy application"""
+
+    data = {"jsonrpc": "2.0", "method": "bevy/registry/schema", "params": {}}
+    r = requests.post(host + ":" + str(port), json=data)
+    brp_response = r.json()
+    return brp_response
+
+def process_registry(context, registry):
+    """
+    registry is a dict
+    """
+
+    global_skein = context.window_manager.skein
+    skein_property_groups = context.window_manager.skein_property_groups
+
+    global_skein.registry = json.dumps(registry)
+
+    component_list = []
+
+    global_skein.components.clear()
+    for k, value in registry.items():
+        # TODO: this must apply to all components
+        # make_property is recursive, so all dependent types
+        # should make it into the skein_property_groups
+        if k in [
+            "component_tests::Player",
+            "component_tests::TaskPriority",
+            "component_tests::TeamMember",
+            "component_tests::TupleStruct",
+            "component_tests::Marker",
+            "component_tests::SomeThings",
+            "test_project::Rotate"
+        ]:
+            make_property(
+                skein_property_groups,
+                registry,
+                k
+            )
+
+        if "reflectTypes" in value and "Component" in value["reflectTypes"]:
+            component = global_skein.components.add()
+            component.name = k
+            component.value = k
+            component.type_path = k
+            component.short_path = value["shortPath"]
+
+            component_list.append((k, value["shortPath"], k))
 
 # --------------------------------- #
 #  Add hardcoded test component     #
@@ -407,7 +401,7 @@ class FetchBevyTypeRegistry(bpy.types.Operator):
 # --------------------------------- #
 
 class InsertBevyComponent(bpy.types.Operator):
-    """Insert a hardcoded component on the object (for development)"""
+    """Insert a component on the object (for development)"""
     bl_idname = "bevy.insert_bevy_component" # unique identifier. not specially named
     bl_label = "Insert Bevy Component (Dev)" # Shows up in the UI
     bl_options = {'REGISTER', 'UNDO'} # enable undo (which we might not need)
@@ -449,6 +443,30 @@ class InsertBevyComponent(bpy.types.Operator):
         # blender uses strings to indicate when operation is done
         return {'FINISHED'}
 
+
+class DebugCheckObjectBevyComponents(bpy.types.Operator):
+    """Iterate over all objects and print the skein component data to console
+
+    This can help debug storage and see what data is set for named objects
+    """
+    bl_idname = "bevy.debug_check_object_bevy_components" # unique identifier. not specially named
+    bl_label = "Check the Skein data on all objects" # Shows up in the UI
+    bl_options = {'REGISTER'}
+
+    # execute is called to run the operator
+    def execute(self, context):
+        for object in bpy.data.objects:
+            print("\n# ", object.name)
+            print("## ", len(object.skein), " components:")
+            for component in object.skein:
+                print("### ", component.type_path, "")
+                try:
+                    print(json.dumps(component["value"].to_dict(), indent=4))
+                except AttributeError:
+                    print(component["value"])
+
+        return {'FINISHED'}
+
 # ---------------------------------- #
 #  Skein Panel for adding components #
 # ---------------------------------- #
@@ -471,19 +489,25 @@ class SkeinPanel(bpy.types.Panel):
         # common place. This function runs every draw
         registry = json.loads(global_skein.registry)
         skein_property_groups = context.window_manager.skein_property_groups
+        if not registry:
+            layout.label(text="Bevy registry data must be loaded to work with component data")
+            # TODO: show load registry
+            layout.operator("bevy.fetch_type_registry")
+            return
 
         row = layout.row()
         
-        row.prop_search(
-            context.window_manager,
-            'selected_component',
-            global_skein,
-            "components",
-            text="C:"
-        )
+        if registry:
+            row.prop_search(
+                context.window_manager,
+                'selected_component',
+                global_skein,
+                "components",
+                text="insert:"
+            )
 
-        row = layout.row()
-        row.operator("bevy.insert_bevy_component")
+            row = layout.row()
+            row.operator("bevy.insert_bevy_component")
 
         layout.template_list(
             "UI_UL_list",
@@ -496,9 +520,11 @@ class SkeinPanel(bpy.types.Panel):
 
 
         box = layout.box()
+
+        # build the form ui
         # obj_skein is an array of component data
         # empty lists are falsey
-        if obj_skein:
+        if registry and obj_skein:
             active_component_data = obj_skein[active_component_index]
 
             box.label(text=active_component_data["type_path"], icon='DOT')
@@ -519,6 +545,40 @@ class SkeinPanel(bpy.types.Panel):
 # add to the Blender menus
 def menu_func(self, context):
     self.layout.operator(FetchBevyTypeRegistry.bl_idname)
+    self.layout.operator(DebugCheckObjectBevyComponents.bl_idname)
+
+
+@persistent
+def on_post_blend_file_load(blend_file):
+    """blend file is empty if its the startup scene"""
+    if blend_file:
+        # find the location of the registry file
+        registry_file = bpy.path.abspath(os.path.join("//", "skein-registry.json"))
+
+        # try to read the schema in via skein-registry.json file if its available
+        # if its not, try to use http, if http doesn't work, do nothing or report an error or something
+        try:
+            # read the file and try to parse it
+            with open(registry_file, "r") as infile:
+                content = infile.read()
+                registry = json.loads(content)
+                process_registry(bpy.context, registry)
+        except FileNotFoundError:
+            brp_response = brp_fetch_registry_schema()
+            process_registry(bpy.context, brp_response["result"])
+            registry_filepath = bpy.path.abspath(os.path.join("//", "skein-registry.json"))
+
+            with open(registry_filepath,"w") as outfile:
+                json.dump(brp_response["result"], outfile)
+
+# @persistent
+# def on_frame_changed(scene, depsgraph):
+#     screen = bpy.context.screen
+#     if screen and (screen.is_animation_playing or screen.is_scrubbing):
+#         return
+
+#     print("Possibly scene swapped or created.")
+
 
 def register():
     print("\n--------\nregister")
@@ -549,6 +609,7 @@ def register():
     # operations
     bpy.utils.register_class(FetchBevyTypeRegistry)
     bpy.utils.register_class(InsertBevyComponent)
+    bpy.utils.register_class(DebugCheckObjectBevyComponents)
     # panel
     bpy.utils.register_class(SkeinPanel)
     # adds the menu_func layout to an existing menu
@@ -558,6 +619,13 @@ def register():
     bpy.utils.register_class(SkeinExtensionProperties)
     bpy.types.Scene.skein_extension_properties = bpy.props.PointerProperty(type=SkeinExtensionProperties)
 
+    # try:
+    #     # Skip if handler installed
+    #     bpy.app.handlers.load_post.index(on_post_blend_file_load)
+    # except ValueError:
+        # Install
+    bpy.app.handlers.load_post.append(on_post_blend_file_load)
+        
     # Use the following 2 lines to register the UI for the gltf extension hook
     from io_scene_gltf2 import exporter_extension_layout_draw
     exporter_extension_layout_draw['Example glTF Extension'] = draw_export # Make sure to use the same name in unregister()
@@ -573,6 +641,7 @@ def unregister():
     # operations
     bpy.utils.unregister_class(FetchBevyTypeRegistry)
     bpy.utils.unregister_class(InsertBevyComponent)
+    bpy.utils.unregister_class(DebugCheckObjectBevyComponents)
     # panel
     bpy.utils.unregister_class(SkeinPanel)
 
@@ -743,8 +812,9 @@ def make_property(
                     return skein_property_groups[type_path]
                 case "object":
                     annotations = {}
-                    # print("Enum.object is unimplemented")
                     items = []
+
+                    # Take the shortPath from the type_path as the dropdown option
                     for item in component["oneOf"]:
                         items.append((item["shortPath"], item["shortPath"], ""))
 

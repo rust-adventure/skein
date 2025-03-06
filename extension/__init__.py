@@ -1,7 +1,5 @@
 import bpy
-import requests
 import json
-import re
 import inspect
 import os
 from bpy.app.handlers import persistent # type: ignore
@@ -10,115 +8,7 @@ from .operators.fetch_bevy_type_registry import FetchBevyTypeRegistry, brp_fetch
 from .property_groups import ComponentData
 from .skein_panel import SkeinPanel
 from .operators.debug_check_object_bevy_components import DebugCheckObjectBevyComponents
-
-# glTF extensions are named following a convention with known prefixes.
-# See: https://github.com/KhronosGroup/glTF/tree/main/extensions#about-gltf-extensions
-# also: https://github.com/KhronosGroup/glTF/blob/main/extensions/Prefixes.md
-glTF_extension_name = "EXT_skein"
-
-# is this extension required to view the glTF?
-extension_is_required = False
-
-# gltf exporter extension
-#
-# The extension takes the data from the format we need to use inside of Blender
-# which can include arbitrary "active_index" selections for lists, etc and
-# rewrites the skein data into a format bevy can parse and reflect directly.
-#
-# exported gltf extras output will look like this:
-#
-# ```json
-# "extras":{
-#   "skein":[{
-#     "test_project::Rotate":{
-#       "speed":1.0
-#     }
-#   }],
-# },
-# ```
-class SkeinExtensionProperties(bpy.types.PropertyGroup):
-    enabled: bpy.props.BoolProperty(
-        name="skein",
-        description='Rewrite Skein data into a directly Bevy reflectable format',
-        default=True
-        ) # type: ignore
-
-# Draw the Skein settings options in the glTF export panel
-def draw_export(context, layout):
-
-    # Note: If you are using Collection Exporter, you may want to restrict UI for some collections
-    # You can access the collection like this: context.collection
-    # So you can check if you want to show the UI for this collection or not, using
-    # if context.collection.name != "Coll":
-    #     return
-
-    header, body = layout.panel("GLTF_addon_example_exporter", default_closed=False)
-
-    # TODO: True or False here (and in panels)? Affects visual layout
-    header.use_property_split = False
-
-    props = bpy.context.scene.skein_extension_properties
-
-    header.prop(props, 'enabled')
-    # if body != None:
-    #     body.prop(props, 'float_property', text="Some float value")
-
-
-# Note: the class must have this exact name
-class glTF2ExportUserExtension:
-    def pre_export_hook(self, export_settings):
-        print("pre_export_hook in class", export_settings)
-
-    def __init__(self):
-        print("initgltf2 export user extension")
-        # We need to wait until we create the gltf2UserExtension to import the gltf2 modules
-        # Otherwise, it may fail because the gltf2 may not be loaded yet
-        from io_scene_gltf2.io.com.gltf2_io_extensions import Extension # type: ignore
-        self.Extension = Extension
-        self.properties = bpy.context.scene.skein_extension_properties
-
-    def gather_node_hook(self, gltf2_object, blender_object, export_settings):
-        print("gather_node_hook")
-        # Note: If you are using Collection Exporters, you may want to restrict the export for some collections
-        # You can access the collection like this: export_settings['gltf_collection']
-        # So you can check if you want to use this hook for this collection or not, using
-        # if export_settings['gltf_collection'] != "Coll":
-        #     return
-
-        # TODO: can we report needing custom_properties enabled
-        # self.report() doesn't seem available here?
-        if self.properties.enabled and "skein" in gltf2_object.extras:
-            print("--")
-            print(gltf2_object.extras)
-            print("--")
-            objs = []
-            for node in gltf2_object.extras["skein"]:
-                obj = {}
-                type_path = node["type_path"]
-                obj[type_path] = node["value"]
-                objs.append(obj)
-            gltf2_object.extras["skein"] = objs
-            
-            # if gltf2_object.extensions is None:
-            #     gltf2_object.extensions = {}
-            # gltf2_object.extensions[glTF_extension_name] = self.Extension(
-            #     name=glTF_extension_name,
-            #     # extension={"float": self.properties.float_property},
-            #     extension={"float": 2.0},
-            #     required=extension_is_required
-            # )
-
-    def glTF2_pre_export_callback(export_settings):
-        print("This will be called before exporting the glTF file.2")
-
-    def glTF2_post_export_callback(export_settings):
-        print("This will be called after exporting the glTF file.")
-
-def pre_export_hook(self, export_settings):
-    print("pre_export_hook", export_settings)
-def glTF2_pre_export_callback(export_settings):
-    print("idk2")
-# /end gltf exporter extension
+from .gltf_export_extension import glTF_extension_name, extension_is_required, SkeinExtensionProperties, draw_export, glTF2ExportUserExtension, pre_export_hook, glTF2_pre_export_callback
 
 class ComponentTypeData(bpy.types.PropertyGroup):
     name: bpy.props.StringProperty(name="Name", default="Unknown") # type: ignore
@@ -130,6 +20,8 @@ class PGSkeinWindowProps(bpy.types.PropertyGroup):
     registry: bpy.props.StringProperty(name="Bevy Registry", default="{}") # type: ignore
     components: bpy.props.CollectionProperty(type=ComponentTypeData) # type: ignore
 
+# set the active_editor form
+# and pull the data from objects to fill the form if data exists
 def update_component_form(self, context):
     """Executed when the currently selected active_component_index is changed"""
     print("\n## update component form")
@@ -142,65 +34,30 @@ def update_component_form(self, context):
     active_component = obj_skein[active_component_index]
     type_path = active_component["type_path"]
 
-    print("- type_path: " + type_path)
-
-    # active_component.__dict__["value"] = bpy.props.StringProperty(default="hello")
-    # print(skein_property_groups[type_path])
-    # print(skein_property_groups[type_path].__annotations__)
-    # TODO: What happens when we get data from object
-    # and insert it
-    # print("isclass", inspect.isclass(skein_property_groups[type_path]), skein_property_groups[type_path])
-
     if inspect.isclass(skein_property_groups[type_path]):
         bpy.types.WindowManager.active_editor = bpy.props.PointerProperty(
             type=skein_property_groups[type_path],
         )
-
         # TODO: get data from custom properties
-        # TODO: set up recursive/nested forms
-        # component_fields = inspect.get_annotations(skein_property_groups[type_path])
-        # print("-- component_fields:")
-        # for key, value in component_fields.items():
-
-        #     # if key not in bpy.types.WindowManager.active_editor:
-        #     #     print("next key not in active_editor; this usually means its a PropertyGroup class and not a primitive")
-        #     print("   - " + key)
-        #     print(registry[type_path])
-        #     registry_component_data = registry[type_path]
-        #     # We kind of already know this is a Struct because its an inspect.isclass from earlier
-        #     if registry_component_data["kind"] == "Struct":
-        #         # TODO: switch on registry[type_path]'s type
-        #         field_type_path = registry[type_path]["properties"][key]["type"]["$ref"].removeprefix("#/$defs/")
-
-
-                # if inspect.isclass(skein_property_groups[field_type_path]):
-                # #     print("isclass")
-                # #     print(value)
-                # #     # print(getattr(bpy.types.WindowManager.active_editor, key))
-                # #     # print(context.window_manager.active_editor.team)
-                # #     # print(context.window_manager.active_editor)
-                # #     # print(context.window_manager.active_editor.player)
-                #     context.window_manager.active_editor[key] = bpy.props.PointerProperty(
-                #         type=skein_property_groups[field_type_path],
-                #     )
     else:
         bpy.types.WindowManager.active_editor = skein_property_groups[type_path]
-    print("active_component_index", active_component_index)
 
 def on_select_new_component(self, context):
-    """Executed when a new component is selected for insertion onto an object"""
-    print("\n####### on_select_new_component")
+    """Executed when a new component is selected for insertion onto an object
+
+    currently just for debugging. you can infer what fields should be shown in the ui by reading the registry data.
+    """
+    print("\n###### on_select_new_component")
     selected_component = context.window_manager.selected_component;
+    print("\nselected_component: ", selected_component)
     global_skein = context.window_manager.skein
     if global_skein.registry:
-        print("\nregistry character:")
         data = json.loads(global_skein.registry)
         if len(data.keys()) > 0:
-            # print(data["event_ordering::PowerLevel"])
-            print(data[selected_component])
+            print("\n", json.dumps(data[selected_component], indent=4))
         else:
-            print("no data in registry")
-    print("######\n")
+            print("\nno data in registry")
+    print("\n######\n")
 
 # --------------------------------- #
 #  a hook to run when opening a     #

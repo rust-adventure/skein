@@ -103,3 +103,7 @@ There are "primitive" types in the Bevy reflection data that have a `kind` of `V
 
 - How does it handle 6-level nested structs?
 - If a variant of a complex enum is not constructible, what happens? can we just drop the non-constructible one? or render a note in the UI
+
+## TODO:
+
+- Fill data into form when selecting a new active_editor

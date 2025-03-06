@@ -4,7 +4,12 @@ import json
 import re
 import inspect
 import os
-from bpy.app.handlers import persistent
+from bpy.app.handlers import persistent # type: ignore
+from .operators.insert_bevy_component import InsertBevyComponent
+from .operators.fetch_bevy_type_registry import FetchBevyTypeRegistry, brp_fetch_registry_schema, process_registry
+from .property_groups import ComponentData
+from .skein_panel import SkeinPanel
+from .operators.debug_check_object_bevy_components import DebugCheckObjectBevyComponents
 
 # glTF extensions are named following a convention with known prefixes.
 # See: https://github.com/KhronosGroup/glTF/tree/main/extensions#about-gltf-extensions
@@ -13,10 +18,6 @@ glTF_extension_name = "EXT_skein"
 
 # is this extension required to view the glTF?
 extension_is_required = False
-
-# TODO: registry filepath should be 
-# bpy.path.abspath(os.path.join("//", "skein-registry.json"))
-registry_filepath = "/Users/chris/github/christopherbiscardi/skein/skein-registry.json"
 
 # gltf exporter extension
 #
@@ -40,7 +41,7 @@ class SkeinExtensionProperties(bpy.types.PropertyGroup):
         name="skein",
         description='Rewrite Skein data into a directly Bevy reflectable format',
         default=True
-        )
+        ) # type: ignore
 
 # Draw the Skein settings options in the glTF export panel
 def draw_export(context, layout):
@@ -72,7 +73,7 @@ class glTF2ExportUserExtension:
         print("initgltf2 export user extension")
         # We need to wait until we create the gltf2UserExtension to import the gltf2 modules
         # Otherwise, it may fail because the gltf2 may not be loaded yet
-        from io_scene_gltf2.io.com.gltf2_io_extensions import Extension
+        from io_scene_gltf2.io.com.gltf2_io_extensions import Extension # type: ignore
         self.Extension = Extension
         self.properties = bpy.context.scene.skein_extension_properties
 
@@ -119,126 +120,15 @@ def glTF2_pre_export_callback(export_settings):
     print("idk2")
 # /end gltf exporter extension
 
-
-def update_component_data(self, context):
-    # context.obj.skein.something
-    print("updating component data")
-    obj = context.object
-    obj_skein = obj["skein"]
-    active_component_index = obj.active_component_index
-    global_skein = context.window_manager.skein
-    registry = json.loads(global_skein.registry)
-    skein_property_groups = context.window_manager.skein_property_groups
-    active_component = obj_skein[active_component_index]
-    type_path = active_component["type_path"]
-    active_editor = context.window_manager.active_editor
-
-# 'BoolProperty'
-# 'BoolVectorProperty'
-# 'CollectionProperty'
-# 'EnumProperty'
-# 'FloatProperty'
-# 'FloatVectorProperty'
-# 'IntProperty'
-# 'IntVectorProperty'
-# 'PointerProperty'
-# 'RemoveProperty'
-# 'StringProperty'
-
-    # print("active_editor: ")
-    # print(active_editor)
-    # print(active_editor.player.name)
-    # for property in active_editor.bl_rna.properties:
-    #     if property.is_runtime: 
-    #         print("\n-")
-    #         print(property)
-    #         print(dir(property))
-    #         print(type(property))
-
-    if obj_skein:
-        active_component_data = obj_skein[active_component_index]
-        type_path = active_component_data["type_path"]
-        registry_component_reflection_data = registry[type_path]
-        
-        if type_path in skein_property_groups:
-            if inspect.isclass(skein_property_groups[type_path]):
-                data = get_data_from_active_editor(context.window_manager,"active_editor",skein_property_groups[type_path])
-                # print("data")
-                # print(data)
-                # TODO: this may only work for Structs
-                # component_fields = inspect.get_annotations(skein_property_groups[type_path])
-                # new_data = {}
-                # for key in component_fields:
-                #     new_data[key] = getattr(active_editor, key)
-                #     print(new_data)
-                active_component["value"] = data
-            else:
-                active_component["value"] = active_editor
-
-
-def get_data_from_active_editor(context, context_key, component_data):
-
-    data = {}
-
-    if context_key != "active_editor":
-        for key,value in getattr(getattr(context, context_key), "__annotations__").items():
-            data[key] = getattr(getattr(context, context_key), key)
-
-    component_fields = inspect.get_annotations(component_data)
-
-    # TODO: move skein_enum_index logic to exporter maybe?
-    # possibly useful for moving active_form to components list
-    # This `if` changes the fields that are fetched, specifically
-    # so that we only export one of the variants in an enum (all variants
-    # have their own key in the object)
-    if "skein_enum_index" in component_fields:
-        active_enum_variant = getattr(getattr(context, context_key), "skein_enum_index")
-        component_fields = {
-            active_enum_variant: component_fields[active_enum_variant]
-        }
-
-    if component_fields:
-        for key in component_fields:
-            # print("key in component_fields: ", key, component_fields[key])
-            if "PointerProperty" == component_fields[key].function.__name__:
-                # print("  - is PointerProperty")
-                data[key] = get_data_from_active_editor(getattr(context, context_key), key, component_fields[key])
-            else:
-                # print("  - not PointerProperty")
-                data[key] = getattr(getattr(context, context_key), key)
-    else:
-        # print("no component fields, not rendering: ", context, context_key)
-        # TODO: figure out if this actually means there's nothing to render
-        pass
-
-    return data
-
 class ComponentTypeData(bpy.types.PropertyGroup):
-    name: bpy.props.StringProperty(name="Name", default="Unknown")
-    value: bpy.props.StringProperty(name="Value", default="Unknown")
-    type_path: bpy.props.StringProperty(name="Type Path", default="Unknown")
-    short_path: bpy.props.StringProperty(name="Short Path", default="Unknown")
-
-class ComponentData(bpy.types.PropertyGroup):
-    type_path: bpy.props.StringProperty(name="type_path", default="Unknown")
-    name: bpy.props.StringProperty(name="Name", default="Unknown")
-    # value: bpy.props.StringProperty(name="Component Data")
+    name: bpy.props.StringProperty(name="Name", default="Unknown") # type: ignore
+    value: bpy.props.StringProperty(name="Value", default="Unknown") # type: ignore
+    type_path: bpy.props.StringProperty(name="Type Path", default="Unknown") # type: ignore
+    short_path: bpy.props.StringProperty(name="Short Path", default="Unknown") # type: ignore
 
 class PGSkeinWindowProps(bpy.types.PropertyGroup):
-    registry: bpy.props.StringProperty(name="Bevy Registry", default="{}")
-    components: bpy.props.CollectionProperty(type=ComponentTypeData)
-
-class TestInnerComponentData(bpy.types.PropertyGroup):
-    name: bpy.props.StringProperty(name="Name", default="Unknown")
-    flt: bpy.props.FloatProperty(default=0.)
-    # value: bpy.props.StringProperty(name="Component Data")
-
-class TestWrapperComponentData(bpy.types.PropertyGroup):
-    type_path: bpy.props.StringProperty(name="type_path", default="Unknown")
-    name: bpy.props.StringProperty(name="Name", default="Unknown")
-    value: bpy.props.PointerProperty(type=TestInnerComponentData)
-    # value: bpy.props.StringProperty(name="Component Data")
-
+    registry: bpy.props.StringProperty(name="Bevy Registry", default="{}") # type: ignore
+    components: bpy.props.CollectionProperty(type=ComponentTypeData) # type: ignore
 
 def update_component_form(self, context):
     """Executed when the currently selected active_component_index is changed"""
@@ -311,242 +201,11 @@ def on_select_new_component(self, context):
         else:
             print("no data in registry")
     print("######\n")
-    
 
 # --------------------------------- #
-#  Fetch and store the bevy type    #
-#  registry, for panel display      #
+#  a hook to run when opening a     #
+#  new blend file                   #
 # --------------------------------- #
-
-class FetchBevyTypeRegistry(bpy.types.Operator):
-    """Fetch the Bevy type registry via the Bevy Remote Protocol"""
-    bl_idname = "bevy.fetch_type_registry" # unique identifier. not specially named
-    bl_label = "Fetch Bevy Type Registry" # Shows up in the UI
-    bl_options = {'REGISTER', 'UNDO'} # enable undo (which we might not need)
-
-    # execute is called to run the operator
-    def execute(self, context):
-        print("\nexecute: FetchBevyTypeRegistry")
-
-        brp_response = brp_fetch_registry_schema()
-
-        # If the bevy remote protocol returns an error, report it to the user
-        if "error" in brp_response:
-            print("bevy request errored out", brp_response["error"])
-            self.report({"ERROR"}, "request for Bevy registry data errored out, is the Bevy Remote Protocol Plugin added and is the Bevy app running? :: " + brp_response["error"]["message"])
-
-        registry_filepath = bpy.path.abspath(os.path.join("//", "skein-registry.json"))
-
-        with open(registry_filepath,"w") as outfile:
-            json.dump(brp_response["result"], outfile)
-
-        process_registry(context, brp_response["result"])
-
-        return {'FINISHED'}
-
-# TODO: allow configuration of url via addon settings or
-# custom fetch operator?
-def brp_fetch_registry_schema(host="http://127.0.0.1", port=15702):
-    """Fetch the registry schema from a running Bevy application"""
-
-    data = {"jsonrpc": "2.0", "method": "bevy/registry/schema", "params": {}}
-    r = requests.post(host + ":" + str(port), json=data)
-    brp_response = r.json()
-    return brp_response
-
-def process_registry(context, registry):
-    """
-    registry is a dict
-    """
-
-    global_skein = context.window_manager.skein
-    skein_property_groups = context.window_manager.skein_property_groups
-
-    global_skein.registry = json.dumps(registry)
-
-    component_list = []
-
-    global_skein.components.clear()
-    for k, value in registry.items():
-        # TODO: this must apply to all components
-        # make_property is recursive, so all dependent types
-        # should make it into the skein_property_groups
-        if k in [
-            "component_tests::Player",
-            "component_tests::TaskPriority",
-            "component_tests::TeamMember",
-            "component_tests::TupleStruct",
-            "component_tests::Marker",
-            "component_tests::SomeThings",
-            "test_project::Rotate"
-        ]:
-            make_property(
-                skein_property_groups,
-                registry,
-                k
-            )
-
-        if "reflectTypes" in value and "Component" in value["reflectTypes"]:
-            component = global_skein.components.add()
-            component.name = k
-            component.value = k
-            component.type_path = k
-            component.short_path = value["shortPath"]
-
-            component_list.append((k, value["shortPath"], k))
-
-# --------------------------------- #
-#  Add hardcoded test component     #
-#  to object                        #
-# --------------------------------- #
-
-class InsertBevyComponent(bpy.types.Operator):
-    """Insert a component on the object (for development)"""
-    bl_idname = "bevy.insert_bevy_component" # unique identifier. not specially named
-    bl_label = "Insert Bevy Component (Dev)" # Shows up in the UI
-    bl_options = {'REGISTER', 'UNDO'} # enable undo (which we might not need)
-
-    # execute is called to run the operator
-    def execute(self, context):
-        print("\nexecute: InsertBevyComponent")
-        # scene = context.scene
-        # cursor = scene.cursor.location
-        obj = context.active_object
-        global_skein = context.window_manager.skein
-        selected_component = context.window_manager.selected_component
-        obj_skein = obj.skein
-
-        if global_skein.registry:
-            registry = json.loads(global_skein.registry)
-            if list(registry) and registry[selected_component]:
-                data = registry[selected_component]
-                print(data)
-                component = obj.skein.add()
-                component.name = data["shortPath"]
-                component.type_path = selected_component
-                # TODO: This needs to be the default data for a given component
-                # component.value = json.dumps({
-                #     "name": "Hollow Knight"
-                # })
-                # If we inserted a new component, update the 
-                # active_component_index to show the right editor
-                # for the newly inserted component
-                obj.active_component_index = len(obj_skein) - 1
-
-            else:
-                print("no data in registry")
-        else:
-            print("no global registry set")
-
-
-        print("execute/end: InsertBevyComponent\n")
-        # blender uses strings to indicate when operation is done
-        return {'FINISHED'}
-
-
-class DebugCheckObjectBevyComponents(bpy.types.Operator):
-    """Iterate over all objects and print the skein component data to console
-
-    This can help debug storage and see what data is set for named objects
-    """
-    bl_idname = "bevy.debug_check_object_bevy_components" # unique identifier. not specially named
-    bl_label = "Check the Skein data on all objects" # Shows up in the UI
-    bl_options = {'REGISTER'}
-
-    # execute is called to run the operator
-    def execute(self, context):
-        for object in bpy.data.objects:
-            print("\n# ", object.name)
-            print("## ", len(object.skein), " components:")
-            for component in object.skein:
-                print("### ", component.type_path, "")
-                try:
-                    print(json.dumps(component["value"].to_dict(), indent=4))
-                except AttributeError:
-                    print(component["value"])
-
-        return {'FINISHED'}
-
-# ---------------------------------- #
-#  Skein Panel for adding components #
-# ---------------------------------- #
-
-class SkeinPanel(bpy.types.Panel):
-    """Creates a Panel in the Object Properties window"""
-    bl_label = "Skein Bevy Panel"
-    bl_idname = "OBJECT_PT_skein"
-    bl_space_type = 'PROPERTIES'
-    bl_region_type = 'WINDOW'
-    bl_context = 'object'
-
-    def draw(self, context):
-        layout = self.layout
-        obj = context.object
-        obj_skein = obj.skein
-        active_component_index = obj.active_component_index
-        global_skein = context.window_manager.skein
-        # TODO: the registry can likely be loaded into a dict in a less
-        # common place. This function runs every draw
-        registry = json.loads(global_skein.registry)
-        skein_property_groups = context.window_manager.skein_property_groups
-        if not registry:
-            layout.label(text="Bevy registry data must be loaded to work with component data")
-            # TODO: show load registry
-            layout.operator("bevy.fetch_type_registry")
-            return
-
-        row = layout.row()
-        
-        if registry:
-            row.prop_search(
-                context.window_manager,
-                'selected_component',
-                global_skein,
-                "components",
-                text="insert:"
-            )
-
-            row = layout.row()
-            row.operator("bevy.insert_bevy_component")
-
-        layout.template_list(
-            "UI_UL_list",
-            "components list",
-            obj,
-            "skein",
-            obj,
-            "active_component_index"
-        )
-
-
-        box = layout.box()
-
-        # build the form ui
-        # obj_skein is an array of component data
-        # empty lists are falsey
-        if registry and obj_skein:
-            active_component_data = obj_skein[active_component_index]
-
-            box.label(text=active_component_data["type_path"], icon='DOT')
-            type_path = active_component_data["type_path"]
-            registry_component_reflection_data = registry[type_path]
-            active_editor = active_component_data
-            # Marker component
-            if "properties" not in registry_component_reflection_data and registry_component_reflection_data["kind"] == "Struct":
-                box.label(text="Marker components have no data to modify")
-            # Other components
-            build_ui(box, context.window_manager, "active_editor", registry, type_path, skein_property_groups)
-
-
-# --------------------------------- #
-#  Registration and unregistration  #
-# --------------------------------- #
-
-# add to the Blender menus
-def menu_func(self, context):
-    self.layout.operator(FetchBevyTypeRegistry.bl_idname)
-    self.layout.operator(DebugCheckObjectBevyComponents.bl_idname)
-
 
 @persistent
 def on_post_blend_file_load(blend_file):
@@ -571,14 +230,14 @@ def on_post_blend_file_load(blend_file):
             with open(registry_filepath,"w") as outfile:
                 json.dump(brp_response["result"], outfile)
 
-# @persistent
-# def on_frame_changed(scene, depsgraph):
-#     screen = bpy.context.screen
-#     if screen and (screen.is_animation_playing or screen.is_scrubbing):
-#         return
+# --------------------------------- #
+#  Registration and unregistration  #
+# --------------------------------- #
 
-#     print("Possibly scene swapped or created.")
-
+# add to the Blender menus
+def menu_func(self, context):
+    self.layout.operator(FetchBevyTypeRegistry.bl_idname)
+    self.layout.operator(DebugCheckObjectBevyComponents.bl_idname)
 
 def register():
     print("\n--------\nregister")
@@ -619,15 +278,11 @@ def register():
     bpy.utils.register_class(SkeinExtensionProperties)
     bpy.types.Scene.skein_extension_properties = bpy.props.PointerProperty(type=SkeinExtensionProperties)
 
-    # try:
-    #     # Skip if handler installed
-    #     bpy.app.handlers.load_post.index(on_post_blend_file_load)
-    # except ValueError:
-        # Install
+    # add handlers to run when .blend file loads
     bpy.app.handlers.load_post.append(on_post_blend_file_load)
         
     # Use the following 2 lines to register the UI for the gltf extension hook
-    from io_scene_gltf2 import exporter_extension_layout_draw
+    from io_scene_gltf2 import exporter_extension_layout_draw # type: ignore
     exporter_extension_layout_draw['Example glTF Extension'] = draw_export # Make sure to use the same name in unregister()
     print("\nregister/end")
 
@@ -650,375 +305,10 @@ def unregister():
     del bpy.types.Scene.skein_extension_properties
 
     # Use the following 2 lines to unregister the UI for this hook
-    from io_scene_gltf2 import exporter_extension_layout_draw
+    from io_scene_gltf2 import exporter_extension_layout_draw # type: ignore
     del exporter_extension_layout_draw['Example glTF Extension'] # Make sure to use the same name in register()
 
 # This is for testing, which allows running this script directly from Blender's Text editor
 # It enables running this script without installing
 if __name__ == "__main__":
     register()
-
-
-# the registry is the full bevy reflection information
-# the component_key is the first key into the registry, "event_ordering::PowerLevel" here:
-#
-# ```json
-#   "event_ordering::PowerLevel": {
-#     "additionalProperties": false,
-#     "crateName": "event_ordering",
-#     "kind": "Struct",
-#     "modulePath": "event_ordering",
-#     "properties": {
-#       "name": {
-#         "type": {
-#           "$ref": "#/$defs/f32"
-#         }
-#       }
-#     },
-#     "reflectTypes": [
-#       "Component",
-#       "Serialize",
-#       "Deserialize"
-#     ],
-#     "required": [
-#       "name"
-#     ],
-#     "shortPath": "PowerLevel",
-#     "type": "object",
-#     "typePath": "event_ordering::PowerLevel"
-#   },
-# ```
-def build_ui(layout, context, context_key, registry, type_path, skein_property_groups):
-    if type_path in skein_property_groups:
-        component_data = skein_property_groups[type_path]
-        render_props(layout, context, context_key, component_data)
-    else:
-        layout.label(text="No property group for " + type_path)
-
-def render_props(layout, context, context_key, component_data):
-    # print("\n# render_props", context, context_key)
-    # print(context.id_data)
-    # print(component_data)
-    # print(getattr(context, context_key))
-    # print(dir(getattr(context, context_key)))
-    # print(getattr(getattr(context, context_key), "bl_rna"))
-    # print(">>>")
-    if context_key != "active_editor":
-        for key,value in getattr(getattr(context, context_key), "__annotations__").items():
-            # print("rendering ", key, " with ", value)
-            layout.prop(getattr(context, context_key), key)
-    # print(">>>")
-    # print(inspect.get_annotations(getattr(context, context_key)))
-    # print(component_data["type"])
-    # print("\n")
-    # TODO: match on group type
-    # TODO: this may only work for Structs
-    # print("component_data", component_data)
-    component_fields = inspect.get_annotations(component_data)
-    if "skein_enum_index" in component_fields:
-        active_enum_variant = getattr(getattr(context, context_key), "skein_enum_index")
-        component_fields = {
-            "skein_enum_index": component_fields["skein_enum_index"],
-            active_enum_variant: component_fields[active_enum_variant]
-        }
-    # print(component_fields)
-    # print("\n")
-    if component_fields:
-        for key in component_fields:
-            # print("  - ", context_key, key)
-            # print(registry[type_path])
-            # field = getattr(context, context_key)[key]
-            
-            # if sub-field is a PropertyGroup
-            # print("## sub-field: " + key)
-            # print(component_fields[key].keywords)
-            # print(component_fields[key])
-            # print(inspect.get_annotations(component_fields[key]))
-            if "PointerProperty" == component_fields[key].function.__name__:
-                # print("  - is PointerProperty")
-                box = layout
-                box.separator(type='LINE')
-                box.label(text=key, icon='DOT')
-                render_props(box, getattr(context, context_key), key, component_fields[key])
-                box.separator(type='LINE')
-            else:
-                # print("  - not PointerProperty")
-                layout.prop(getattr(context, context_key), key)
-    else:
-        if context_key == "active_editor":
-            layout.prop(context, context_key)
-        else:
-            # print("not rendering something", context, context_key)
-            pass
-
-
-
-# capitalize a word without lowercasing the result
-# of the word. This means TeamMember stays and doesn't
-# turn into Teammember
-def cap(val):
-  return val[0].upper() + val[1:]
-
-def capitalize_path(s):
-    return "".join(map(cap, re.split('[:_]+', s)))
-
-def make_property(
-        skein_property_groups,
-        registry,
-        original_type_path,
-        override_component=None
-):
-    """build a subclass of ComponentData or return a "scalar" property
-    The subclass is a PropertyGroup that we can build up when we fetch the registry,
-    The UI to editor a type is built from these PropertyGroup classes
-
-    @param: skein_property_groups All of the property groups constructed so far. Will mutate this to add more property groups.
-    @param: registry dict representation of the Bevy registry information
-    @param: original_type_path Either a full type_path (`component_tests::SomeThings::OneThing`) or a type_path with `#/#defs/alloc` on the front
-    @param: override_component An optional value that is used when you have access to the registry type information but that registry type information is not directly accessible by registry[type_path]. This happens in complex enums. (default None)
-    """
-
-    type_path = original_type_path.removeprefix("#/$defs/")
-    component = override_component if override_component != None else registry[type_path]
-
-    if type_path in skein_property_groups:
-        # The type was already constructed and can be 
-        # returned from the "cache" instead of being
-        # created again
-        return skein_property_groups[type_path]
-
-    print("\nmake_property::", type_path)
-
-    match component["kind"]:
-        case "Array":
-            print("Array is unimplemented in make_property")
-            return
-        case "Enum":
-            print("Enum: ", component["type"])
-            match component["type"]:
-                case "string":
-                    items = []
-                    for item in component["oneOf"]:
-                        items.append((item, item, ""))
-
-                    print(items)
-
-                    # TODO: make an enum default value
-                    skein_property_groups[type_path] = bpy.props.EnumProperty(
-                        items=items,
-                        update=update_component_data
-                    )
-
-                    return skein_property_groups[type_path]
-                case "object":
-                    annotations = {}
-                    items = []
-
-                    # Take the shortPath from the type_path as the dropdown option
-                    for item in component["oneOf"]:
-                        items.append((item["shortPath"], item["shortPath"], ""))
-
-                    print(items)
-
-                    annotations["skein_enum_index"] = bpy.props.EnumProperty(
-                        name="variant",
-                        items=items,
-                        update=update_component_data
-                    )
-                                # only recurse if we have properties to set, otherwise
-                    # annotations should be an empty object
-
-                    for option in component["oneOf"]:
-                        print("- option: ", option["shortPath"])
-                        key = option["shortPath"]
-                        property = make_property(
-                            skein_property_groups,
-                            registry,
-                            option["typePath"],
-                            option
-                        )
-                        if inspect.isclass(property):
-                            annotations[key] = bpy.props.PointerProperty(type=property)
-                        else:
-                            annotations[key] = property
-
-                    # add this struct type to the skein_property_groups so it 
-                    # can be accessed elsewhere by type_path
-                    skein_property_groups[type_path] = type(capitalize_path(type_path), (ComponentData,), {
-                        '__annotations__': annotations,
-                    })
-
-                    # registering the class is required for certain Blender
-                    # functionality to work.
-                    print("REGISTERING: " + type_path)
-                    bpy.utils.register_class(
-                        skein_property_groups[type_path]
-                    )
-
-                    # return the type we just constructed
-                    return skein_property_groups[type_path]
-                case _:
-                    print("unknown Enum type")
-                    return
-        case "List":
-            print("List is unimplemented in make_property")
-            return
-        case "Map":
-            print("Map is unimplemented in make_property")
-            return
-        case "Set":
-            print("Set is unimplemented in make_property")
-            return
-        case "Struct":
-            annotations = {}
-            # only recurse if we have properties to set, otherwise
-            # annotations should be an empty object
-            if "properties" in component:
-                for key in component["properties"]:
-                    print("- key: ", key)
-                    property = make_property(
-                        skein_property_groups,
-                        registry,
-                        component["properties"][key]["type"]["$ref"]
-                    )
-                    if inspect.isclass(property):
-                        annotations[key] = bpy.props.PointerProperty(type=property)
-                    else:
-                        annotations[key] = property
-
-            # add this struct type to the skein_property_groups so it 
-            # can be accessed elsewhere by type_path
-            skein_property_groups[type_path] = type(capitalize_path(type_path), (ComponentData,), {
-                '__annotations__': annotations,
-            })
-
-            # registering the class is required for certain Blender
-            # functionality to work.
-            print("REGISTERING: " + type_path)
-            bpy.utils.register_class(
-                skein_property_groups[type_path]
-            )
-
-            # return the type we just constructed
-            return skein_property_groups[type_path]
-        case "Tuple":
-            if len(component["prefixItems"]) == 1:
-                skein_property_groups[type_path] = make_property(
-                    skein_property_groups,
-                    registry,
-                    component["prefixItems"][0]["type"]["$ref"]
-                )
-                return skein_property_groups[type_path]
-            else:
-                print("Tuple is unimplemented in make_property for lengths longer than 1 element")
-                return
-        case "TupleStruct":
-            # single element tuple struct is a special case
-            # because the reflection format treats it as a
-            # single value for the type_path key
-            # ```
-            # { "skein::tests::TupleStruct": 12 }
-            # ```
-            if len(component["prefixItems"]) == 1:
-                skein_property_groups[type_path] = make_property(
-                    skein_property_groups,
-                    registry,
-                    component["prefixItems"][0]["type"]["$ref"]
-                )
-                return skein_property_groups[type_path]
-            else:
-                print("TupleStruct is unimplemented in make_property for lengths longer than 1 element")
-                return
-        case "Value":
-            # print("- component[type]:  ", component["type"])
-            match component["type"]:
-                case "uint":
-                    match type_path:
-                        case "u8":
-                            return bpy.props.IntProperty(
-                                min=0,
-                                max=255,
-                                update=update_component_data
-                            )
-                        case "u16":
-                            return bpy.props.IntProperty(
-                                min=0,
-                                max=65535,
-                                update=update_component_data
-                            )
-                        case "u32":
-                            return bpy.props.IntProperty(
-                                min=0,
-                                # blender actually sets the default hard maximum to
-                                # 2^31, not 2^32, so not sure if we can even set
-                                # those numbers from inside blender
-                                # max=4294967295,
-                                update=update_component_data
-                        )
-                        case "u64":
-                            return bpy.props.IntProperty(
-                                min=0,
-                                # blender actually sets the default hard maximum to
-                                # 2^31, not 2^32, so not sure if we can even set
-                                # those numbers from inside blender
-                                # max=4294967295,
-                                update=update_component_data
-                        )
-                        case "usize":
-                            return bpy.props.IntProperty(
-                                min=0,
-                                # blender actually sets the default hard maximum to
-                                # 2^31, not 2^32, so not sure if we can even set
-                                # those numbers from inside blender
-                                # max=4294967295,
-                                update=update_component_data
-                        )
-                        case _:
-                            print("unknown uint type: ", type_path)
-                            return bpy.props.IntProperty(min=0, update=update_component_data)
-                case "int":
-                    match type_path:
-                        case "i8":
-                            return bpy.props.IntProperty(
-                                min=-128,
-                                max=127,
-                                update=update_component_data
-                            )
-                        case "i16":
-                            return bpy.props.IntProperty(
-                                min=-32_768,
-                                max=32_767,
-                                update=update_component_data
-                            )
-                        case "i32":
-                            return bpy.props.IntProperty(
-                                min=-2_147_483_648,
-                                max=2_147_483_647,
-                                update=update_component_data
-                        )
-                        case "i64":
-                            return bpy.props.IntProperty(update=update_component_data)
-                        case "isize":
-                            return bpy.props.IntProperty(update=update_component_data)
-                        case _:
-                            print("unknown iint type: ", type_path)
-                            return bpy.props.IntProperty(min=0, update=update_component_data)
-                case "float":
-                    return bpy.props.FloatProperty(update=update_component_data)
-                case "string":
-                    return bpy.props.StringProperty(update=update_component_data)
-                case "object":
-                    match component["type_path"]:
-                        case "core::time::Duration":
-                            print("core::time::Duration is currently not handled")
-                            return
-                        case _:
-                            print("unhandled `Value` of `object` type: ", component["type_path"])
-                            return
-                case _:
-                    print("unhandled type: ", component["type"])
-                    return
-        # If an exact match is not confirmed, this last case will be used if provided
-        case _:
-            print("unhandled kind:", component["kind"])
-            return "Something's wrong with the world"

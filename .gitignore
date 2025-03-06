@@ -1,6 +1,6 @@
 /target
 DESIGN.md
-extension/__pycache__
+__pycache__
 bevy_skein-*.zip
 registry.json
 skein-registry.json

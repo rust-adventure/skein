@@ -63,9 +63,10 @@ class SkeinPanel(bpy.types.Panel):
         # obj_skein is an array of component data
         # empty lists are falsey
         if registry and obj_skein:
-            row.operator("bevy.remove_bevy_component")
             active_component_data = obj_skein[obj.active_component_index]
-            layout.label(text=active_component_data["type_path"], icon='BOIDS')
+            row = layout.row()
+            row.label(text=active_component_data["type_path"], icon='BOIDS')
+            row.operator("bevy.remove_bevy_component")
 
             box = layout.box()
             type_path = active_component_data["type_path"]

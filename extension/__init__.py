@@ -116,6 +116,9 @@ def on_post_blend_file_load(blend_file):
 
             with open(registry_filepath,"w") as outfile:
                 json.dump(brp_response["result"], outfile)
+        # if opening a blend file with an object that is selected
+        # and has components, then show the form for the expected component
+        update_component_form(None, bpy.context)
 
 # --------------------------------- #
 #  Registration and unregistration  #

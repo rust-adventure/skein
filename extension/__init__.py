@@ -42,10 +42,35 @@ def update_component_form(self, context):
                 type=skein_property_groups[type_path],
             )
             # TODO: get data from custom properties
+            if "value" in active_component:
+                set_form_from_data(
+                    context.window_manager,
+                    "active_editor",
+                    active_component["value"].to_dict(),
+                    skein_property_groups[type_path]
+                )
         else:
             bpy.types.WindowManager.active_editor = skein_property_groups[type_path]
+            if "value" in active_component:
+                context.window_manager.active_editor = active_component["value"]
     else:
         bpy.types.WindowManager.active_editor = None
+
+def set_form_from_data(context, context_key, data, component_data):
+    for key, value in data.items():
+        component_fields = inspect.get_annotations(component_data)
+        if "skein_enum_index" in component_fields:
+            setattr(getattr(context, context_key), "skein_enum_index", key)
+        if isinstance(value, dict):
+            component_fields = inspect.get_annotations(component_data)
+            set_form_from_data(
+                getattr(context, context_key),
+                key,
+                value,
+                component_fields[key]
+            )
+        else:
+            setattr(getattr(context, context_key), key, value)
 
 def on_select_new_component(self, context):
     """Executed when a new component is selected for insertion onto an object

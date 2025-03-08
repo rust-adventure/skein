@@ -3,7 +3,6 @@ import inspect
 
 # update the data on an object from a specific component
 def update_component_data(self, context):
-    print("updating component data")
     obj_skein = context.object["skein"]
     skein_property_groups = context.window_manager.skein_property_groups
     active_component = obj_skein[context.object.active_component_index]

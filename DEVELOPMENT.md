@@ -33,6 +33,21 @@ pip install -U pytest
 
 ## The Python Dataflow
 
+1. Registry data is fetched from a running bevy application via BRP
+   - this data is cached in a file that lives next to the .blend file
+     - this cache is used if it exists instead of making a fetch when opening a blend file
+2. the registry json data is converted into Blender PropertyGroup classes and a collection of component type_paths are stored for later use
+3. the user selects an object, navigates to the Properties.object tab
+4. the user uses a search field to pick a component
+5. the user clicks a button that fires the InsertBevyComponent operator
+   - the operator sets the relevant PropertyGroup as the active_editor on the window
+6. the active_editor is shown as a form in the Properties.object panel
+   - any edit to the form data fires a callback that serializes the form data to the object.value property
+7. once components are inserted and filled out with data, the user exports gltf however they want to
+8. the skein export extension cleans up the data that was stored on objects and formats it so that Bevy can use the reflection data directly without modification
+9. The user spawns a gltf scene in Bevy, which now hold the gltfextras we stored on the nodes when exporting
+10. A SceneInstanceReady observer reflects the component data from gltfextras onto the relevant nodes, instantiating all components applied in Blender
+
 #### WindowManager
 
 - registry
@@ -107,3 +122,8 @@ There are "primitive" types in the Bevy reflection data that have a `kind` of `V
 ## TODO:
 
 - Fill data into form when selecting a new active_editor
+- Set active_editor when loading a blend file
+
+- Write developing documentation
+- Write end-user documentation/how to use
+- Remove components from object

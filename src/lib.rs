@@ -208,7 +208,7 @@ fn postprocess_scene(
 ///         };
 ///         info!(?level);
 ///     }
-///     }
+/// }
 /// ```
 #[derive(Debug, Event, Reflect)]
 pub struct SkeinSceneInstanceReady(pub SceneInstanceReady);

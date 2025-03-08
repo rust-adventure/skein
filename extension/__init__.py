@@ -5,9 +5,10 @@ import os
 from bpy.app.handlers import persistent # type: ignore
 from .operators.insert_bevy_component import InsertBevyComponent
 from .operators.fetch_bevy_type_registry import FetchBevyTypeRegistry, brp_fetch_registry_schema, process_registry
+from .operators.remove_bevy_component import RemoveBevyComponent
+from .operators.debug_check_object_bevy_components import DebugCheckObjectBevyComponents
 from .property_groups import ComponentData
 from .skein_panel import SkeinPanel
-from .operators.debug_check_object_bevy_components import DebugCheckObjectBevyComponents
 from .gltf_export_extension import glTF_extension_name, extension_is_required, SkeinExtensionProperties, draw_export, glTF2ExportUserExtension, pre_export_hook, glTF2_pre_export_callback
 
 class ComponentTypeData(bpy.types.PropertyGroup):
@@ -27,20 +28,24 @@ def update_component_form(self, context):
     print("\n## update component form")
     obj = context.object
     obj_skein = obj["skein"]
-    active_component_index = obj.active_component_index
     global_skein = context.window_manager.skein
     registry = json.loads(global_skein.registry)
     skein_property_groups = context.window_manager.skein_property_groups
-    active_component = obj_skein[active_component_index]
-    type_path = active_component["type_path"]
 
-    if inspect.isclass(skein_property_groups[type_path]):
-        bpy.types.WindowManager.active_editor = bpy.props.PointerProperty(
-            type=skein_property_groups[type_path],
-        )
-        # TODO: get data from custom properties
+    # if we have a valid index
+    if obj.active_component_index < len(obj_skein):
+        active_component = obj_skein[obj.active_component_index]
+        type_path = active_component["type_path"]
+
+        if inspect.isclass(skein_property_groups[type_path]):
+            bpy.types.WindowManager.active_editor = bpy.props.PointerProperty(
+                type=skein_property_groups[type_path],
+            )
+            # TODO: get data from custom properties
+        else:
+            bpy.types.WindowManager.active_editor = skein_property_groups[type_path]
     else:
-        bpy.types.WindowManager.active_editor = skein_property_groups[type_path]
+        bpy.types.WindowManager.active_editor = None
 
 def on_select_new_component(self, context):
     """Executed when a new component is selected for insertion onto an object
@@ -108,7 +113,8 @@ def register():
 
     bpy.types.Object.skein = bpy.props.CollectionProperty(type=ComponentData)
     bpy.types.Object.active_component_index = bpy.props.IntProperty(
-        update=update_component_form
+        update=update_component_form,
+        min=0
     )
 
     # TODO: move this to common property group for all object, material, mesh, etc extras
@@ -126,6 +132,7 @@ def register():
     bpy.utils.register_class(FetchBevyTypeRegistry)
     bpy.utils.register_class(InsertBevyComponent)
     bpy.utils.register_class(DebugCheckObjectBevyComponents)
+    bpy.utils.register_class(RemoveBevyComponent)
     # panel
     bpy.utils.register_class(SkeinPanel)
     # adds the menu_func layout to an existing menu
@@ -154,6 +161,7 @@ def unregister():
     bpy.utils.unregister_class(FetchBevyTypeRegistry)
     bpy.utils.unregister_class(InsertBevyComponent)
     bpy.utils.unregister_class(DebugCheckObjectBevyComponents)
+    bpy.utils.unregister_class(RemoveBevyComponent)
     # panel
     bpy.utils.unregister_class(SkeinPanel)
 

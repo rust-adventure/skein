@@ -4,19 +4,12 @@ import inspect
 # update the data on an object from a specific component
 def update_component_data(self, context):
     print("updating component data")
-    obj = context.object
-    obj_skein = obj["skein"]
-    active_component_index = obj.active_component_index
-    global_skein = context.window_manager.skein
-    registry = json.loads(global_skein.registry)
+    obj_skein = context.object["skein"]
     skein_property_groups = context.window_manager.skein_property_groups
-    active_component = obj_skein[active_component_index]
-    type_path = active_component["type_path"]
-    active_editor = context.window_manager.active_editor
+    active_component = obj_skein[context.object.active_component_index]
 
     if obj_skein:
-        active_component_data = obj_skein[active_component_index]
-        type_path = active_component_data["type_path"]
+        type_path = active_component["type_path"]
         
         if type_path in skein_property_groups:
             if inspect.isclass(skein_property_groups[type_path]):
@@ -27,7 +20,7 @@ def update_component_data(self, context):
                 )
                 active_component["value"] = data
             else:
-                active_component["value"] = active_editor
+                active_component["value"] = context.window_manager.active_editor
 
 # get json data from an active_editor
 def get_data_from_active_editor(context, context_key, component_data):

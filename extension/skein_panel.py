@@ -20,7 +20,6 @@ class SkeinPanel(bpy.types.Panel):
         layout = self.layout
         obj = context.object
         obj_skein = obj.skein
-        active_component_index = obj.active_component_index
         global_skein = context.window_manager.skein
         # TODO: the registry can likely be loaded into a dict in a less
         # common place. This function runs every draw
@@ -64,7 +63,8 @@ class SkeinPanel(bpy.types.Panel):
         # obj_skein is an array of component data
         # empty lists are falsey
         if registry and obj_skein:
-            active_component_data = obj_skein[active_component_index]
+            row.operator("bevy.remove_bevy_component")
+            active_component_data = obj_skein[obj.active_component_index]
             layout.label(text=active_component_data["type_path"], icon='BOIDS')
 
             box = layout.box()

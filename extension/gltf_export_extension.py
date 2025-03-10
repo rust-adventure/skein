@@ -71,16 +71,8 @@ class glTF2ExportUserExtension:
 
         # self.report() doesn't seem available here because we aren't
         # in "Blender" we're in the "gltf2 extension"
-        if self.properties.enabled and "skein" in blender_object:
-            objs = []
-            for node in blender_object["skein"]:
-                obj = {}
-                type_path = node["type_path"]
-                obj[type_path] = node["value"]
-                objs.append(obj)
-            if gltf2_object.extras is None:
-                gltf2_object.extras = {}
-            gltf2_object.extras["skein"] = objs
+        if self.properties.enabled:
+            gather(blender_object, gltf2_object)
             
             # if gltf2_object.extensions is None:
             #     gltf2_object.extensions = {}
@@ -91,16 +83,13 @@ class glTF2ExportUserExtension:
             #     required=extension_is_required
             # )
     def gather_mesh_hook(self, gltf2_mesh, blender_mesh, blender_object, vertex_groups, modifiers, materials, export_settings):
-        if self.properties.enabled and "skein" in blender_mesh:
-            objs = []
-            for node in blender_mesh["skein"]:
-                obj = {}
-                type_path = node["type_path"]
-                obj[type_path] = node["value"]
-                objs.append(obj)
-            if gltf2_mesh.extras is None:
-                gltf2_mesh.extras = {}
-            gltf2_mesh.extras["skein"] = objs
+        if self.properties.enabled:
+            gather(blender_mesh, gltf2_mesh)
+
+    def gather_material_hook(self, gltf2_material, blender_material, export_settings):
+        if self.properties.enabled:
+            gather(blender_material, gltf2_material)
+    # gather_camera_hook(self, gltf2_camera, blender_camera, export_settings)
 
 def glTF2_pre_export_callback(export_settings):
     print("This will be called before exporting the glTF file.")
@@ -110,3 +99,15 @@ def glTF2_post_export_callback(export_settings):
 
 def pre_export_hook(export_settings):
     pass
+
+def gather(source, sink):
+    if "skein" in source:
+        objs = []
+        for node in source["skein"]:
+            obj = {}
+            type_path = node["type_path"]
+            obj[type_path] = node["value"]
+            objs.append(obj)
+        if sink.extras is None:
+            sink.extras = {}
+        sink.extras["skein"] = objs

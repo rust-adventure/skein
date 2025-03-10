@@ -18,12 +18,19 @@ class FetchBevyTypeRegistry(bpy.types.Operator):
     def execute(self, context):
         print("\nexecute: FetchBevyTypeRegistry")
 
-        brp_response = brp_fetch_registry_schema()
+        brp_response = None
+
+        try:
+            brp_response = brp_fetch_registry_schema()
+        except:
+            self.report({"ERROR"}, "Could not connect to bevy application to fetch registry data from the Bevy Remote Protocol")
+            return {'CANCELLED'}
 
         # If the bevy remote protocol returns an error, report it to the user
-        if "error" in brp_response:
+        if brp_response is not None and "error" in brp_response:
             print("bevy request errored out", brp_response["error"])
-            self.report({"ERROR"}, "request for Bevy registry data errored out, is the Bevy Remote Protocol Plugin added and is the Bevy app running? :: " + brp_response["error"]["message"])
+            self.report({"ERROR"}, "request for Bevy registry data returned an error, is the Bevy Remote Protocol Plugin added and is the Bevy app running? :: " + brp_response["error"]["message"])
+            return {'CANCELLED'}
 
         registry_filepath = bpy.path.abspath(os.path.join("//", "skein-registry.json"))
 

@@ -29,10 +29,31 @@ class SkeinPanelMesh(bpy.types.Panel):
     bl_region_type = 'WINDOW'
     bl_context = 'data'
 
+    @classmethod
+    def poll(cls, context):
+        return context.active_object.type == "MESH"
+
     def draw(self, context):
         obj = context.mesh
         layout = self.layout
         draw_generic_panel(context, obj, layout, "mesh")
+
+class SkeinPanelMaterial(bpy.types.Panel):
+    """Creates a Panel in the Object Properties Panel for a material"""
+    bl_label = "Skein Bevy Panel"
+    bl_idname = "MATERIAL_PT_skein"
+    bl_space_type = 'PROPERTIES'
+    bl_region_type = 'WINDOW'
+    bl_context = 'material'
+
+    @classmethod
+    def poll(cls, context):
+        return context.active_object.active_material is not None
+
+    def draw(self, context):
+        obj = context.material
+        layout = self.layout
+        draw_generic_panel(context, obj, layout, "material")
 
 def draw_generic_panel(context, obj, layout, execute_mode):
         obj_skein = obj.skein

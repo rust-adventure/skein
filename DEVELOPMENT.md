@@ -123,6 +123,9 @@ There are "primitive" types in the Bevy reflection data that have a `kind` of `V
 - Write end-user documentation/how to use
 - Can this work in 0.15?
   - BRP backport for registry api
+- Enable Material Extras
+- Disable Data Panel for objects other than meshes
+- Marker and DistanceFog forms show uneditable content
 
 ### Edge Cases to add tests for
 

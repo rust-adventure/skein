@@ -8,7 +8,7 @@ from .operators.fetch_bevy_type_registry import FetchBevyTypeRegistry, brp_fetch
 from .operators.remove_bevy_component import RemoveBevyComponent
 from .operators.debug_check_object_bevy_components import DebugCheckObjectBevyComponents
 from .property_groups import ComponentData
-from .skein_panel import SkeinPanelObject, SkeinPanelMesh
+from .skein_panel import SkeinPanelObject, SkeinPanelMesh, SkeinPanelMaterial
 from .gltf_export_extension import glTF_extension_name, extension_is_required, SkeinExtensionProperties, draw_export, glTF2ExportUserExtension, pre_export_hook, glTF2_pre_export_callback
 
 class ComponentTypeData(bpy.types.PropertyGroup):
@@ -23,10 +23,20 @@ class PGSkeinWindowProps(bpy.types.PropertyGroup):
 
 # set the active_editor form
 # and pull the data from objects to fill the form if data exists
-def update_component_form(self, context):
+def update_object_component_form(self, context):
     """Executed when the currently selected active_component_index is changed"""
-    print("\n## update component form")
-    obj = context.object
+    print("\n## update object component form")
+    update_form(context, context.object)
+def update_mesh_component_form(self, context):
+    """Executed when the currently selected active_component_index is changed"""
+    print("\n## update mesh component form")
+    update_form(context, context.mesh)
+def update_material_component_form(self, context):
+    """Executed when the currently selected active_component_index is changed"""
+    print("\n## update material component form")
+    update_form(context, context.material)
+        
+def update_form(context, obj):
     obj_skein = obj["skein"]
     global_skein = context.window_manager.skein
     registry = json.loads(global_skein.registry)
@@ -142,12 +152,17 @@ def register():
     # set up per-object data types that are required to render panels
     bpy.types.Object.skein = bpy.props.CollectionProperty(type=ComponentData)
     bpy.types.Object.active_component_index = bpy.props.IntProperty(
-        update=update_component_form,
+        update=update_object_component_form,
         min=0
     )
     bpy.types.Mesh.skein = bpy.props.CollectionProperty(type=ComponentData)
     bpy.types.Mesh.active_component_index = bpy.props.IntProperty(
-        update=update_component_form,
+        update=update_mesh_component_form,
+        min=0
+    )
+    bpy.types.Material.skein = bpy.props.CollectionProperty(type=ComponentData)
+    bpy.types.Material.active_component_index = bpy.props.IntProperty(
+        update=update_material_component_form,
         min=0
     )
 
@@ -170,6 +185,7 @@ def register():
     # panel
     bpy.utils.register_class(SkeinPanelObject)
     bpy.utils.register_class(SkeinPanelMesh)
+    bpy.utils.register_class(SkeinPanelMaterial)
     # adds the menu_func layout to an existing menu
     bpy.types.TOPBAR_MT_edit.append(menu_func)
 
@@ -200,6 +216,7 @@ def unregister():
     # panel
     bpy.utils.unregister_class(SkeinPanelObject)
     bpy.utils.unregister_class(SkeinPanelMesh)
+    bpy.utils.unregister_class(SkeinPanelMaterial)
 
     # gltf extension
     bpy.utils.unregister_class(SkeinExtensionProperties)

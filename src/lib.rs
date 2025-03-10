@@ -149,7 +149,7 @@ fn postprocess_scene(
             {
                 Ok(value) => value,
                 Err(err) => {
-                    error!(?err, "failed to instantiate component data from blender");
+                    error!(?err, ?obj, "failed to instantiate component data from blender");
                     continue;
                 }
             };

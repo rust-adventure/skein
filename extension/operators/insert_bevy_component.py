@@ -17,7 +17,7 @@ class InsertBevyComponent(bpy.types.Operator):
     # op = row.operator("bevy.insert_bevy_component")
     # op.execute_mode = "object"
     execute_mode: bpy.props.EnumProperty(
-        items=[("object", "object", ""), ("mesh", "mesh", "")],
+        items=[("object", "object", ""), ("mesh", "mesh", ""), ("material", "material", "")],
     ) # type: ignore
 
     # execute is called to run the operator
@@ -27,12 +27,17 @@ class InsertBevyComponent(bpy.types.Operator):
         if self.execute_mode is None:
             print("execute_mode not set for InsertBevyComponent Operator, can't insert without knowing what to insert on")
             return {'CANCELLED'}
-        # scene = context.scene
-        # cursor = scene.cursor.location
-        if self.execute_mode == "object":
-            obj = context.active_object
-        else:
-            obj = context.mesh
+
+        match self.execute_mode:
+            case "object":
+                obj = context.active_object
+            case "mesh":
+                obj = context.mesh
+            case "material":
+                obj = context.material
+            case _:
+                # unreachable
+                return {'CANCELLED'}
 
         global_skein = context.window_manager.skein
         selected_component = context.window_manager.selected_component

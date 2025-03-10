@@ -55,11 +55,7 @@ def draw_export(context, layout):
 
 # Note: the class must have this exact name
 class glTF2ExportUserExtension:
-    def pre_export_hook(self, export_settings):
-        print("pre_export_hook in class", export_settings)
-
     def __init__(self):
-        print("initgltf2 export user extension")
         # We need to wait until we create the gltf2UserExtension to import the gltf2 modules
         # Otherwise, it may fail because the gltf2 may not be loaded yet
         from io_scene_gltf2.io.com.gltf2_io_extensions import Extension # type: ignore
@@ -67,25 +63,23 @@ class glTF2ExportUserExtension:
         self.properties = bpy.context.scene.skein_extension_properties
 
     def gather_node_hook(self, gltf2_object, blender_object, export_settings):
-        print("gather_node_hook")
         # Note: If you are using Collection Exporters, you may want to restrict the export for some collections
         # You can access the collection like this: export_settings['gltf_collection']
         # So you can check if you want to use this hook for this collection or not, using
         # if export_settings['gltf_collection'] != "Coll":
         #     return
 
-        # TODO: can we report needing custom_properties enabled
-        # self.report() doesn't seem available here?
-        if self.properties.enabled and "skein" in gltf2_object.extras:
-            print("--")
-            print(gltf2_object.extras)
-            print("--")
+        # self.report() doesn't seem available here because we aren't
+        # in "Blender" we're in the "gltf2 extension"
+        if self.properties.enabled and "skein" in blender_object:
             objs = []
-            for node in gltf2_object.extras["skein"]:
+            for node in blender_object["skein"]:
                 obj = {}
                 type_path = node["type_path"]
                 obj[type_path] = node["value"]
                 objs.append(obj)
+            if gltf2_object.extras is None:
+                gltf2_object.extras = {}
             gltf2_object.extras["skein"] = objs
             
             # if gltf2_object.extensions is None:
@@ -96,15 +90,23 @@ class glTF2ExportUserExtension:
             #     extension={"float": 2.0},
             #     required=extension_is_required
             # )
+    def gather_mesh_hook(self, gltf2_mesh, blender_mesh, blender_object, vertex_groups, modifiers, materials, export_settings):
+        if self.properties.enabled and "skein" in blender_mesh:
+            objs = []
+            for node in blender_mesh["skein"]:
+                obj = {}
+                type_path = node["type_path"]
+                obj[type_path] = node["value"]
+                objs.append(obj)
+            if gltf2_mesh.extras is None:
+                gltf2_mesh.extras = {}
+            gltf2_mesh.extras["skein"] = objs
 
-    def glTF2_pre_export_callback(export_settings):
-        print("This will be called before exporting the glTF file.2")
-
-    def glTF2_post_export_callback(export_settings):
-        print("This will be called after exporting the glTF file.")
-
-def pre_export_hook(self, export_settings):
-    print("pre_export_hook", export_settings)
 def glTF2_pre_export_callback(export_settings):
-    print("idk2")
-# /end gltf exporter extension
+    print("This will be called before exporting the glTF file.")
+
+def glTF2_post_export_callback(export_settings):
+    print("This will be called after exporting the glTF file.")
+
+def pre_export_hook(export_settings):
+    pass

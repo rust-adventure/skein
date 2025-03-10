@@ -8,8 +8,8 @@ import inspect
 #  object tab.
 # ---------------------------------- #
 
-class SkeinPanel(bpy.types.Panel):
-    """Creates a Panel in the Object Properties window"""
+class SkeinPanelObject(bpy.types.Panel):
+    """Creates a Panel in the Object Properties Panel for an object"""
     bl_label = "Skein Bevy Panel"
     bl_idname = "OBJECT_PT_skein"
     bl_space_type = 'PROPERTIES'
@@ -17,8 +17,24 @@ class SkeinPanel(bpy.types.Panel):
     bl_context = 'object'
 
     def draw(self, context):
-        layout = self.layout
         obj = context.object
+        layout = self.layout
+        draw_generic_panel(context, obj, layout, "object")
+
+class SkeinPanelMesh(bpy.types.Panel):
+    """Creates a Panel in the Object Properties Panel for a mesh"""
+    bl_label = "Skein Bevy Panel"
+    bl_idname = "MESH_PT_skein"
+    bl_space_type = 'PROPERTIES'
+    bl_region_type = 'WINDOW'
+    bl_context = 'data'
+
+    def draw(self, context):
+        obj = context.mesh
+        layout = self.layout
+        draw_generic_panel(context, obj, layout, "mesh")
+
+def draw_generic_panel(context, obj, layout, execute_mode):
         obj_skein = obj.skein
         global_skein = context.window_manager.skein
         # TODO: the registry can likely be loaded into a dict in a less
@@ -46,7 +62,8 @@ class SkeinPanel(bpy.types.Panel):
             )
 
             row = box.row()
-            row.operator("bevy.insert_bevy_component")
+            op = row.operator("bevy.insert_bevy_component")
+            op.execute_mode = execute_mode
 
         layout.label(text="Components on this object:")
 
@@ -66,7 +83,8 @@ class SkeinPanel(bpy.types.Panel):
             active_component_data = obj_skein[obj.active_component_index]
             row = layout.row()
             row.label(text=active_component_data["type_path"], icon='BOIDS')
-            row.operator("bevy.remove_bevy_component")
+            op = row.operator("bevy.remove_bevy_component")
+            op.execute_mode = execute_mode
 
             box = layout.box()
             type_path = active_component_data["type_path"]

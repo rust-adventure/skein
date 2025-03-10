@@ -13,12 +13,27 @@ class InsertBevyComponent(bpy.types.Operator):
     bl_label = "Insert Bevy Component (Dev)" # Shows up in the UI
     bl_options = {'REGISTER', 'UNDO'} # enable undo (which we might not need)
 
+    # this has to be set before using operator
+    # op = row.operator("bevy.insert_bevy_component")
+    # op.execute_mode = "object"
+    execute_mode: bpy.props.EnumProperty(
+        items=[("object", "object", ""), ("mesh", "mesh", "")],
+    ) # type: ignore
+
     # execute is called to run the operator
     def execute(self, context):
         print("\nexecute: InsertBevyComponent")
+        obj = None
+        if self.execute_mode is None:
+            print("execute_mode not set for InsertBevyComponent Operator, can't insert without knowing what to insert on")
+            return {'CANCELLED'}
         # scene = context.scene
         # cursor = scene.cursor.location
-        obj = context.active_object
+        if self.execute_mode == "object":
+            obj = context.active_object
+        else:
+            obj = context.mesh
+
         global_skein = context.window_manager.skein
         selected_component = context.window_manager.selected_component
         obj_skein = obj.skein

@@ -12,9 +12,26 @@ class RemoveBevyComponent(bpy.types.Operator):
     bl_label = "Remove Bevy Component (Dev)" # Shows up in the UI
     bl_options = {'REGISTER', 'UNDO'} # enable undo (which we might not need)
 
+
+    # this has to be set before using operator
+    # op = row.operator("bevy.insert_bevy_component")
+    # op.execute_mode = "object"
+    execute_mode: bpy.props.EnumProperty(
+        items=[("object", "object", ""), ("mesh", "mesh", "")],
+    ) # type: ignore
+
     # execute is called to run the operator
     def execute(self, context):
-        obj = context.active_object
+        obj = None
+        if self.execute_mode is None:
+            print("execute_mode not set for RemoveBevyComponent Operator, can't remove without knowing what to insert on")
+            return {'CANCELLED'}
+        # scene = context.scene
+        # cursor = scene.cursor.location
+        if self.execute_mode == "object":
+            obj = context.active_object
+        else:
+            obj = context.mesh
 
         obj.skein.remove(obj.active_component_index)
 

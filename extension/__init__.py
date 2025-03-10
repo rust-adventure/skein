@@ -8,7 +8,7 @@ from .operators.fetch_bevy_type_registry import FetchBevyTypeRegistry, brp_fetch
 from .operators.remove_bevy_component import RemoveBevyComponent
 from .operators.debug_check_object_bevy_components import DebugCheckObjectBevyComponents
 from .property_groups import ComponentData
-from .skein_panel import SkeinPanel
+from .skein_panel import SkeinPanelObject, SkeinPanelMesh
 from .gltf_export_extension import glTF_extension_name, extension_is_required, SkeinExtensionProperties, draw_export, glTF2ExportUserExtension, pre_export_hook, glTF2_pre_export_callback
 
 class ComponentTypeData(bpy.types.PropertyGroup):
@@ -139,8 +139,14 @@ def register():
     bpy.utils.register_class(PGSkeinWindowProps)
     bpy.types.WindowManager.skein = bpy.props.PointerProperty(type=PGSkeinWindowProps)
 
+    # set up per-object data types that are required to render panels
     bpy.types.Object.skein = bpy.props.CollectionProperty(type=ComponentData)
     bpy.types.Object.active_component_index = bpy.props.IntProperty(
+        update=update_component_form,
+        min=0
+    )
+    bpy.types.Mesh.skein = bpy.props.CollectionProperty(type=ComponentData)
+    bpy.types.Mesh.active_component_index = bpy.props.IntProperty(
         update=update_component_form,
         min=0
     )
@@ -162,7 +168,8 @@ def register():
     bpy.utils.register_class(DebugCheckObjectBevyComponents)
     bpy.utils.register_class(RemoveBevyComponent)
     # panel
-    bpy.utils.register_class(SkeinPanel)
+    bpy.utils.register_class(SkeinPanelObject)
+    bpy.utils.register_class(SkeinPanelMesh)
     # adds the menu_func layout to an existing menu
     bpy.types.TOPBAR_MT_edit.append(menu_func)
 
@@ -191,7 +198,8 @@ def unregister():
     bpy.utils.unregister_class(DebugCheckObjectBevyComponents)
     bpy.utils.unregister_class(RemoveBevyComponent)
     # panel
-    bpy.utils.unregister_class(SkeinPanel)
+    bpy.utils.unregister_class(SkeinPanelObject)
+    bpy.utils.unregister_class(SkeinPanelMesh)
 
     # gltf extension
     bpy.utils.unregister_class(SkeinExtensionProperties)

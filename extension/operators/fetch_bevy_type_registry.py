@@ -61,26 +61,29 @@ def process_registry(context, registry):
         # TODO: this must apply to all components
         # make_property is recursive, so all dependent types
         # should make it into the skein_property_groups
-        if k in [
-            "component_tests::Player",
-            "component_tests::TaskPriority",
-            "component_tests::TeamMember",
-            "component_tests::TupleStruct",
-            "component_tests::Marker",
-            "component_tests::SomeThings",
-            "test_project::Rotate"
-        ]:
+        # if k in [
+        #     "component_tests::Player",
+        #     "component_tests::TaskPriority",
+        #     "component_tests::TeamMember",
+        #     "component_tests::TupleStruct",
+        #     "component_tests::Marker",
+        #     "component_tests::SomeThings",
+        #     "test_project::Rotate"
+        # ]:
+        try:
             make_property(
                 skein_property_groups,
                 registry,
                 k
             )
+            if "reflectTypes" in value and "Component" in value["reflectTypes"]:
+                component = global_skein.components.add()
+                component.name = k
+                component.value = k
+                component.type_path = k
+                component.short_path = value["shortPath"]
 
-        if "reflectTypes" in value and "Component" in value["reflectTypes"]:
-            component = global_skein.components.add()
-            component.name = k
-            component.value = k
-            component.type_path = k
-            component.short_path = value["shortPath"]
-
-            component_list.append((k, value["shortPath"], k))
+                component_list.append((k, value["shortPath"], k))
+        except Exception as e:
+            print("failed to make_property for: ", k)
+            print(repr(e))

@@ -19,19 +19,19 @@ exclude = [
 ]
 
 [dependencies]
-bevy_app = { git = "https://github.com/bevyengine/bevy", rev = "5e9da92" }
-bevy_log = { git = "https://github.com/bevyengine/bevy", rev = "5e9da92" }
-bevy_ecs = { git = "https://github.com/bevyengine/bevy", rev = "5e9da92" }
-bevy_gltf = { git = "https://github.com/bevyengine/bevy", rev = "5e9da92" }
-bevy_reflect = { git = "https://github.com/bevyengine/bevy", rev = "5e9da92" }
-bevy_scene = { git = "https://github.com/bevyengine/bevy", rev = "5e9da92" }
-bevy_remote = { git = "https://github.com/bevyengine/bevy", rev = "5e9da92" }
+bevy_app = { git = "https://github.com/bevyengine/bevy", rev = "3b9e2e6" }
+bevy_log = { git = "https://github.com/bevyengine/bevy", rev = "3b9e2e6" }
+bevy_ecs = { git = "https://github.com/bevyengine/bevy", rev = "3b9e2e6" }
+bevy_gltf = { git = "https://github.com/bevyengine/bevy", rev = "3b9e2e6" }
+bevy_reflect = { git = "https://github.com/bevyengine/bevy", rev = "3b9e2e6" }
+bevy_scene = { git = "https://github.com/bevyengine/bevy", rev = "3b9e2e6" }
+bevy_remote = { git = "https://github.com/bevyengine/bevy", rev = "3b9e2e6" }
 serde = "1.0"
 serde_json = "1.0"
 tracing = "0.1"
 
 [dev-dependencies]
-bevy = { git = "https://github.com/bevyengine/bevy", rev = "5e9da92" }
+bevy = { git = "https://github.com/bevyengine/bevy", rev = "3b9e2e6" }
 serde = { version = "1.0", features = ["derive"] }
 
 

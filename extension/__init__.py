@@ -83,7 +83,7 @@ def on_select_new_component(self, context):
     global_skein = context.window_manager.skein
     if global_skein.registry:
         data = json.loads(global_skein.registry)
-        if len(data.keys()) > 0:
+        if selected_component in data and len(data.keys()) > 0:
             print("\n", json.dumps(data[selected_component], indent=4))
         else:
             print("\nno data in registry")

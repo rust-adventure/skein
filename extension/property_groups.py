@@ -44,6 +44,7 @@ def make_property(
 
     print("\nmake_property::", type_path)
 
+    print(component)
     match component["kind"]:
         case "Array":
             print("Array is unimplemented in make_property")
@@ -75,6 +76,7 @@ def make_property(
 
                     print(items)
 
+                    # TODO: set default for skein_enum_index?
                     annotations["skein_enum_index"] = bpy.props.EnumProperty(
                         name="variant",
                         items=items,
@@ -261,12 +263,13 @@ def make_property(
                 case "string":
                     return bpy.props.StringProperty(update=update_component_data)
                 case "object":
-                    match component["type_path"]:
+                    print("component: ", component)
+                    match component["typePath"]:
                         case "core::time::Duration":
                             print("core::time::Duration is currently not handled")
                             return
                         case _:
-                            print("unhandled `Value` of `object` type: ", component["type_path"])
+                            print("unhandled `Value` of `object` type: ", component["typePath"])
                             return
                 case _:
                     print("unhandled type: ", component["type"])

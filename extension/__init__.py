@@ -9,6 +9,7 @@ from .operators.remove_bevy_component import RemoveBevyComponent
 from .operators.debug_check_object_bevy_components import DebugCheckObjectBevyComponents
 from .property_groups import ComponentData
 from .skein_panel import SkeinPanelObject, SkeinPanelMesh, SkeinPanelMaterial
+# these imports appear unused, but are *required* for the export extension to work
 from .gltf_export_extension import glTF_extension_name, extension_is_required, SkeinExtensionProperties, draw_export, glTF2ExportUserExtension, pre_export_hook, glTF2_pre_export_callback
 
 class ComponentTypeData(bpy.types.PropertyGroup):
@@ -20,67 +21,6 @@ class ComponentTypeData(bpy.types.PropertyGroup):
 class PGSkeinWindowProps(bpy.types.PropertyGroup):
     registry: bpy.props.StringProperty(name="Bevy Registry", default="{}") # type: ignore
     components: bpy.props.CollectionProperty(type=ComponentTypeData) # type: ignore
-
-# set the active_editor form
-# and pull the data from objects to fill the form if data exists
-def update_object_component_form(self, context):
-    """Executed when the currently selected active_component_index is changed"""
-    print("\n## update object component form")
-    update_form(context, context.object)
-def update_mesh_component_form(self, context):
-    """Executed when the currently selected active_component_index is changed"""
-    print("\n## update mesh component form")
-    update_form(context, context.mesh)
-def update_material_component_form(self, context):
-    """Executed when the currently selected active_component_index is changed"""
-    print("\n## update material component form")
-    update_form(context, context.material)
-        
-def update_form(context, obj):
-    obj_skein = obj["skein"]
-    global_skein = context.window_manager.skein
-    registry = json.loads(global_skein.registry)
-    skein_property_groups = context.window_manager.skein_property_groups
-
-    # if we have a valid index
-    if obj.active_component_index < len(obj_skein):
-        active_component = obj_skein[obj.active_component_index]
-        type_path = active_component["type_path"]
-
-        if inspect.isclass(skein_property_groups[type_path]):
-            bpy.types.WindowManager.active_editor = bpy.props.PointerProperty(
-                type=skein_property_groups[type_path],
-            )
-            # TODO: get data from custom properties
-            if "value" in active_component:
-                set_form_from_data(
-                    context.window_manager,
-                    "active_editor",
-                    active_component["value"].to_dict(),
-                    skein_property_groups[type_path]
-                )
-        else:
-            bpy.types.WindowManager.active_editor = skein_property_groups[type_path]
-            if "value" in active_component:
-                context.window_manager.active_editor = active_component["value"]
-    else:
-        bpy.types.WindowManager.active_editor = None
-
-def set_form_from_data(context, context_key, data, component_data):
-    for key, value in data.items():
-        component_fields = inspect.get_annotations(component_data)
-        if "skein_enum_index" in component_fields:
-            setattr(getattr(context, context_key), "skein_enum_index", key)
-        if isinstance(value, dict):
-            component_fields = inspect.get_annotations(component_data)
-            set_form_from_data(
-                getattr(context, context_key),
-                key,
-                value,
-                component_fields[key]
-            )
-        else:
-            setattr(getattr(context, context_key), key, value)
 
 def on_select_new_component(self, context):
     """Executed when a new component is selected for insertion onto an object
@@ -126,9 +66,6 @@ def on_post_blend_file_load(blend_file):
 
             with open(registry_filepath,"w") as outfile:
                 json.dump(brp_response["result"], outfile)
-        # if opening a blend file with an object that is selected
-        # and has components, then show the form for the expected component
-        update_component_form(None, bpy.context)
 
 # --------------------------------- #
 #  Registration and unregistration  #
@@ -140,7 +77,6 @@ def menu_func(self, context):
     self.layout.operator(DebugCheckObjectBevyComponents.bl_idname)
 
 def register():
-    print("\n--------\nregister")
     # data types that are stored on the window because blender
     # doesn't seem to have any other good way of storing data
     # for quick access.
@@ -150,19 +86,13 @@ def register():
     bpy.types.WindowManager.skein = bpy.props.PointerProperty(type=PGSkeinWindowProps)
 
     # set up per-object data types that are required to render panels
-    bpy.types.Object.skein = bpy.props.CollectionProperty(type=ComponentData)
     bpy.types.Object.active_component_index = bpy.props.IntProperty(
-        update=update_object_component_form,
         min=0
     )
-    bpy.types.Mesh.skein = bpy.props.CollectionProperty(type=ComponentData)
     bpy.types.Mesh.active_component_index = bpy.props.IntProperty(
-        update=update_mesh_component_form,
         min=0
     )
-    bpy.types.Material.skein = bpy.props.CollectionProperty(type=ComponentData)
     bpy.types.Material.active_component_index = bpy.props.IntProperty(
-        update=update_material_component_form,
         min=0
     )
 
@@ -199,7 +129,6 @@ def register():
     # Use the following 2 lines to register the UI for the gltf extension hook
     from io_scene_gltf2 import exporter_extension_layout_draw # type: ignore
     exporter_extension_layout_draw['Example glTF Extension'] = draw_export # Make sure to use the same name in unregister()
-    print("\nregister/end")
 
 def unregister():
     # data types that are stored on the window because blender

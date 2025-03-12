@@ -56,12 +56,14 @@ class SkeinPanelMaterial(bpy.types.Panel):
         draw_generic_panel(context, obj, layout, "material")
 
 def draw_generic_panel(context, obj, layout, execute_mode):
+        
         obj_skein = obj.skein
         global_skein = context.window_manager.skein
         # TODO: the registry can likely be loaded into a dict in a less
         # common place. This function runs every draw
         registry = json.loads(global_skein.registry)
         skein_property_groups = context.window_manager.skein_property_groups
+
         if not registry:
             layout.label(text="Bevy registry data must be loaded to work with component data")
             # TODO: show load registry
@@ -92,7 +94,7 @@ def draw_generic_panel(context, obj, layout, execute_mode):
             "UI_UL_list",
             "components list",
             obj,
-            "skein",
+            "skein_two",
             obj,
             "active_component_index"
         )
@@ -100,15 +102,18 @@ def draw_generic_panel(context, obj, layout, execute_mode):
         # build the form ui
         # obj_skein is an array of component data
         # empty lists are falsey
+        obj_skein = obj.skein_two
         if registry and obj_skein:
             active_component_data = obj_skein[obj.active_component_index]
+            type_path = active_component_data.selected_type_path
+            # print(active_component_data.component_data)
+            # print(inspect.get_annotations(active_component_data.component_data))
             row = layout.row()
-            row.label(text=active_component_data["type_path"], icon='BOIDS')
+            row.label(text=active_component_data.selected_type_path, icon='BOIDS')
             op = row.operator("bevy.remove_bevy_component")
             op.execute_mode = execute_mode
 
             box = layout.box()
-            type_path = active_component_data["type_path"]
             registry_component_reflection_data = registry[type_path]
 
             # Marker component
@@ -117,12 +122,18 @@ def draw_generic_panel(context, obj, layout, execute_mode):
             # Other components
             if type_path in skein_property_groups:
                 component_data = skein_property_groups[type_path]
-                render_props(box, context.window_manager, "active_editor", component_data)
+                render_props(
+                    box,
+                    active_component_data,
+                    type_path,
+                    component_data,
+                    True
+                )
             else:
                 box.label(text="No property group for " + type_path)
 
-def render_props(layout, context, context_key, component_data):
-    if context_key != "active_editor":
+def render_props(layout, context, context_key, component_data, is_first_recurse):
+    if not is_first_recurse:
         for key,value in getattr(getattr(context, context_key), "__annotations__").items():
             layout.prop(getattr(context, context_key), key)
 
@@ -148,7 +159,7 @@ def render_props(layout, context, context_key, component_data):
                 box = layout
                 if "skein_enum_index" not in component_fields:
                     box.label(text=key + ":")
-                render_props(box.box(), getattr(context, context_key), key, component_fields[key])
+                render_props(box.box(), getattr(context, context_key), key, component_fields[key], False)
             else:
                 layout.prop(getattr(context, context_key), key)
                 if key == "skein_enum_index":
@@ -156,5 +167,5 @@ def render_props(layout, context, context_key, component_data):
     else:
         # if there aren't fields, we're dealing with a float/string/int primitive
         # and we can use .prop directly
-        if context_key == "active_editor":
+        if is_first_recurse:
             layout.prop(context, context_key)

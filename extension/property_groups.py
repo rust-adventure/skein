@@ -1,7 +1,6 @@
 import bpy
 import re
 import inspect
-from .form_to_object import update_component_data
 
 # the class we use to create PropertyGroups dynamically
 class ComponentData(bpy.types.PropertyGroup):
@@ -62,7 +61,7 @@ def make_property(
                     # TODO: make an enum default value
                     skein_property_groups[type_path] = bpy.props.EnumProperty(
                         items=items,
-                        update=update_component_data
+                        
                     )
 
                     return skein_property_groups[type_path]
@@ -80,7 +79,7 @@ def make_property(
                     annotations["skein_enum_index"] = bpy.props.EnumProperty(
                         name="variant",
                         items=items,
-                        update=update_component_data
+                        
                     )
 
                     for option in component["oneOf"]:
@@ -193,13 +192,11 @@ def make_property(
                             return bpy.props.IntProperty(
                                 min=0,
                                 max=255,
-                                update=update_component_data
                             )
                         case "u16":
                             return bpy.props.IntProperty(
                                 min=0,
                                 max=65535,
-                                update=update_component_data
                             )
                         case "u32":
                             return bpy.props.IntProperty(
@@ -208,7 +205,6 @@ def make_property(
                                 # 2^31, not 2^32, so not sure if we can even set
                                 # those numbers from inside blender
                                 # max=4294967295,
-                                update=update_component_data
                         )
                         case "u64":
                             return bpy.props.IntProperty(
@@ -217,7 +213,6 @@ def make_property(
                                 # 2^31, not 2^32, so not sure if we can even set
                                 # those numbers from inside blender
                                 # max=4294967295,
-                                update=update_component_data
                         )
                         case "usize":
                             return bpy.props.IntProperty(
@@ -226,42 +221,38 @@ def make_property(
                                 # 2^31, not 2^32, so not sure if we can even set
                                 # those numbers from inside blender
                                 # max=4294967295,
-                                update=update_component_data
                         )
                         case _:
                             print("unknown uint type: ", type_path)
-                            return bpy.props.IntProperty(min=0, update=update_component_data)
+                            return bpy.props.IntProperty(min=0, )
                 case "int":
                     match type_path:
                         case "i8":
                             return bpy.props.IntProperty(
                                 min=-128,
                                 max=127,
-                                update=update_component_data
                             )
                         case "i16":
                             return bpy.props.IntProperty(
                                 min=-32_768,
                                 max=32_767,
-                                update=update_component_data
                             )
                         case "i32":
                             return bpy.props.IntProperty(
                                 min=-2_147_483_648,
                                 max=2_147_483_647,
-                                update=update_component_data
                         )
                         case "i64":
-                            return bpy.props.IntProperty(update=update_component_data)
+                            return bpy.props.IntProperty()
                         case "isize":
-                            return bpy.props.IntProperty(update=update_component_data)
+                            return bpy.props.IntProperty()
                         case _:
                             print("unknown iint type: ", type_path)
-                            return bpy.props.IntProperty(min=0, update=update_component_data)
+                            return bpy.props.IntProperty(min=0, )
                 case "float":
-                    return bpy.props.FloatProperty(update=update_component_data)
+                    return bpy.props.FloatProperty()
                 case "string":
-                    return bpy.props.StringProperty(update=update_component_data)
+                    return bpy.props.StringProperty()
                 case "object":
                     print("component: ", component)
                     match component["typePath"]:

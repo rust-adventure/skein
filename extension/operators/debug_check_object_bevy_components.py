@@ -1,5 +1,8 @@
+import inspect
 import bpy
 import json
+
+from ..form_to_object import get_data_from_active_editor # type: ignore
 
 class DebugCheckObjectBevyComponents(bpy.types.Operator):
     """Iterate over all objects and print the skein component data to console
@@ -14,12 +17,19 @@ class DebugCheckObjectBevyComponents(bpy.types.Operator):
     def execute(self, context):
         for object in bpy.data.objects:
             print("\n# ", object.name)
-            print("## ", len(object.skein), " components:")
-            for component in object.skein:
-                print("### ", component.type_path, "")
-                try:
-                    print(json.dumps(component["value"].to_dict(), indent=4))
-                except AttributeError:
-                    print(component["value"])
+            print("## ", len(object.skein_two), " components:")
+            for component in object.skein_two:
+                print("### ", component.selected_type_path, "")
+                skein_property_groups = context.window_manager.skein_property_groups
+                if inspect.isclass(skein_property_groups[component.selected_type_path]):
+                    print("object:")
+                    print(get_data_from_active_editor(
+                        component,
+                        component.selected_type_path,
+                        skein_property_groups[component.selected_type_path],
+                        True
+                    ))
+                else:
+                    print(getattr(component, component.selected_type_path))
 
         return {'FINISHED'}

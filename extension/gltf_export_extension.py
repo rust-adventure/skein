@@ -1,4 +1,7 @@
+import inspect
 import bpy
+
+from .form_to_object import get_data_from_active_editor
 
 # glTF extensions are named following a convention with known prefixes.
 # See: https://github.com/KhronosGroup/glTF/tree/main/extensions#about-gltf-extensions
@@ -72,7 +75,7 @@ class glTF2ExportUserExtension:
         # self.report() doesn't seem available here because we aren't
         # in "Blender" we're in the "gltf2 extension"
         if self.properties.enabled:
-            gather(blender_object, gltf2_object)
+            gather_skein_two(blender_object, gltf2_object)
             
             # if gltf2_object.extensions is None:
             #     gltf2_object.extensions = {}
@@ -84,11 +87,11 @@ class glTF2ExportUserExtension:
             # )
     def gather_mesh_hook(self, gltf2_mesh, blender_mesh, blender_object, vertex_groups, modifiers, materials, export_settings):
         if self.properties.enabled:
-            gather(blender_mesh, gltf2_mesh)
+            gather_skein_two(blender_mesh, gltf2_mesh)
 
     def gather_material_hook(self, gltf2_material, blender_material, export_settings):
         if self.properties.enabled:
-            gather(blender_material, gltf2_material)
+            gather_skein_two(blender_material, gltf2_material)
     # gather_camera_hook(self, gltf2_camera, blender_camera, export_settings)
 
 def glTF2_pre_export_callback(export_settings):
@@ -99,6 +102,31 @@ def glTF2_post_export_callback(export_settings):
 
 def pre_export_hook(export_settings):
     pass
+
+def gather_skein_two(source, sink):
+    if "skein_two" in source:
+        objs = []
+        skein_property_groups = bpy.context.window_manager.skein_property_groups
+        for component in source.skein_two:
+            obj = {}
+            type_path = component["selected_type_path"]
+
+            if inspect.isclass(skein_property_groups[type_path]):
+                value = get_data_from_active_editor(
+                    component,
+                    type_path,
+                    skein_property_groups[type_path],
+                    True
+                )
+                obj[type_path] = value
+                objs.append(obj)
+            else:
+                obj[type_path] = getattr(component, type_path)
+                objs.append(obj)
+
+        if sink.extras is None:
+            sink.extras = {}
+        sink.extras["skein"] = objs
 
 def gather(source, sink):
     if "skein" in source:

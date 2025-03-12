@@ -1,33 +1,12 @@
-import json
 import inspect
 
-# update the data on an object from a specific component
-def update_component_data(self, context):
-    obj_skein = context.object["skein"]
-    skein_property_groups = context.window_manager.skein_property_groups
-    active_component = obj_skein[context.object.active_component_index]
-
-    if obj_skein:
-        type_path = active_component["type_path"]
-        
-        if type_path in skein_property_groups:
-            if inspect.isclass(skein_property_groups[type_path]):
-                data = get_data_from_active_editor(
-                    context.window_manager,
-                    "active_editor",
-                    skein_property_groups[type_path]
-                )
-                active_component["value"] = data
-            else:
-                active_component["value"] = context.window_manager.active_editor
-
 # get json data from an active_editor
-def get_data_from_active_editor(context, context_key, component_data):
-
+def get_data_from_active_editor(context, context_key, component_data, is_first_recurse):
     data = {}
 
-    if context_key != "active_editor":
+    if not is_first_recurse:
         for key,value in getattr(getattr(context, context_key), "__annotations__").items():
+            print(key, value)
             data[key] = getattr(getattr(context, context_key), key)
 
     component_fields = inspect.get_annotations(component_data)
@@ -46,7 +25,7 @@ def get_data_from_active_editor(context, context_key, component_data):
     if component_fields:
         for key in component_fields:
             if "PointerProperty" == component_fields[key].function.__name__:
-                data[key] = get_data_from_active_editor(getattr(context, context_key), key, component_fields[key])
+                data[key] = get_data_from_active_editor(getattr(context, context_key), key, component_fields[key], False)
             else:
                 data[key] = getattr(getattr(context, context_key), key)
     else:

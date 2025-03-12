@@ -59,10 +59,10 @@ class InsertBevyComponent(bpy.types.Operator):
                 # don't insert any default data unless the form is modified
                 if data["kind"] == "Struct" and "properties" not in data:
                     component["value"] = {}
-                # TODO: This needs to be the default data for a given component
-                # component.value = json.dumps({
-                #     "name": "Hollow Knight"
-                # })
+
+                component_two = obj.skein_two.add()
+                component_two.name = data["shortPath"]
+                component_two.selected_type_path = selected_component
                 # If we inserted a new component, update the 
                 # active_component_index to show the right editor
                 # for the newly inserted component

@@ -1,3 +1,4 @@
+import inspect
 import bpy
 import json
 import os
@@ -63,34 +64,54 @@ def process_registry(context, registry):
 
     component_list = []
 
+    # Here's where we build up the PropertyGroup that
+    # represents the hypothetical variants that account
+    # 
+    fake_component_enum_annotations = {
+        "name": bpy.props.StringProperty(name="Name", default="Unknown"),
+        "selected_type_path": bpy.props.StringProperty(name="Selected Type Path", default="Unknown"),
+    }
+
     global_skein.components.clear()
-    for k, value in registry.items():
-        # TODO: this must apply to all components
-        # make_property is recursive, so all dependent types
-        # should make it into the skein_property_groups
-        # if k in [
-        #     "component_tests::Player",
-        #     "component_tests::TaskPriority",
-        #     "component_tests::TeamMember",
-        #     "component_tests::TupleStruct",
-        #     "component_tests::Marker",
-        #     "component_tests::SomeThings",
-        #     "test_project::Rotate"
-        # ]:
+    for type_path, value in registry.items():
         try:
-            make_property(
+            property_group_or_property = make_property(
                 skein_property_groups,
                 registry,
-                k
+                type_path
             )
             if "reflectTypes" in value and "Component" in value["reflectTypes"]:
                 component = global_skein.components.add()
-                component.name = k
-                component.value = k
-                component.type_path = k
+                component.name = type_path
+                component.value = type_path
+                component.type_path = type_path
                 component.short_path = value["shortPath"]
 
-                component_list.append((k, value["shortPath"], k))
+                component_list.append((type_path, value["shortPath"], type_path))
+
+                # TODO: skip type_paths that are longer than 63 characters because they
+                # will make the type class registration fail:
+                # TypeError: 'bevy_render::camera::manual_texture_view::ManualTextureViewHandle' too long, max length is 63
+                # maybe we hash the type_paths in the future to contrain the length
+                if len(type_path) <= 63:
+                    if inspect.get_annotations(property_group_or_property):
+                        fake_component_enum_annotations[type_path] = bpy.props.PointerProperty(type=property_group_or_property)
+                    else:
+                        fake_component_enum_annotations[type_path] = property_group_or_property
+                else:
+                    print("opting out for: ", type_path)
         except Exception as e:
-            print("failed to make_property for: ", k)
+            print("failed to make_property for: ", type_path)
             print(repr(e))
+    
+    # Create the type we'll use as every component
+    component_container = type("ComponentContainer", (bpy.types.PropertyGroup,), {
+    '__annotations__': fake_component_enum_annotations,
+    })
+
+    bpy.utils.register_class(component_container)
+
+    # new component list data. Must be set to read component data from .blend file
+    bpy.types.Object.skein_two = bpy.props.CollectionProperty(type=component_container)
+    bpy.types.Mesh.skein_two = bpy.props.CollectionProperty(type=component_container)
+    bpy.types.Material.skein_two = bpy.props.CollectionProperty(type=component_container)

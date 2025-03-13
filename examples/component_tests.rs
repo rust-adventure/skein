@@ -8,8 +8,8 @@
 //! this example provides and is the minimal set of types required
 //! to reflect and construct values of the components registered here.
 use bevy::prelude::*;
+use bevy_skein::SkeinPlugin;
 use serde::{Deserialize, Serialize};
-use skein::SkeinPlugin;
 
 fn main() {
     App::new()

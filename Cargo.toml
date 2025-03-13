@@ -1,5 +1,5 @@
 [package]
-name = "skein"
+name = "bevy_skein"
 description = "Process glTF extras when spawning Scenes to insert Components using Reflection, such as when using Blender as an editor"
 version = "0.1.0"
 authors = ["Chris Biscardi"]
@@ -19,19 +19,22 @@ exclude = [
 ]
 
 [dependencies]
-bevy_app = { git = "https://github.com/bevyengine/bevy", rev = "3b9e2e6" }
-bevy_log = { git = "https://github.com/bevyengine/bevy", rev = "3b9e2e6" }
-bevy_ecs = { git = "https://github.com/bevyengine/bevy", rev = "3b9e2e6" }
-bevy_gltf = { git = "https://github.com/bevyengine/bevy", rev = "3b9e2e6" }
-bevy_reflect = { git = "https://github.com/bevyengine/bevy", rev = "3b9e2e6" }
-bevy_scene = { git = "https://github.com/bevyengine/bevy", rev = "3b9e2e6" }
-bevy_remote = { git = "https://github.com/bevyengine/bevy", rev = "3b9e2e6" }
+bevy_app = "0.15.3"
+bevy_log = "0.15.3"
+bevy_ecs = "0.15.3"
+bevy_gltf = "0.15.3"
+bevy_reflect = "0.15.3"
+bevy_scene = "0.15.3"
+bevy_remote = "0.15.3"
+bevy_utils = "0.15.3"
+bevy_core = "0.15.3"
+bevy_hierarchy = "0.15.3"
 serde = "1.0"
 serde_json = "1.0"
 tracing = "0.1"
 
 [dev-dependencies]
-bevy = { git = "https://github.com/bevyengine/bevy", rev = "3b9e2e6" }
+bevy = "0.15.3"
 serde = { version = "1.0", features = ["derive"] }
 
 

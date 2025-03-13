@@ -5,10 +5,9 @@
 //! on those extras.
 //!
 use bevy_app::{App, Plugin};
+use bevy_core::Name;
 use bevy_ecs::{
     event::Event,
-    hierarchy::Children,
-    name::Name,
     observer::Trigger,
     reflect::{AppTypeRegistry, ReflectCommandExt},
     system::{Commands, Query, Res},
@@ -17,12 +16,20 @@ use bevy_gltf::{
     GltfExtras, GltfMaterialExtras, GltfMeshExtras,
     GltfSceneExtras,
 };
+use bevy_hierarchy::{Children, HierarchyQueryExt};
 use bevy_log::{error, trace};
 use bevy_reflect::{serde::ReflectDeserializer, Reflect};
 use bevy_scene::SceneInstanceReady;
 use serde::de::DeserializeSeed;
 use serde_json::Value;
 use tracing::instrument;
+
+/// Bevy 0.16 supports this BRP endpoint natively.
+///
+/// In 0.15 we backfill it by providing the endpoint here in as compatible a way as possible.
+/// This code is directly copied from the 0.16 version of the endpoint and this file is removed from the
+/// 0.16 version of skein.
+pub mod bevy_015_support;
 
 /// [`SkeinPlugin`] is the main plugin.
 ///
@@ -49,7 +56,10 @@ impl Plugin for SkeinPlugin {
 
         if self.handle_brp {
             app.add_plugins((
-                bevy_remote::RemotePlugin::default(),
+                bevy_remote::RemotePlugin::default().with_method(
+                    bevy_015_support::BRP_REGISTRY_SCHEMA_METHOD,
+                    bevy_015_support::export_registry_types,
+                ),
                 bevy_remote::http::RemoteHttpPlugin::default(),
             ));
         }
@@ -80,7 +90,7 @@ fn postprocess_scene(
 ) {
     trace!("global_scene_instance_ready");
     for entity in
-        children.iter_descendants(trigger.target())
+        children.iter_descendants(trigger.entity())
     {
         let Ok(extras) = gltf_extras
             .get(entity)
@@ -171,7 +181,7 @@ fn postprocess_scene(
     // 3. then handle the resulting scene
     commands.trigger_targets(
         SkeinSceneInstanceReady(*trigger.event()),
-        trigger.target(),
+        trigger.entity(),
     );
 }
 

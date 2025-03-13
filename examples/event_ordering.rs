@@ -16,10 +16,10 @@
 //! ```
 //!
 use bevy::prelude::*;
-use bevy_log::tracing::instrument;
 use bevy_scene::SceneInstanceReady;
+use bevy_skein::{SkeinPlugin, SkeinSceneInstanceReady};
 use serde::{Deserialize, Serialize};
-use skein::{SkeinPlugin, SkeinSceneInstanceReady};
+use tracing::instrument;
 
 fn main() {
     App::new()
@@ -42,7 +42,7 @@ fn local_scene_instance_ready(
     info!("local_scene_instance_ready");
 
     for entity in
-        children.iter_descendants(trigger.target())
+        children.iter_descendants(trigger.entity())
     {
         let Ok(level) = levels.get(entity) else {
             continue;
@@ -59,7 +59,7 @@ fn global_skein_scene_instance_ready(
 ) {
     info!("global_skein_scene_instance_ready");
     for entity in
-        children.iter_descendants(trigger.target())
+        children.iter_descendants(trigger.entity())
     {
         let Ok(level) = levels.get(entity) else {
             continue;
@@ -76,7 +76,7 @@ fn local_skein_scene_instance_ready(
 ) {
     info!("local_skein_scene_instance_ready");
     for entity in
-        children.iter_descendants(trigger.target())
+        children.iter_descendants(trigger.entity())
     {
         let Ok(level) = levels.get(entity) else {
             continue;

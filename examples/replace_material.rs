@@ -22,9 +22,9 @@ use bevy::{
     },
 };
 use bevy_ecs::{
-    component::HookContext, world::DeferredWorld,
+    component::ComponentId, world::DeferredWorld,
 };
-use skein::SkeinPlugin;
+use bevy_skein::SkeinPlugin;
 
 fn main() {
     App::new()
@@ -83,7 +83,8 @@ struct UseDebugMaterial;
 /// added when spawning the glTF scene.
 fn on_add_use_debug_material(
     mut world: DeferredWorld,
-    HookContext { entity, .. }: HookContext,
+    entity: Entity,
+    _: ComponentId,
 ) {
     let debug_material =
         world.resource::<DebugMaterial>().0.clone();

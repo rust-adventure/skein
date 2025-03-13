@@ -4,3 +4,4 @@ __pycache__
 bevy_skein-*.zip
 registry.json
 skein-registry.json
+.pytest_cache

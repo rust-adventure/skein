@@ -8,8 +8,8 @@ use bevy::{
     },
     prelude::*,
 };
+use bevy_skein::{SkeinPlugin, SkeinSceneInstanceReady};
 use serde::{Deserialize, Serialize};
-use skein::{SkeinPlugin, SkeinSceneInstanceReady};
 
 fn main() {
     App::new()
@@ -30,7 +30,7 @@ fn check_insertions(
     levels: Query<&PowerLevel>,
 ) {
     for entity in
-        children.iter_descendants(trigger.target())
+        children.iter_descendants(trigger.entity())
     {
         let Ok(level) = levels.get(entity) else {
             continue;

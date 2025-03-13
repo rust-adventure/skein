@@ -1,4 +1,3 @@
-import json
 import bpy
 
 # --------------------------------- #
@@ -38,7 +37,7 @@ class RemoveBevyComponent(bpy.types.Operator):
                 # unreachable
                 return {'CANCELLED'}
 
-        obj.skein.remove(obj.active_component_index)
+        obj.skein_two.remove(obj.active_component_index)
 
         # because bpy.types.Object.active_component_index has a min=0
         # this will never be negative

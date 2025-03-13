@@ -57,7 +57,6 @@ class SkeinPanelMaterial(bpy.types.Panel):
 
 def draw_generic_panel(context, obj, layout, execute_mode):
         
-        obj_skein = obj.skein
         global_skein = context.window_manager.skein
         # TODO: the registry can likely be loaded into a dict in a less
         # common place. This function runs every draw
@@ -119,18 +118,19 @@ def draw_generic_panel(context, obj, layout, execute_mode):
             # Marker component
             if "properties" not in registry_component_reflection_data and registry_component_reflection_data["kind"] == "Struct":
                 box.label(text="Marker components have no data to modify")
-            # Other components
-            if type_path in skein_property_groups:
-                component_data = skein_property_groups[type_path]
-                render_props(
-                    box,
-                    active_component_data,
-                    type_path,
-                    component_data,
-                    True
-                )
             else:
-                box.label(text="No property group for " + type_path)
+                # Other components
+                if type_path in skein_property_groups:
+                    component_data = skein_property_groups[type_path]
+                    render_props(
+                        box,
+                        active_component_data,
+                        type_path,
+                        component_data,
+                        True
+                    )
+                else:
+                    box.label(text="No property group for " + type_path)
 
 def render_props(layout, context, context_key, component_data, is_first_recurse):
     if not is_first_recurse:

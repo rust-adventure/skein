@@ -121,21 +121,12 @@ def gather_skein_two(source, sink):
                 obj[type_path] = value
                 objs.append(obj)
             else:
+                # if the component is a tuple struct, etc
+                # retrieve the value directly instead of
+                # recursing
                 obj[type_path] = getattr(component, type_path)
                 objs.append(obj)
 
-        if sink.extras is None:
-            sink.extras = {}
-        sink.extras["skein"] = objs
-
-def gather(source, sink):
-    if "skein" in source:
-        objs = []
-        for node in source["skein"]:
-            obj = {}
-            type_path = node["type_path"]
-            obj[type_path] = node["value"]
-            objs.append(obj)
         if sink.extras is None:
             sink.extras = {}
         sink.extras["skein"] = objs

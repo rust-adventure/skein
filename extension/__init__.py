@@ -1,7 +1,5 @@
 import bpy
 import json
-import inspect
-import os
 from bpy.app.handlers import persistent # type: ignore
 from .operators.insert_bevy_component import InsertBevyComponent
 from .operators.fetch_bevy_type_registry import FetchBevyTypeRegistry, brp_fetch_registry_schema, process_registry
@@ -11,6 +9,22 @@ from .property_groups import ComponentData
 from .skein_panel import SkeinPanelObject, SkeinPanelMesh, SkeinPanelMaterial
 # these imports appear unused, but are *required* for the export extension to work
 from .gltf_export_extension import glTF_extension_name, extension_is_required, SkeinExtensionProperties, draw_export, glTF2ExportUserExtension, pre_export_hook, glTF2_pre_export_callback
+
+class SkeinAddonPreferences(bpy.types.AddonPreferences):
+    # This must match the add-on name, use `__package__`
+    # when defining this for add-on extensions or a sub-module of a python package.
+    bl_idname = __name__
+
+    debug: bpy.props.BoolProperty(
+        name="Debug",
+        description="Enable logs when launching Blender from the console",
+        default=False
+    ) # type: ignore
+    def draw(self, context):
+        print(__name__)
+        layout = self.layout
+        layout.label(text="Skein Preferences")
+        layout.prop(self, "debug")
 
 class ComponentTypeData(bpy.types.PropertyGroup):
     name: bpy.props.StringProperty(name="Name", default="Unknown") # type: ignore
@@ -47,25 +61,12 @@ def on_select_new_component(self, context):
 @persistent
 def on_post_blend_file_load(blend_file):
     """blend file is empty if its the startup scene"""
-    if blend_file:
-        # find the location of the registry file
-        registry_file = bpy.path.abspath(os.path.join("//", "skein-registry.json"))
-
-        # try to read the schema in via skein-registry.json file if its available
-        # if its not, try to use http, if http doesn't work, do nothing or report an error or something
-        try:
-            # read the file and try to parse it
-            with open(registry_file, "r") as infile:
-                content = infile.read()
-                registry = json.loads(content)
-                process_registry(bpy.context, registry)
-        except FileNotFoundError:
-            brp_response = brp_fetch_registry_schema()
-            process_registry(bpy.context, brp_response["result"])
-            registry_filepath = bpy.path.abspath(os.path.join("//", "skein-registry.json"))
-
-            with open(registry_filepath,"w") as outfile:
-                json.dump(brp_response["result"], outfile)
+    if "skein-registry.json" in bpy.data.texts:
+        # read the registry file embedded in the .blend file
+        # and try to parse it
+        content = bpy.data.texts["skein-registry.json"].as_string()
+        registry = json.loads(content)
+        process_registry(bpy.context, registry)
 
 # --------------------------------- #
 #  Registration and unregistration  #
@@ -77,6 +78,7 @@ def menu_func(self, context):
     self.layout.operator(DebugCheckObjectBevyComponents.bl_idname)
 
 def register():
+    bpy.utils.register_class(SkeinAddonPreferences)
     # data types that are stored on the window because blender
     # doesn't seem to have any other good way of storing data
     # for quick access.
@@ -131,6 +133,7 @@ def register():
     exporter_extension_layout_draw['Example glTF Extension'] = draw_export # Make sure to use the same name in unregister()
 
 def unregister():
+    bpy.utils.unregister_class(SkeinAddonPreferences)
     # data types that are stored on the window because blender
     # doesn't seem to have any other good way of storing data
     # for quick access.

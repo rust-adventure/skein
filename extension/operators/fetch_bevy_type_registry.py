@@ -1,4 +1,5 @@
 import inspect
+from pathlib import Path
 import bpy
 import json
 import os
@@ -17,7 +18,10 @@ class FetchBevyTypeRegistry(bpy.types.Operator):
 
     # execute is called to run the operator
     def execute(self, context):
-        print("\nexecute: FetchBevyTypeRegistry")
+        preferences = context.preferences
+        addon_prefs = preferences.addons["bl_ext.user_default.bevy_skein"].preferences
+        if addon_prefs.debug:
+            print("\nexecute: FetchBevyTypeRegistry")
 
         brp_response = None
 
@@ -29,14 +33,18 @@ class FetchBevyTypeRegistry(bpy.types.Operator):
 
         # If the bevy remote protocol returns an error, report it to the user
         if brp_response is not None and "error" in brp_response:
-            print("bevy request errored out", brp_response["error"])
+            if addon_prefs.debug:
+                print("bevy request errored out", brp_response["error"])
             self.report({"ERROR"}, "request for Bevy registry data returned an error, is the Bevy Remote Protocol Plugin added and is the Bevy app running? :: " + brp_response["error"]["message"])
             return {'CANCELLED'}
 
-        registry_filepath = bpy.path.abspath(os.path.join("//", "skein-registry.json"))
-
-        with open(registry_filepath,"w") as outfile:
-            json.dump(brp_response["result"], outfile)
+        # write registry response to a file in .blend file
+        if "skein-registry.json" in bpy.data.texts:
+            embedded_registry = bpy.data.texts["skein-registry.json"]
+            embedded_registry.write(json.dumps(brp_response["result"]))
+        else:
+            embedded_registry = bpy.data.texts.new("skein-registry.json")
+            embedded_registry.write(json.dumps(brp_response["result"]))
 
         process_registry(context, brp_response["result"])
 
@@ -57,6 +65,9 @@ def process_registry(context, registry):
     registry is a dict
     """
 
+    preferences = bpy.context.preferences
+    addon_prefs = preferences.addons["bl_ext.user_default.bevy_skein"].preferences
+
     global_skein = context.window_manager.skein
     skein_property_groups = context.window_manager.skein_property_groups
 
@@ -66,7 +77,8 @@ def process_registry(context, registry):
 
     # Here's where we build up the PropertyGroup that
     # represents the hypothetical variants that account
-    # 
+    # for every possible component. These annotations
+    # gain a field for every component type_path
     fake_component_enum_annotations = {
         "name": bpy.props.StringProperty(name="Name", default="Unknown"),
         "selected_type_path": bpy.props.StringProperty(name="Selected Type Path", default="Unknown"),
@@ -99,14 +111,16 @@ def process_registry(context, registry):
                     else:
                         fake_component_enum_annotations[type_path] = property_group_or_property
                 else:
-                    print("opting out for: ", type_path)
+                    if addon_prefs.debug:
+                        print("opting out for: ", type_path)
         except Exception as e:
-            print("failed to make_property for: ", type_path)
-            print(repr(e))
+            if addon_prefs.debug:
+                print("failed to make_property for: ", type_path)
+                print(repr(e))
     
     # Create the type we'll use as every component
     component_container = type("ComponentContainer", (bpy.types.PropertyGroup,), {
-    '__annotations__': fake_component_enum_annotations,
+        '__annotations__': fake_component_enum_annotations,
     })
 
     bpy.utils.register_class(component_container)

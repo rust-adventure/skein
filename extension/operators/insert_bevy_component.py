@@ -41,24 +41,16 @@ class InsertBevyComponent(bpy.types.Operator):
 
         global_skein = context.window_manager.skein
         selected_component = context.window_manager.selected_component
-        obj_skein = obj.skein
 
         if global_skein.registry:
             registry = json.loads(global_skein.registry)
             if list(registry) and registry[selected_component]:
                 data = registry[selected_component]
                 print(data)
-                component = obj.skein.add()
-                component.name = data["shortPath"]
-                component.type_path = selected_component
 
                 # if we're inserting a marker, there is no data to set
-                # and the form never fires to update the data.
-                # TODO: should we do all data insertion here?
-                # The .blend file data is restored by the scene hook, but we
-                # don't insert any default data unless the form is modified
-                if data["kind"] == "Struct" and "properties" not in data:
-                    component["value"] = {}
+                # if data["kind"] == "Struct" and "properties" not in data:
+                #     component["value"] = {}
 
                 component_two = obj.skein_two.add()
                 component_two.name = data["shortPath"]
@@ -66,7 +58,7 @@ class InsertBevyComponent(bpy.types.Operator):
                 # If we inserted a new component, update the 
                 # active_component_index to show the right editor
                 # for the newly inserted component
-                obj.active_component_index = len(obj_skein) - 1
+                obj.active_component_index = len(obj.skein_two) - 1
 
             else:
                 print("no data in registry")

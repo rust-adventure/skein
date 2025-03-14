@@ -217,7 +217,7 @@ mod tests {
 
         assert_eq!(
             json_string,
-            r#"{"skein::tests::Player":{"name":"Chris Biscardi","power":100.0,"test":4}}"#
+            r#"{"bevy_skein::tests::Player":{"name":"Chris Biscardi","power":100.0,"test":4}}"#
         );
     }
 
@@ -259,7 +259,7 @@ mod tests {
 
         assert_eq!(
             json_string,
-            r#"{"skein::tests::TeamMember":{"player":{"name":"Chris Biscardi","power":100.0,"test":4},"team":"Green"}}"#
+            r#"{"bevy_skein::tests::TeamMember":{"player":{"name":"Chris Biscardi","power":100.0,"test":4},"team":"Green"}}"#
         );
     }
 
@@ -284,7 +284,7 @@ mod tests {
 
         assert_eq!(
             json_string,
-            r#"{"skein::tests::TupleStruct":12}"#
+            r#"{"bevy_skein::tests::TupleStruct":12}"#
         );
     }
 
@@ -318,7 +318,7 @@ mod tests {
 
         assert_eq!(
             json_string,
-            r#"{"skein::tests::MultiElementTupleStruct":[12,{"x":0.0,"y":0.0,"z":0.0},2,"testing"]}"#
+            r#"{"bevy_skein::tests::MultiElementTupleStruct":[12,{"x":0.0,"y":0.0,"z":0.0},2,"testing"]}"#
         );
     }
 
@@ -343,7 +343,7 @@ mod tests {
 
         assert_eq!(
             json_string,
-            r#"{"skein::tests::Marker":{}}"#
+            r#"{"bevy_skein::tests::Marker":{}}"#
         );
     }
 
@@ -372,7 +372,7 @@ mod tests {
 
         assert_eq!(
             json_string,
-            r#"{"skein::tests::TaskPriority":"High"}"#
+            r#"{"bevy_skein::tests::TaskPriority":"High"}"#
         );
     }
 
@@ -402,7 +402,7 @@ mod tests {
 
         assert_eq!(
             json_string,
-            r#"{"skein::tests::SomeThings":{"OneThing":{"name":"testing"}}}"#
+            r#"{"bevy_skein::tests::SomeThings":{"OneThing":{"name":"testing"}}}"#
         );
     }
 
@@ -421,7 +421,7 @@ mod tests {
 
         assert_eq!(
             json_string,
-            r#"{"skein::tests::SomeThings":{"Low":12}}"#
+            r#"{"bevy_skein::tests::SomeThings":{"Low":12}}"#
         );
     }
 }

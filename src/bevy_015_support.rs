@@ -13,9 +13,7 @@ use bevy_reflect::{
     TypeRegistration, VariantInfo,
 };
 use bevy_utils::HashMap;
-use serde::{
-    de::DeserializeSeed as _, Deserialize, Serialize,
-};
+use serde::{Deserialize, Serialize};
 use serde_json::{json, Map, Value};
 
 use bevy_remote::{BrpError, BrpResult};
@@ -26,7 +24,7 @@ pub const BRP_REGISTRY_SCHEMA_METHOD: &str =
 
 /// Handles a `bevy/registry/schema` request (list all registry types in form of schema) coming from a client.
 pub fn export_registry_types(
-    In(params): In<Option<Value>>,
+    In(_): In<Option<Value>>,
     world: &World,
 ) -> BrpResult {
     let types = world.resource::<AppTypeRegistry>();

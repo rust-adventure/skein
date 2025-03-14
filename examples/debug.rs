@@ -8,7 +8,8 @@ use bevy::{
     },
     prelude::*,
 };
-use bevy_skein::{SkeinPlugin, SkeinSceneInstanceReady};
+use bevy_scene::SceneInstanceReady;
+use bevy_skein::SkeinPlugin;
 use serde::{Deserialize, Serialize};
 
 fn main() {
@@ -25,7 +26,7 @@ fn main() {
 }
 
 fn check_insertions(
-    trigger: Trigger<SkeinSceneInstanceReady>,
+    trigger: Trigger<SceneInstanceReady>,
     children: Query<&Children>,
     levels: Query<&PowerLevel>,
 ) {

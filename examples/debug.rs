@@ -8,8 +8,9 @@ use bevy::{
     },
     prelude::*,
 };
+use bevy_scene::SceneInstanceReady;
 use serde::{Deserialize, Serialize};
-use skein::{SkeinPlugin, SkeinSceneInstanceReady};
+use skein::SkeinPlugin;
 
 fn main() {
     App::new()
@@ -25,7 +26,7 @@ fn main() {
 }
 
 fn check_insertions(
-    trigger: Trigger<SkeinSceneInstanceReady>,
+    trigger: Trigger<SceneInstanceReady>,
     children: Query<&Children>,
     levels: Query<&PowerLevel>,
 ) {
@@ -65,7 +66,7 @@ fn setup(
         ..default()
     });
 
-    // a barebones scene containing one of each gltf_extra type
+    // replace this .gltf file to show data
     commands.spawn(SceneRoot(asset_server.load(
         GltfAssetLabel::Scene(0).from_asset("debug.gltf"),
     )));

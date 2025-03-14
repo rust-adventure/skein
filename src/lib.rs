@@ -6,20 +6,19 @@
 //!
 use bevy_app::{App, Plugin};
 use bevy_ecs::{
-    event::Event,
     hierarchy::Children,
     name::Name,
     observer::Trigger,
     reflect::{AppTypeRegistry, ReflectCommandExt},
     system::{Commands, Query, Res},
+    world::OnAdd,
 };
 use bevy_gltf::{
     GltfExtras, GltfMaterialExtras, GltfMeshExtras,
     GltfSceneExtras,
 };
 use bevy_log::{error, trace};
-use bevy_reflect::{serde::ReflectDeserializer, Reflect};
-use bevy_scene::SceneInstanceReady;
+use bevy_reflect::serde::ReflectDeserializer;
 use serde::de::DeserializeSeed;
 use serde_json::Value;
 use tracing::instrument;
@@ -59,7 +58,6 @@ impl Plugin for SkeinPlugin {
 #[instrument(skip(
     trigger,
     type_registry,
-    children,
     gltf_extras,
     gltf_material_extras,
     gltf_mesh_extras,
@@ -68,9 +66,16 @@ impl Plugin for SkeinPlugin {
     commands,
 ))]
 fn postprocess_scene(
-    trigger: Trigger<SceneInstanceReady>,
+    trigger: Trigger<
+        OnAdd,
+        (
+            GltfExtras,
+            GltfMaterialExtras,
+            GltfMeshExtras,
+            GltfSceneExtras,
+        ),
+    >,
     type_registry: Res<AppTypeRegistry>,
-    children: Query<&Children>,
     gltf_extras: Query<&GltfExtras>,
     gltf_material_extras: Query<&GltfMaterialExtras>,
     gltf_mesh_extras: Query<&GltfMeshExtras>,
@@ -79,25 +84,27 @@ fn postprocess_scene(
     mut commands: Commands,
 ) {
     trace!("global_scene_instance_ready");
-    for entity in
-        children.iter_descendants(trigger.target())
-    {
-        let Ok(extras) = gltf_extras
-            .get(entity)
-            .map(|v| &v.value)
-            .or(gltf_material_extras
-                .get(entity)
-                .map(|v| &v.value))
-            .or(gltf_mesh_extras
-                .get(entity)
-                .map(|v| &v.value))
-            .or(gltf_scene_extras
-                .get(entity)
-                .map(|v| &v.value))
-        else {
-            continue;
-        };
+    let entity = trigger.target();
 
+    // Each of the possible extras.
+    let gltf_extra =
+        gltf_extras.get(entity).map(|v| &v.value);
+    let gltf_material_extra =
+        gltf_material_extras.get(entity).map(|v| &v.value);
+    let gltf_mesh_extra =
+        gltf_mesh_extras.get(entity).map(|v| &v.value);
+    let gltf_scene_extra =
+        gltf_scene_extras.get(entity).map(|v| &v.value);
+
+    for extras in [
+        gltf_extra,
+        gltf_material_extra,
+        gltf_mesh_extra,
+        gltf_scene_extra,
+    ]
+    .iter()
+    .filter_map(|p| p.ok())
+    {
         let obj = match serde_json::from_str(extras) {
             Ok(Value::Object(obj)) => obj,
             Ok(Value::Null) => {
@@ -161,57 +168,7 @@ fn postprocess_scene(
                 .insert_reflect(reflect_value);
         }
     }
-
-    // trigger the event again so that consumers can have a
-    // "real" SceneInstanceReady event to consume if they
-    // want to
-    //
-    // 1. spawn
-    // 2. let skein postprocess
-    // 3. then handle the resulting scene
-    commands.trigger_targets(
-        SkeinSceneInstanceReady(*trigger.event()),
-        trigger.target(),
-    );
 }
-
-/// A duplicate of the original [`SceneInstanceReady`] event
-/// that fires after skein has post-processed the scene.
-///
-/// Use an observer targeting this event if you want to use
-/// [`SceneInstanceReady`] but you also want components from
-/// your gltf file to be applied first.
-///
-/// ```rust
-/// use bevy::prelude::*;
-/// use skein::SkeinSceneInstanceReady;
-/// use serde::{Serialize, Deserialize};
-///
-/// #[derive(
-///   Component, Reflect, Serialize, Deserialize, Debug,
-/// )]
-/// #[reflect(Component, Serialize, Deserialize)]
-/// struct Character {
-///     name: String,
-/// }
-///
-/// fn check_insertions(
-///     trigger: Trigger<SkeinSceneInstanceReady>,
-///     children: Query<&Children>,
-///     levels: Query<&Character>,
-/// ) {
-///     for entity in
-///         children.iter_descendants(trigger.target())
-///     {
-///         let Ok(level) = levels.get(entity) else {
-///             continue;
-///         };
-///         info!(?level);
-///     }
-/// }
-/// ```
-#[derive(Debug, Event, Reflect)]
-pub struct SkeinSceneInstanceReady(pub SceneInstanceReady);
 
 #[cfg(test)]
 mod tests {

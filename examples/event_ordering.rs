@@ -1,25 +1,10 @@
-//! An example that shows the ordering of events
-//!
-//! 1. global `SceneInstanceReady` skein observer
-//! 2. local `SceneInstanceReady` observer
-//! 3. global `SkeinSceneInstanceReady` observer
-//! 3. local `SkeinSceneInstanceReady` observer
-//!
-//! ```shell
-//! ❯ RUST_LOG=info,skein=trace cargo run --example event_ordering
-//! TRACE postprocess_scene: skein: global_scene_instance_ready
-//!  INFO local_scene_instance_ready: event_ordering: local_scene_instance_ready
-//!  INFO global_skein_scene_instance_ready: event_ordering: global_skein_scene_instance_ready
-//!  INFO global_skein_scene_instance_ready: event_ordering: level=Character { name: "Hollow Knight" }
-//!  INFO local_skein_scene_instance_ready: event_ordering: local_skein_scene_instance_ready
-//!  INFO local_skein_scene_instance_ready: event_ordering: level=Character { name: "Hollow Knight" }
-//! ```
-//!
+//! An example that shows that components are added
+//! before a SceneInstanceReady is handled
 use bevy::prelude::*;
 use bevy_log::tracing::instrument;
 use bevy_scene::SceneInstanceReady;
 use serde::{Deserialize, Serialize};
-use skein::{SkeinPlugin, SkeinSceneInstanceReady};
+use skein::SkeinPlugin;
 
 fn main() {
     App::new()
@@ -29,52 +14,15 @@ fn main() {
             SkeinPlugin::default(),
         ))
         .add_systems(Startup, setup)
-        .add_observer(global_skein_scene_instance_ready)
         .run();
 }
 
 #[instrument(skip(trigger, children, levels))]
-fn local_scene_instance_ready(
+fn on_scene_instance_ready(
     trigger: Trigger<SceneInstanceReady>,
     children: Query<&Children>,
     levels: Query<&Character>,
 ) {
-    info!("local_scene_instance_ready");
-
-    for entity in
-        children.iter_descendants(trigger.target())
-    {
-        let Ok(level) = levels.get(entity) else {
-            continue;
-        };
-        info!(?level);
-    }
-}
-
-#[instrument(skip(trigger, children, levels))]
-fn global_skein_scene_instance_ready(
-    trigger: Trigger<SkeinSceneInstanceReady>,
-    children: Query<&Children>,
-    levels: Query<&Character>,
-) {
-    info!("global_skein_scene_instance_ready");
-    for entity in
-        children.iter_descendants(trigger.target())
-    {
-        let Ok(level) = levels.get(entity) else {
-            continue;
-        };
-        info!(?level);
-    }
-}
-
-#[instrument(skip(trigger, children, levels))]
-fn local_skein_scene_instance_ready(
-    trigger: Trigger<SkeinSceneInstanceReady>,
-    children: Query<&Children>,
-    levels: Query<&Character>,
-) {
-    info!("local_skein_scene_instance_ready");
     for entity in
         children.iter_descendants(trigger.target())
     {
@@ -108,7 +56,6 @@ fn setup(
         ..default()
     });
 
-    // a barebones scene containing one of each gltf_extra type
     commands
         .spawn(SceneRoot(
             asset_server.load(
@@ -116,6 +63,5 @@ fn setup(
                     .from_asset("event_ordering.gltf"),
             ),
         ))
-        .observe(local_scene_instance_ready)
-        .observe(local_skein_scene_instance_ready);
+        .observe(on_scene_instance_ready);
 }

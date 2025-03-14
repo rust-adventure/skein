@@ -51,6 +51,12 @@ commands.spawn(SceneRoot(asset_server.load(
 )));
 ```
 
+## Use Cases
+
+- Apply Bevy Components in Blender
+- Replace materials from Blender with materials defined in Bevy ([example](examples/replace_material.rs))
+- Use Blender Drivers to power Bevy Component values
+
 ## Why is it named Skein?
 
 Its a tool that aims to improve the efficiency of Bevy (group of birds) and Blender workflows.

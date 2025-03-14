@@ -1,0 +1,8 @@
+[template]
+cargo_generate_version = "0.22"
+ignore = [
+    ".github/workflows/ci-generate.yaml",
+    "LICENSE-Apache-2.0.txt",
+    "LICENSE-MIT.txt",
+    "README.md",
+]

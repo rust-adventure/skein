@@ -1,3 +1,5 @@
+import base64
+import hashlib
 import bpy
 import re
 import inspect
@@ -15,6 +17,15 @@ def cap(val):
 
 def capitalize_path(s):
     return "".join(map(cap, re.split('[:_]+', s)))
+
+# PropertyGroup classes can't be more than 64 characters,
+# so try to squeeze under the limit by hashing the capitalized
+# paths.
+def hash_type_path(data):
+    m = hashlib.md5(data.encode('ascii'))
+    base64_bytes = base64.b16encode(m.digest())
+    output = base64_bytes.decode("ascii")
+    return "S" + output
 
 def make_property(
         skein_property_groups,
@@ -109,7 +120,7 @@ def make_property(
 
                     # add this struct type to the skein_property_groups so it 
                     # can be accessed elsewhere by type_path
-                    skein_property_groups[type_path] = type(capitalize_path(type_path), (ComponentData,), {
+                    skein_property_groups[type_path] = type(hash_type_path(capitalize_path(type_path)), (ComponentData,), {
                         '__annotations__': annotations,
                     })
 
@@ -159,7 +170,9 @@ def make_property(
 
             # add this struct type to the skein_property_groups so it 
             # can be accessed elsewhere by type_path
-            skein_property_groups[type_path] = type(capitalize_path(type_path), (ComponentData,), {
+            t = hash_type_path(capitalize_path(type_path))
+            print(t)
+            skein_property_groups[type_path] = type(t, (ComponentData,), {
                 '__annotations__': annotations,
             })
 

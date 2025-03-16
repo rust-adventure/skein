@@ -6,7 +6,6 @@
 //!
 use bevy_app::{App, Plugin};
 use bevy_ecs::{
-    hierarchy::Children,
     name::Name,
     observer::Trigger,
     reflect::{AppTypeRegistry, ReflectCommandExt},
@@ -109,9 +108,15 @@ fn postprocess_scene(
             Ok(Value::Object(obj)) => obj,
             Ok(Value::Null) => {
                 if let Ok(name) = names.get(entity) {
-                    trace!("entity {:?} with name {name} had gltf extras which could not be parsed as a serde_json::Value::Object; parsed as Null", entity);
+                    trace!(
+                        "entity {:?} with name {name} had gltf extras which could not be parsed as a serde_json::Value::Object; parsed as Null",
+                        entity
+                    );
                 } else {
-                    trace!("entity {:?} with no Name had gltf extras which could not be parsed as a serde_json::Value::Object; parsed as Null", entity);
+                    trace!(
+                        "entity {:?} with no Name had gltf extras which could not be parsed as a serde_json::Value::Object; parsed as Null",
+                        entity
+                    );
                 }
                 continue;
             }
@@ -122,7 +127,12 @@ fn postprocess_scene(
             }
             Err(err) => {
                 let name = names.get(entity).ok();
-                trace!(?entity, ?name, ?err, "gltf extras which could not be parsed as a serde_json::Value::Object");
+                trace!(
+                    ?entity,
+                    ?name,
+                    ?err,
+                    "gltf extras which could not be parsed as a serde_json::Value::Object"
+                );
                 continue;
             }
         };
@@ -156,7 +166,11 @@ fn postprocess_scene(
             {
                 Ok(value) => value,
                 Err(err) => {
-                    error!(?err, ?obj, "failed to instantiate component data from blender");
+                    error!(
+                        ?err,
+                        ?obj,
+                        "failed to instantiate component data from blender"
+                    );
                     continue;
                 }
             };
@@ -172,22 +186,14 @@ fn postprocess_scene(
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use bevy::prelude::*;
-    use bevy_reflect::{
-        serde::ReflectSerializer, TypeRegistry,
-    };
-    use serde::{Deserialize, Serialize};
+    use std::str::FromStr;
 
-    #[derive(
-        Component, Reflect, Serialize, Deserialize, Debug,
-    )]
-    #[reflect(Component, Serialize, Deserialize)]
-    struct Player {
-        name: String,
-        power: f32,
-        test: i32,
-    }
+    use super::*;
+    use bevy::{asset::uuid::Uuid, prelude::*};
+    use bevy_reflect::{
+        TypeRegistry, serde::ReflectSerializer,
+    };
+    use test_components::*;
 
     #[test]
     fn struct_fields() {
@@ -208,24 +214,8 @@ mod tests {
 
         assert_eq!(
             json_string,
-            r#"{"skein::tests::Player":{"name":"Chris Biscardi","power":100.0,"test":4}}"#
+            r#"{"test_components::Player":{"name":"Chris Biscardi","power":100.0,"test":4}}"#
         );
-    }
-
-    #[derive(
-        Component, Reflect, Serialize, Deserialize, Debug,
-    )]
-    #[reflect(Component, Serialize, Deserialize)]
-    struct TeamMember {
-        player: Player,
-        team: Team,
-    }
-
-    #[derive(Reflect, Serialize, Deserialize, Debug)]
-    enum Team {
-        Green,
-        Red,
-        Blue,
     }
 
     #[test]
@@ -250,19 +240,13 @@ mod tests {
 
         assert_eq!(
             json_string,
-            r#"{"skein::tests::TeamMember":{"player":{"name":"Chris Biscardi","power":100.0,"test":4},"team":"Green"}}"#
+            r#"{"test_components::TeamMember":{"player":{"name":"Chris Biscardi","power":100.0,"test":4},"team":"Green"}}"#
         );
     }
 
-    #[derive(
-        Component, Reflect, Serialize, Deserialize, Debug,
-    )]
-    #[reflect(Component, Serialize, Deserialize)]
-    struct TupleStruct(u32);
-
     #[test]
     fn tuple_struct() {
-        let value = TupleStruct(12);
+        let value = ATupleStruct(12);
 
         let type_registry = TypeRegistry::new();
 
@@ -275,19 +259,9 @@ mod tests {
 
         assert_eq!(
             json_string,
-            r#"{"skein::tests::TupleStruct":12}"#
+            r#"{"test_components::ATupleStruct":12}"#
         );
     }
-
-    // MultiElementTupleStruct is not currently supported in the
-    // Blender addon. if you have a use case for this that isn't
-    // solvable by converting to a named field struct, open an
-    // issue or a PR
-    #[derive(
-        Component, Reflect, Serialize, Deserialize, Debug,
-    )]
-    #[reflect(Component, Serialize, Deserialize)]
-    struct MultiElementTupleStruct(u32, Vec3, i32, String);
 
     #[test]
     fn multi_element_tuple_struct() {
@@ -309,15 +283,9 @@ mod tests {
 
         assert_eq!(
             json_string,
-            r#"{"skein::tests::MultiElementTupleStruct":[12,{"x":0.0,"y":0.0,"z":0.0},2,"testing"]}"#
+            r#"{"test_components::MultiElementTupleStruct":[12,{"x":0.0,"y":0.0,"z":0.0},2,"testing"]}"#
         );
     }
-
-    #[derive(
-        Component, Reflect, Serialize, Deserialize, Debug,
-    )]
-    #[reflect(Component, Serialize, Deserialize)]
-    struct Marker;
 
     #[test]
     fn marker_component() {
@@ -334,18 +302,8 @@ mod tests {
 
         assert_eq!(
             json_string,
-            r#"{"skein::tests::Marker":{}}"#
+            r#"{"test_components::Marker":{}}"#
         );
-    }
-
-    #[derive(
-        Component, Reflect, Serialize, Deserialize, Debug,
-    )]
-    #[reflect(Component, Serialize, Deserialize)]
-    enum TaskPriority {
-        High,
-        Medium,
-        Low,
     }
 
     #[test]
@@ -363,17 +321,8 @@ mod tests {
 
         assert_eq!(
             json_string,
-            r#"{"skein::tests::TaskPriority":"High"}"#
+            r#"{"test_components::TaskPriority":"High"}"#
         );
-    }
-
-    #[derive(
-        Component, Reflect, Serialize, Deserialize, Debug,
-    )]
-    #[reflect(Component, Serialize, Deserialize)]
-    enum SomeThings {
-        OneThing { name: String },
-        Low(i32),
     }
 
     #[test]
@@ -393,7 +342,7 @@ mod tests {
 
         assert_eq!(
             json_string,
-            r#"{"skein::tests::SomeThings":{"OneThing":{"name":"testing"}}}"#
+            r#"{"test_components::SomeThings":{"OneThing":{"name":"testing"}}}"#
         );
     }
 
@@ -412,7 +361,157 @@ mod tests {
 
         assert_eq!(
             json_string,
-            r#"{"skein::tests::SomeThings":{"Low":12}}"#
+            r#"{"test_components::SomeThings":{"Low":12}}"#
+        );
+    }
+
+    #[test]
+    fn an_optional_name() {
+        let value = AnOptionalName {
+            name: Some("A Test Name".to_string()),
+        };
+
+        let type_registry = TypeRegistry::new();
+
+        // serialize
+        let serializer =
+            ReflectSerializer::new(&value, &type_registry);
+        let json_string =
+            serde_json::ser::to_string(&serializer)
+                .unwrap();
+
+        assert_eq!(
+            json_string,
+            r#"{"test_components::AnOptionalName":{"name":"A Test Name"}}"#
+        );
+
+        let value = AnOptionalName { name: None };
+        // serialize
+        let serializer =
+            ReflectSerializer::new(&value, &type_registry);
+        let json_string =
+            serde_json::ser::to_string(&serializer)
+                .unwrap();
+
+        assert_eq!(
+            json_string,
+            r#"{"test_components::AnOptionalName":{"name":null}}"#
+        );
+    }
+
+    #[test]
+    fn non_zero_numbers() {
+        let value = NonZeroNumbers {
+            small: std::num::NonZeroU8::new(255).unwrap(),
+            an_int: std::num::NonZeroI16::new(-493)
+                .unwrap(),
+        };
+
+        let mut type_registry = TypeRegistry::new();
+        type_registry.register::<NonZeroNumbers>();
+
+        // serialize
+        let serializer =
+            ReflectSerializer::new(&value, &type_registry);
+        let json_string =
+            serde_json::ser::to_string(&serializer)
+                .unwrap();
+
+        assert_eq!(
+            json_string,
+            r#"{"test_components::NonZeroNumbers":{"small":255,"an_int":-493}}"#
+        );
+    }
+
+    #[test]
+    fn bucket_of_types() {
+        let value = BucketOfTypes {
+            entity: Entity::PLACEHOLDER,
+            // force a uuid value for testing purposes
+            uuid: Uuid::from_str(
+                "16c27292-862e-4555-af16-d3d8e624c6de",
+            )
+            .unwrap(),
+            bvec: BVec3A::new(true, false, true),
+        };
+
+        let mut type_registry = TypeRegistry::new();
+        type_registry.register::<BucketOfTypes>();
+
+        // serialize
+        let serializer =
+            ReflectSerializer::new(&value, &type_registry);
+        let json_string =
+            serde_json::ser::to_string(&serializer)
+                .unwrap();
+
+        assert_eq!(
+            json_string,
+            r#"{"test_components::BucketOfTypes":{"entity":8589934591,"uuid":"16c27292-862e-4555-af16-d3d8e624c6de","bvec":[true,false,true]}}"#
+        );
+    }
+
+    #[test]
+    fn enum_component_rich_and_unit_enum() {
+        let value = RichAndUnitEnum::Player(Player {
+            name: "Chris".to_string(),
+            power: 10.,
+            test: 42,
+        });
+
+        let type_registry = TypeRegistry::new();
+
+        // serialize
+        let serializer =
+            ReflectSerializer::new(&value, &type_registry);
+        let json_string =
+            serde_json::ser::to_string(&serializer)
+                .unwrap();
+
+        assert_eq!(
+            json_string,
+            r#"{"test_components::RichAndUnitEnum":{"Player":{"name":"Chris","power":10.0,"test":42}}}"#
+        );
+    }
+
+    #[test]
+    fn enum_component_rich_and_unit_enum_alt() {
+        let value = RichAndUnitEnum::NotAPlayer;
+
+        let type_registry = TypeRegistry::new();
+
+        // serialize
+        let serializer =
+            ReflectSerializer::new(&value, &type_registry);
+        let json_string =
+            serde_json::ser::to_string(&serializer)
+                .unwrap();
+
+        assert_eq!(
+            json_string,
+            r#"{"test_components::RichAndUnitEnum":"NotAPlayer"}"#
+        );
+    }
+
+    #[test]
+    fn a_struct_with_color() {
+        let value = AStructWithColor {
+            base: Color::hsl(20., 50., 50.),
+            highlight: Color::oklch(1., 1., 1.),
+        };
+
+        let type_registry = TypeRegistry::new();
+
+        // serialize
+        let serializer =
+            ReflectSerializer::new(&value, &type_registry);
+        let json_string =
+            serde_json::ser::to_string(&serializer)
+                .unwrap();
+
+        assert_eq!(
+            json_string,
+            r#"{"test_components::AStructWithColor":{"base":{"Hsla":{"hue":20.0,"saturation":50.0,"lightness":50.0,"alpha":1.0}},"highlight":{"Oklcha":{"lightness":1.0,"chroma":1.0,"hue":1.0,"alpha":1.0}}}}"#
         );
     }
 }

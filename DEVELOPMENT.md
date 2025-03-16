@@ -121,12 +121,16 @@ There are "primitive" types in the Bevy reflection data that have a `kind` of `V
 
 - Write developing documentation
 - Write end-user documentation/how to use
-- Can this work in 0.15?
-  - BRP backport for registry api
-- Marker and DistanceFog forms show uneditable content
-- With the addition of object, mesh, and material panels, the `active_editor` should exist on those types as well. We already keep active_component_index on the object, it makes sense to have the editor there as well. This also affects loading new blend files using the hook. Any object/mesh/material with an active_component_index that is valid should get its active_editor filled out, and panels should take the active_editor from the current object/mesh/material context.
+- DistanceFog forms show uneditable content (check if this is still true)
+- Some/None UI shows everything
+- make_property for Enums with unit variants that aren't Option
 
 ### Edge Cases to add tests for
 
 - How does it handle 6-level nested structs?
 - glam Values (and other values)
+
+---
+
+- How to drive component values for instanced objects?
+- Clear skein-registry.json when fetching new bevy reflection data.

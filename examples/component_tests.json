@@ -192,5 +192,50 @@
     "shortPath": "MultiElementTupleStruct",
     "type": "array",
     "typePath": "component_tests::MultiElementTupleStruct"
+  },
+  "component_tests::AnOptionalName": {
+    "additionalProperties": false,
+    "crateName": "component_tests",
+    "kind": "Struct",
+    "modulePath": "component_tests",
+    "properties": {
+      "name": {
+        "type": {
+          "$ref": "#/$defs/core::option::Option<alloc::string::String>"
+        }
+      }
+    },
+    "reflectTypes": ["Component"],
+    "shortPath": "AnOptionalName",
+    "type": "object",
+    "typePath": "component_tests::AnOptionalName"
+  },
+  "core::option::Option<alloc::string::String>": {
+    "crateName": "core",
+    "kind": "Enum",
+    "modulePath": "core::option",
+    "oneOf": [
+      {
+        "shortPath": "None",
+        "typePath": "core::option::Option<alloc::string::String>::None"
+      },
+      {
+        "items": false,
+        "kind": "Tuple",
+        "prefixItems": [
+          {
+            "type": {
+              "$ref": "#/$defs/alloc::string::String"
+            }
+          }
+        ],
+        "shortPath": "Some",
+        "type": "array",
+        "typePath": "core::option::Option<alloc::string::String>::Some"
+      }
+    ],
+    "shortPath": "Option<String>",
+    "type": "object",
+    "typePath": "core::option::Option<alloc::string::String>"
   }
 }

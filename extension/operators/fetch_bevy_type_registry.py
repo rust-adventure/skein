@@ -86,6 +86,8 @@ def process_registry(context, registry):
 
     global_skein.components.clear()
     for type_path, value in registry.items():
+        # if "avian3d" not in type_path:
+        #     continue
         try:
             property_group_or_property = make_property(
                 skein_property_groups,

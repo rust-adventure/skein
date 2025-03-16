@@ -33,6 +33,7 @@ tracing = "0.1"
 [dev-dependencies]
 bevy = { git = "https://github.com/bevyengine/bevy", rev = "3b9e2e6" }
 serde = { version = "1.0", features = ["derive"] }
+test-components = { path = "./test-components" }
 
 
 # Idiomatic Bevy code often triggers these lints, and the CI workflow treats them as errors.

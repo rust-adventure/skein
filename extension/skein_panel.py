@@ -146,10 +146,18 @@ def render_props(layout, context, context_key, component_data, is_first_recurse)
     # to include the "skein_enum_index"
     if "skein_enum_index" in component_fields:
         active_enum_variant = getattr(getattr(context, context_key), "skein_enum_index")
-        component_fields = {
-            "skein_enum_index": component_fields["skein_enum_index"],
-            active_enum_variant: component_fields[active_enum_variant]
-        }
+        if active_enum_variant == "None" and "None" not in component_fields:
+            component_fields = {
+                "skein_enum_index": component_fields["skein_enum_index"]
+            }
+            pass
+        else:
+            # if the shortName is "None" and the component_fields don't include any key 
+            # for the "None" variant, then its pretty likely we have a core::option::Option
+            component_fields = {
+                "skein_enum_index": component_fields["skein_enum_index"],
+                active_enum_variant: component_fields[active_enum_variant]
+            }
 
     # render ui for any fields
     if component_fields:

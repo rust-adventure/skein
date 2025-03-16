@@ -1,0 +1,9 @@
+[package]
+name = "test-components"
+description = "Components to aid in debugging and testing skein"
+version = "0.1.0"
+authors = ["Chris Biscardi"]
+edition = "2024"
+
+[dependencies]
+bevy = { git = "https://github.com/bevyengine/bevy", rev = "3b9e2e6" }

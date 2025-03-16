@@ -61,10 +61,11 @@ def make_property(
     if addon_prefs.debug:
         print(component)
 
+    if "kind" not in component:
+        print("kind not in ", type_path, component)
     match component["kind"]:
         case "Array":
-            if addon_prefs.debug:
-                print("Array is unimplemented in make_property")
+            print("Array is unimplemented in make_property: ", type_path)
             return
         case "Enum":
             if addon_prefs.debug:
@@ -100,23 +101,30 @@ def make_property(
                     annotations["skein_enum_index"] = bpy.props.EnumProperty(
                         name="variant",
                         items=items,
-                        
                     )
 
                     for option in component["oneOf"]:
                         if addon_prefs.debug:
                             print("- option: ", option["shortPath"])
                         key = option["shortPath"]
-                        property = make_property(
-                            skein_property_groups,
-                            registry,
-                            option["typePath"],
-                            option
-                        )
-                        if inspect.isclass(property):
-                            annotations[key] = bpy.props.PointerProperty(type=property)
+
+                        if key == "None" and component["modulePath"] == "core::option":
+                            # this is the None variant of a core::option::Option
+                            # so we'll leave it out of the annotations and 
+                            # keep it in the `skein_enum_index` so the user can
+                            # select it, but there's no value to edit
+                            pass
                         else:
-                            annotations[key] = property
+                            property = make_property(
+                                skein_property_groups,
+                                registry,
+                                option["typePath"],
+                                option
+                            )
+                            if inspect.isclass(property):
+                                annotations[key] = bpy.props.PointerProperty(type=property)
+                            else:
+                                annotations[key] = property
 
                     # add this struct type to the skein_property_groups so it 
                     # can be accessed elsewhere by type_path
@@ -135,20 +143,16 @@ def make_property(
                     # return the type we just constructed
                     return skein_property_groups[type_path]
                 case _:
-                    if addon_prefs.debug:
-                        print("unknown Enum type")
+                    print("unknown Enum type: ", component["type"], "\n  ", type_path)
                     return
         case "List":
-            if addon_prefs.debug:
-                print("List is unimplemented in make_property")
+            print("List is unimplemented in make_property: ", type_path)
             return
         case "Map":
-            if addon_prefs.debug:
-                print("Map is unimplemented in make_property")
+            print("Map is unimplemented in make_property: ", type_path)
             return
         case "Set":
-            if addon_prefs.debug:
-                print("Set is unimplemented in make_property")
+            print("Set is unimplemented in make_property: ", type_path)
             return
         case "Struct":
             annotations = {}
@@ -171,7 +175,6 @@ def make_property(
             # add this struct type to the skein_property_groups so it 
             # can be accessed elsewhere by type_path
             t = hash_type_path(capitalize_path(type_path))
-            print(t)
             skein_property_groups[type_path] = type(t, (ComponentData,), {
                 '__annotations__': annotations,
             })
@@ -195,8 +198,7 @@ def make_property(
                 )
                 return skein_property_groups[type_path]
             else:
-                if addon_prefs.debug:
-                    print("Tuple is unimplemented in make_property for lengths longer than 1 element")
+                print("Tuple is unimplemented in make_property for lengths longer than 1 element: ", type_path)
                 return
         case "TupleStruct":
             # single element tuple struct is a special case
@@ -213,12 +215,13 @@ def make_property(
                 )
                 return skein_property_groups[type_path]
             else:
-                if addon_prefs.debug:
-                    print("TupleStruct is unimplemented in make_property for lengths longer than 1 element")
+                print("TupleStruct is unimplemented in make_property for lengths longer than 1 element: ", type_path)
                 return
         case "Value":
             # print("- component[type]:  ", component["type"])
             match component["type"]:
+                case "boolean":
+                    return bpy.props.BoolProperty()
                 case "uint":
                     match type_path:
                         case "u8":
@@ -247,6 +250,13 @@ def make_property(
                                 # those numbers from inside blender
                                 # max=4294967295,
                         )
+                        case "u128":
+                            return bpy.props.IntProperty(
+                                min=0,
+                                # blender actually sets the default hard maximum to
+                                # 2^31, not 2^32, so not sure if we can even set
+                                # numbers bigger than this for u128 in Blender
+                        )
                         case "usize":
                             return bpy.props.IntProperty(
                                 min=0,
@@ -256,8 +266,7 @@ def make_property(
                                 # max=4294967295,
                         )
                         case _:
-                            if addon_prefs.debug:
-                                print("unknown uint type: ", type_path)
+                            print("unknown uint type: ", type_path)
                             return bpy.props.IntProperty(min=0, )
                 case "int":
                     match type_path:
@@ -281,8 +290,7 @@ def make_property(
                         case "isize":
                             return bpy.props.IntProperty()
                         case _:
-                            if addon_prefs.debug:
-                                print("unknown iint type: ", type_path)
+                            print("unknown iint type: ", type_path)
                             return bpy.props.IntProperty(min=0, )
                 case "float":
                     return bpy.props.FloatProperty()
@@ -292,20 +300,60 @@ def make_property(
                     if addon_prefs.debug:
                         print("component: ", component)
                     match component["typePath"]:
+                        case "core::num::NonZeroU8":
+                            return bpy.props.IntProperty(min=0, max=255, default=1)
+                        case "core::num::NonZeroU16":
+                            return bpy.props.IntProperty(min=1, max=65535, default=1)
+                        case "core::num::NonZeroU32":
+                            return bpy.props.IntProperty(min=1, default=1)
+                        case "core::num::NonZeroU64":
+                            return bpy.props.IntProperty(min=1, default=1)
+                        # TODO: prevent 0 from being valid for NonZeroI* values, but how?
+                        case "core::num::NonZeroI8":
+                            return bpy.props.IntProperty(
+                                min=-128,
+                                max=127,
+                                default=1
+                            )
+                        case "core::num::NonZeroI16":
+                            return bpy.props.IntProperty(
+                                min=-32_768,
+                                max=32_767,
+                                default=1
+                            )
+                        case "core::num::NonZeroI32":
+                            return bpy.props.IntProperty(
+                                min=-2_147_483_648,
+                                max=2_147_483_647,
+                                default=1
+                        )
+                        case "core::num::NonZeroI64":
+                            return bpy.props.IntProperty(default=1)
+                        case "smol_str::SmolStr":
+                            return bpy.props.StringProperty()
+                        case "alloc::borrow::Cow<str>":
+                            return bpy.props.StringProperty()
+                        case "avian3d::collision::collider::parry::TrimeshFlags":
+                            # TODO: What do we do about this. hard coding third-party crate
+                            # primitive Value handling is... not great. Can we figure out
+                            # how to insert this data into the reflection information?
+                            # its opaque intentionally, so really this is a set of checkboxes
+                            # represented as a bitfield and the UI should reflect that.
+                            return bpy.props.IntProperty(min=0, max=255)
                         case "core::time::Duration":
                             if addon_prefs.debug:
                                 print("core::time::Duration is currently not handled")
                             return
                         case _:
-                            if addon_prefs.debug:
-                                print("unhandled `Value` of `object` type: ", component["typePath"])
+                            # if addon_prefs.debug:
+                            print("unhandled `Value` of `object` type: ", component["typePath"], "\n  ", type_path)
                             return
                 case _:
-                    if addon_prefs.debug:
-                        print("unhandled type: ", component["type"])
+                    # if addon_prefs.debug:
+                    print("unhandled type: ", component["type"])
                     return
         # If an exact match is not confirmed, this last case will be used if provided
         case _:
-            if addon_prefs.debug:
-                print("unhandled kind:", component["kind"])
+            # if addon_prefs.debug:
+            print("unhandled kind:", component["kind"], "\n  ", type_path)
             return "Something's wrong with the world"

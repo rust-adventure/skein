@@ -1,4 +1,4 @@
-skein is split into two pieces:
+skein is split into two major pieces:
 
 - Rust crate (Bevy Plugin)
 - Blender Addon (Python)
@@ -34,19 +34,18 @@ pip install -U pytest
 ## The Python Dataflow
 
 1. Registry data is fetched from a running bevy application via BRP
-   - this data is cached in a file that lives next to the .blend file
-     - this cache is used if it exists instead of making a fetch when opening a blend file
+   - this data is cached in a file that lives inside the .blend file
+     - this cache is used if it exists instead of making a fetch when opening a blend file, which allows editing Blender scenes without running a Bevy app.
 2. the registry json data is converted into Blender PropertyGroup classes and a collection of component type_paths are stored for later use
-3. the user selects an object, navigates to the Properties.object tab
+3. the user selects an object, navigates to the Properties.object/.mesh/.material tab
 4. the user uses a search field to pick a component
 5. the user clicks a button that fires the InsertBevyComponent operator
-   - the operator sets the relevant PropertyGroup as the active_editor on the window
-6. the active_editor is shown as a form in the Properties.object panel
-   - any edit to the form data fires a callback that serializes the form data to the object.value property
+   - the operator inserts the component onto the relevant object/mesh/materials's components collection
+6. the component that is selected is shown as a form in the Properties.object panel using the PropertyGroup
 7. once components are inserted and filled out with data, the user exports gltf however they want to
 8. the skein export extension cleans up the data that was stored on objects and formats it so that Bevy can use the reflection data directly without modification
-9. The user spawns a gltf scene in Bevy, which now hold the gltfextras we stored on the nodes when exporting
-10. A SceneInstanceReady observer reflects the component data from gltfextras onto the relevant nodes, instantiating all components applied in Blender
+9. The user spawns a gltf scene in Bevy, which now hold the `GltfExtras`/`GltfMeshExtras`/`GltfMaterialExtras` we stored on the nodes when exporting
+10. An observer reflects the component data from `GltfExtras`/`GltfMeshExtras`/`GltfMaterialExtras` onto the relevant nodes, instantiating all components applied in Blender
 
 #### WindowManager
 
@@ -78,6 +77,8 @@ There are "primitive" types in the Bevy reflection data that have a `kind` of `V
   - `std::path::PathBuf`
 - other Bevy types
   - `Entity`.
+- avian's `TrimeshFlags`
+  - a `bitfield!` stored in a u8 and `reflect(opaque)`
 
 ```json
 {

@@ -1,6 +1,5 @@
 import inspect
 import bpy
-import json
 
 from ..form_to_object import get_data_from_active_editor # type: ignore
 

@@ -188,7 +188,6 @@ fn postprocess_scene(
 mod tests {
     use std::str::FromStr;
 
-    use super::*;
     use bevy::{asset::uuid::Uuid, prelude::*};
     use bevy_reflect::{
         TypeRegistry, serde::ReflectSerializer,

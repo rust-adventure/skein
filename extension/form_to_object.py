@@ -2,7 +2,6 @@ import inspect
 
 # get json data from an active_editor
 def get_data_from_active_editor(context, context_key, component_data, is_first_recurse):
-    print("get_data_from_active_editor")
     data = {}
     # print(getattr(getattr(context, context_key), "__annotations__"))
     if not is_first_recurse:
@@ -23,9 +22,19 @@ def get_data_from_active_editor(context, context_key, component_data, is_first_r
                         return get_data_from_active_editor(getattr(context, context_key), "Some", fields["Some"], False)
                     else:
                         return getattr(getattr(context, context_key), "Some")
+                # iterate
+                case value:
+                    if value in getattr(context, context_key):
+                        # variant data exists
+                        if "PointerProperty" == fields[value].function.__name__:
+                            return get_data_from_active_editor(getattr(context, context_key), value, fields[value], False)
+                        else:
+                            return getattr(getattr(context, context_key), value)
+                    else:
+                        # unit variant??
+                        return value
         else:
             for key,value in fields.items():
-                print(key, value, context, context_key)
                 data[key] = getattr(getattr(context, context_key), key)
 
     # These two ways of access annotations return different results
@@ -44,10 +53,8 @@ def get_data_from_active_editor(context, context_key, component_data, is_first_r
     # This `if` changes the fields that are fetched, specifically
     # so that we only export one of the variants in an enum (all variants
     # have their own key in the object)
-    print(component_fields)
     if "skein_enum_index" in component_fields:
         active_enum_variant = getattr(getattr(context, context_key), "skein_enum_index")
-        print("active_enum_variant", active_enum_variant)
         match active_enum_variant:
             # if the shortName is "None" and the component_fields don't include any key
             # for the "None" variant, then its pretty likely we have a core::option::Option
@@ -62,6 +69,8 @@ def get_data_from_active_editor(context, context_key, component_data, is_first_r
                     return get_data_from_active_editor(getattr(context, context_key), key, component_fields[key], False)
                 else:
                     return getattr(getattr(context, context_key), key)
+            case value if value not in component_fields:
+                return value
             case _:
                 component_fields = {
                     active_enum_variant: component_fields[active_enum_variant]

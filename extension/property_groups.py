@@ -108,7 +108,7 @@ def make_property(
                             print("- option: ", option["shortPath"])
                         key = option["shortPath"]
 
-                        if key == "None" and component["modulePath"] == "core::option":
+                        if (key == "None" and component["modulePath"] == "core::option") or ("kind" not in option):
                             # this is the None variant of a core::option::Option
                             # so we'll leave it out of the annotations and 
                             # keep it in the `skein_enum_index` so the user can

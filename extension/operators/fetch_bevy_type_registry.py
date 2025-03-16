@@ -2,7 +2,6 @@ import inspect
 from pathlib import Path
 import bpy
 import json
-import os
 import requests
 from ..property_groups import make_property
 # --------------------------------- #

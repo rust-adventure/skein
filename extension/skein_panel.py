@@ -134,19 +134,45 @@ def draw_generic_panel(context, obj, layout, execute_mode):
 
 def render_props(layout, context, context_key, component_data, is_first_recurse):
     if not is_first_recurse:
-        for key,value in getattr(getattr(context, context_key), "__annotations__").items():
-            layout.prop(getattr(context, context_key), key)
+        fields = getattr(getattr(context, context_key), "__annotations__")
+        if "skein_enum_index" in fields:
+            active_enum_variant = getattr(getattr(context, context_key), "skein_enum_index")
+            if active_enum_variant == "None":
+                layout.prop(getattr(context, context_key), "skein_enum_index")
+            elif active_enum_variant == "Some":
+                if "PointerProperty" == fields["Some"].function.__name__:
+                    render_props(layout.box(), getattr(context, context_key), "Some", fields["Some"], False)
+                else:
+                    layout.prop(getattr(context, context_key), "Some")
+            else:
+                layout.prop(getattr(context, context_key), "skein_enum_index")
+                if "PointerProperty" == fields[active_enum_variant].function.__name__:
+                    render_props(layout.box(), getattr(context, context_key), active_enum_variant, fields[active_enum_variant], False)
+                else:
+                    layout.prop(getattr(context, context_key), active_enum_variant)
+                    layout.separator(type="LINE")
+        else:
+            for key,value in fields.items():
+                # layout.prop(getattr(context, context_key), key)
+                if "PointerProperty" == value.function.__name__:
+                    box = layout
+                    if "skein_enum_index" not in component_fields:
+                        box.label(text=key + ":")
+                    render_props(box.box(), getattr(context, context_key), key, value, False)
+                else:
+                    layout.prop(getattr(context, context_key), key)
+                    if key == "skein_enum_index":
+                        layout.separator(type="LINE")
 
     # get the fields from the annotations in the property groups
     # we created
     component_fields = inspect.get_annotations(component_data)
-
     # if the context_key we're rendering is an enum with rich data
     # (aka: variants are structs), then set the fields we'll be using
     # to include the "skein_enum_index"
     if "skein_enum_index" in component_fields:
         active_enum_variant = getattr(getattr(context, context_key), "skein_enum_index")
-        if active_enum_variant == "None" and "None" not in component_fields:
+        if (active_enum_variant == "None" and "None" not in component_fields) or (active_enum_variant not in component_fields):
             component_fields = {
                 "skein_enum_index": component_fields["skein_enum_index"]
             }

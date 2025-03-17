@@ -1,6 +1,6 @@
 import base64
 import hashlib
-import bpy
+import bpy # type: ignore
 import re
 import inspect
 

@@ -1,4 +1,4 @@
-import bpy
+import bpy # type: ignore
 import json
 from bpy.app.handlers import persistent # type: ignore
 from .operators.insert_bevy_component import InsertBevyComponent

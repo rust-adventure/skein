@@ -1,8 +1,8 @@
 import inspect
 from pathlib import Path
-import bpy
+import bpy # type: ignore
 import json
-import requests
+import requests # type: ignore
 from ..property_groups import make_property
 # --------------------------------- #
 #  Fetch and store the bevy type    #

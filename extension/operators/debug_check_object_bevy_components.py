@@ -1,5 +1,5 @@
 import inspect
-import bpy
+import bpy # type: ignore
 
 from ..form_to_object import get_data_from_active_editor # type: ignore
 

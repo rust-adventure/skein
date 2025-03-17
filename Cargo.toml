@@ -1,12 +1,13 @@
 [package]
 name = "bevy_skein"
 description = "Process glTF extras when spawning Scenes to insert Components using Reflection, such as when using Blender as an editor"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Chris Biscardi"]
 repository = "https://github.com/rust-adventure/skein"
 homepage = "https://rustadventure.dev/"
 license = "MIT OR Apache-2.0"
 edition = "2021"
+readme = "README.md"
 categories = ["games", "game-development"]
 keywords = ["bevy"]
 exclude = [

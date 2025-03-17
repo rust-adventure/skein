@@ -50,7 +50,7 @@ impl Default for SkeinPlugin {
 
 impl Plugin for SkeinPlugin {
     fn build(&self, app: &mut App) {
-        app.add_observer(postprocess_scene);
+        app.add_observer(skein_processing);
 
         if self.handle_brp {
             app.add_plugins((
@@ -74,7 +74,7 @@ impl Plugin for SkeinPlugin {
     names,
     commands,
 ))]
-fn postprocess_scene(
+fn skein_processing(
     trigger: Trigger<
         OnAdd,
         (
@@ -92,7 +92,11 @@ fn postprocess_scene(
     names: Query<&Name>,
     mut commands: Commands,
 ) {
-    trace!("global_scene_instance_ready");
+    trace!(
+        entity = ?trigger.entity(),
+        name = ?names.get(trigger.entity()).ok(),
+        "skein_processing"
+    );
     let entity = trigger.entity();
 
     // Each of the possible extras.
@@ -114,6 +118,7 @@ fn postprocess_scene(
     .iter()
     .filter_map(|p| p.ok())
     {
+        trace!(extras);
         let obj = match serde_json::from_str(extras) {
             Ok(Value::Object(obj)) => obj,
             Ok(Value::Null) => {
@@ -170,6 +175,7 @@ fn postprocess_scene(
                 }
             };
 
+            trace!(?reflect_value);
             // TODO: can we do this insert without panic
             // if the intended component
             commands

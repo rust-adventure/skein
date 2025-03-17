@@ -3,9 +3,9 @@ schema_version = "1.0.0"
 # Example of manifest file for a Blender extension
 # Change the values according to your extension
 id = "bevy_skein"
-version = "1.0.0"
+version = "0.1.0"
 name = "Bevy Skein"
-tagline = "Improving the efficiency of Bevy/Blender workflows"
+tagline = "Apply Bevy Components in Blender"
 maintainer = "Chis Biscardi <chris@christopherbiscardi.com>"
 # Supported types: "add-on", "theme"
 type = "add-on"
@@ -70,7 +70,6 @@ files = "Export GLTF to disk/import Bevy type registry"
 paths_exclude_pattern = [
     "__pycache__/",
     "extension/__pycache__/",
-    "extension/test.py",
     "/.git/",
     "/*.zip",
 ]

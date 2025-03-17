@@ -1,35 +1,57 @@
-import pytest
-import bpy
+import bpy # type: ignore
 
 from .form_to_object import get_data_from_active_editor
-from .property_groups import capitalize_path, make_property
+from .property_groups import capitalize_path, hash_type_path, make_property
 import json
-import inspect
 
 class TestClass:
     def test_capitalize(self):
         assert capitalize_path("component_tests::Player") == "ComponentTestsPlayer"
         assert capitalize_path("component_tests::TeamMember") == "ComponentTestsTeamMember"
 
+    def test_hash(self):
+        assert hash_type_path(capitalize_path("component_tests::Player")) == "SKEIN_98E71DE56C8EFC57C6540F48FDA45A5E"
+        assert hash_type_path(capitalize_path("component_tests::TeamMember")) == "SKEIN_192CD808A57D7EAF156A6E4D24B8890C"
+
     def test_player_struct(self):
-            type_path = "component_tests::Player"
-            skein_property_groups = {}
-            build_editor(type_path, skein_property_groups)
-            print(skein_property_groups)
-            bpy.context.scene.active_editor.name = "test"
-            bpy.context.scene.active_editor.power = 1.0
-            bpy.context.scene.active_editor.test = 20
-            
-            data = get_data_from_active_editor(
-                 bpy.context.scene,
-                 "active_editor",
-                 skein_property_groups[type_path]
-            )
-            assert data == {
-                 "name": "test",
-                 "power": 1.0,
-                 "test": 20
-            }
+        type_path = "component_tests::Player"
+        skein_property_groups = {}
+        build_editor(type_path, skein_property_groups)
+        bpy.context.scene.active_editor.name = "test"
+        bpy.context.scene.active_editor.power = 1.0
+        bpy.context.scene.active_editor.test = 20
+        
+        data = get_data_from_active_editor(
+                bpy.context.scene,
+                "active_editor",
+                skein_property_groups[type_path],
+                True
+        )
+        assert data == {
+                "name": "test",
+                "power": 1.0,
+                "test": 20
+        }
+
+    # def test_team_member_component(self):
+    #     type_path = "component_tests::TeamMember"
+    #     skein_property_groups = {}
+    #     build_editor(type_path, skein_property_groups)
+    #     bpy.context.scene.active_editor.player.name = "test"
+    #     bpy.context.scene.active_editor.player.power = 1.0
+    #     bpy.context.scene.active_editor.player.test = 20
+        
+    #     data = get_data_from_active_editor(
+    #             bpy.context.scene,
+    #             "active_editor",
+    #             skein_property_groups[type_path],
+    #             True
+    #     )
+    #     assert data == {
+    #             "name": "test",
+    #             "power": 1.0,
+    #             "test": 20
+    #     }
 
     # def test_some_things_enum(self):
     #         type_path = "component_tests::SomeThings"

@@ -1,5 +1,6 @@
 import base64
 import hashlib
+import sys
 import bpy # type: ignore
 import re
 import inspect
@@ -25,7 +26,7 @@ def hash_type_path(data):
     m = hashlib.md5(data.encode('ascii'))
     base64_bytes = base64.b16encode(m.digest())
     output = base64_bytes.decode("ascii")
-    return "S" + output
+    return "SKEIN_" + output
 
 def make_property(
         skein_property_groups,
@@ -43,8 +44,11 @@ def make_property(
     @param: override_component An optional value that is used when you have access to the registry type information but that registry type information is not directly accessible by registry[type_path]. This happens in complex enums. (default None)
     """
 
+    'unittest' in sys.modules.keys()
     preferences = bpy.context.preferences
-    addon_prefs = preferences.addons["bl_ext.user_default.bevy_skein"].preferences
+    debug = False
+    if 'unittest' not in sys.modules.keys():
+        debug = preferences.addons["bl_ext.user_default.bevy_skein"].preferences.debug
 
     type_path = original_type_path.removeprefix("#/$defs/")
     component = override_component if override_component != None else registry[type_path]
@@ -55,10 +59,10 @@ def make_property(
         # created again
         return skein_property_groups[type_path]
 
-    if addon_prefs.debug:
+    if debug:
         print("\nmake_property::", type_path)
 
-    if addon_prefs.debug:
+    if debug:
         print(component)
 
     if "kind" not in component:
@@ -68,7 +72,7 @@ def make_property(
             print("Array is unimplemented in make_property: ", type_path)
             return
         case "Enum":
-            if addon_prefs.debug:
+            if debug:
                 print("Enum: ", component["type"])
             match component["type"]:
                 case "string":
@@ -76,13 +80,12 @@ def make_property(
                     for item in component["oneOf"]:
                         items.append((item, item, ""))
 
-                    if addon_prefs.debug:
+                    if debug:
                         print(items)
 
                     # TODO: make an enum default value
                     skein_property_groups[type_path] = bpy.props.EnumProperty(
                         items=items,
-                        
                     )
 
                     return skein_property_groups[type_path]
@@ -94,7 +97,7 @@ def make_property(
                     for item in component["oneOf"]:
                         items.append((item["shortPath"], item["shortPath"], ""))
 
-                    if addon_prefs.debug:
+                    if debug:
                         print(items)
 
                     # TODO: set default for skein_enum_index?
@@ -104,7 +107,7 @@ def make_property(
                     )
 
                     for option in component["oneOf"]:
-                        if addon_prefs.debug:
+                        if debug:
                             print("- option: ", option["shortPath"])
                         key = option["shortPath"]
 
@@ -134,7 +137,7 @@ def make_property(
 
                     # registering the class is required for certain Blender
                     # functionality to work.
-                    if addon_prefs.debug:
+                    if debug:
                         print("REGISTERING: " + type_path)
                     bpy.utils.register_class(
                         skein_property_groups[type_path]
@@ -160,7 +163,7 @@ def make_property(
             # annotations should be an empty object
             if "properties" in component:
                 for key in component["properties"]:
-                    if addon_prefs.debug:
+                    if debug:
                         print("- key: ", key)
                     property = make_property(
                         skein_property_groups,
@@ -181,7 +184,7 @@ def make_property(
 
             # registering the class is required for certain Blender
             # functionality to work.
-            if addon_prefs.debug:
+            if debug:
                 print("REGISTERING: " + type_path)
             bpy.utils.register_class(
                 skein_property_groups[type_path]
@@ -297,7 +300,7 @@ def make_property(
                 case "string":
                     return bpy.props.StringProperty()
                 case "object":
-                    if addon_prefs.debug:
+                    if debug:
                         print("component: ", component)
                     match component["typePath"]:
                         case "core::num::NonZeroU8":
@@ -341,19 +344,19 @@ def make_property(
                             # represented as a bitfield and the UI should reflect that.
                             return bpy.props.IntProperty(min=0, max=255)
                         case "core::time::Duration":
-                            if addon_prefs.debug:
+                            if debug:
                                 print("core::time::Duration is currently not handled")
                             return
                         case _:
-                            # if addon_prefs.debug:
+                            # if debug:
                             print("unhandled `Value` of `object` type: ", component["typePath"], "\n  ", type_path)
                             return
                 case _:
-                    # if addon_prefs.debug:
+                    # if debug:
                     print("unhandled type: ", component["type"])
                     return
         # If an exact match is not confirmed, this last case will be used if provided
         case _:
-            # if addon_prefs.debug:
+            # if debug:
             print("unhandled kind:", component["kind"], "\n  ", type_path)
             return "Something's wrong with the world"

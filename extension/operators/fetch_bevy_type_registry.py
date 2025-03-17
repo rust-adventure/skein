@@ -40,10 +40,11 @@ class FetchBevyTypeRegistry(bpy.types.Operator):
         # write registry response to a file in .blend file
         if "skein-registry.json" in bpy.data.texts:
             embedded_registry = bpy.data.texts["skein-registry.json"]
-            embedded_registry.write(json.dumps(brp_response["result"]))
+            embedded_registry.clear()
+            embedded_registry.write(json.dumps(brp_response["result"], indent=4))
         else:
             embedded_registry = bpy.data.texts.new("skein-registry.json")
-            embedded_registry.write(json.dumps(brp_response["result"]))
+            embedded_registry.write(json.dumps(brp_response["result"], indent=4))
 
         process_registry(context, brp_response["result"])
 

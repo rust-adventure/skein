@@ -1,9 +1,16 @@
-use crate::components::counter::Counter;
-use crate::components::navigation::Navigation;
-use bevy_ecs::component::Component;
-use leptos::prelude::*;
-use leptos::{component, IntoView};
+use crate::components::{
+    counter::Counter, docs_layout::DocsLayout,
+    navigation::Navigation,
+};
+use bevy_ecs::{
+    component::Component,
+    system::{In, Query},
+};
+use cinnog::run_system_with_input;
+use leptos::{component, prelude::*, IntoView};
 use leptos_router::hooks::use_params_map;
+
+use super::doc_post::{Doc, PostTitle};
 
 #[derive(Component, Clone)]
 pub struct PersonName(pub String);
@@ -13,12 +20,31 @@ pub struct Age(pub u8);
 
 #[component]
 pub fn HomePage() -> impl IntoView {
-    let params = use_params_map().get();
-    let current_person = params.get("person").unwrap_or("Dr. Who".to_string());
+    let (doc, title) = run_system_with_input(
+        get_doc,
+        "getting-started".to_string(),
+    );
 
     view! {
-        <Navigation/>
-        <h1>"Hello " {current_person} ", welcome to Leptos!"</h1>
-        <Counter/>
+        <DocsLayout title="Getting Started".to_string()>
+            <div inner_html=doc></div>
+        </DocsLayout>
     }
+}
+
+fn get_doc(
+    In(doc): In<String>,
+    docs: Query<(
+        &cinnog_mod_markdown::Html,
+        &Doc,
+        &PostTitle,
+    )>,
+) -> (String, String) {
+    let (cinnog_mod_markdown::Html(html), _, title) = &docs
+        .iter()
+        .find(|(_, file_name, _)| {
+            file_name.0 == "getting-started"
+        })
+        .unwrap();
+    (html.clone(), title.0.clone())
 }

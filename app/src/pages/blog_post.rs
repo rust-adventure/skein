@@ -1,8 +1,13 @@
-use crate::components::navigation::Navigation;
-use bevy_ecs::component::Component;
-use bevy_ecs::prelude::{In, Query};
-use cinnog::loaders::markdown::Html;
-use cinnog::run_system_with_input;
+use crate::components::{
+    docs_layout::DocsLayout, navigation::Navigation,
+};
+use bevy_ecs::{
+    component::Component,
+    prelude::{In, Query},
+};
+use cinnog::{
+    loaders::markdown::Html, run_system_with_input,
+};
 use leptos::prelude::*;
 use leptos_router::hooks::use_params_map;
 
@@ -25,15 +30,22 @@ pub struct Post(pub String);
 pub fn BlogPost() -> impl IntoView {
     let params = use_params_map().get();
     let current_post = params.get("post").unwrap();
-    let post = run_system_with_input(get_post, current_post);
+    let post = run_system_with_input(
+        get_post,
+        current_post.clone(),
+    );
 
     view! {
-        <Navigation/>
-        <div inner_html=post></div>
+        <DocsLayout title={current_post}>
+            <div inner_html=post></div>
+        </DocsLayout>
     }
 }
 
-fn get_post(In(post): In<String>, posts: Query<(&Html, &Post)>) -> String {
+fn get_post(
+    In(post): In<String>,
+    posts: Query<(&Html, &Post)>,
+) -> String {
     let (Html(html), _) = &posts
         .iter()
         .find(|(_, file_name)| file_name.0 == post)

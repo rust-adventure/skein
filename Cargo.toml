@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["app", "frontend", "generator"]
+members = ["app", "frontend", "generator", "crates/*"]
 
 [workspace.dependencies]
 cinnog = { version = "0.4", features = ["ron", "markdown"] }
@@ -19,6 +19,8 @@ console_error_panic_hook = "0.1"
 tracing = "0.1.40"
 
 bevy_ecs = { version = "0.15" }
+bevy_app = { version = "0.15" }
+
 
 serde = { version = "1", features = ["derive"] }
 
@@ -45,7 +47,8 @@ site-root = "dist"
 # Defaults to pkg
 site-pkg-dir = "pkg"
 # [Optional] The source CSS file. If it ends with .sass or .scss then it will be compiled by dart-sass into CSS. The CSS is optimized by Lightning CSS before being written to <site-root>/<site-pkg>/app.css
-style-file = "style/main.scss"
+# style-file = "style/main.css"
+tailwind-input-file = "style/input.css"
 # Assets source dir. All files found here will be copied and synchronized to site-root.
 # The assets-dir cannot have a sub directory with the same name/path as site-pkg-dir.
 #

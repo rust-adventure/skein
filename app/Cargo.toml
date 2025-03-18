@@ -12,6 +12,7 @@ tracing.workspace = true
 bevy_ecs.workspace = true
 
 leptos_router = { workspace = true, features = ["nightly"] }
+cinnog_mod_markdown = { path = "../crates/cinnog_mod_markdown" }
 
 [features]
 default = []

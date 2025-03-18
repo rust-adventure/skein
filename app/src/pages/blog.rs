@@ -1,7 +1,11 @@
-use crate::components::navigation::Navigation;
-use crate::pages::blog_post::{DraftPost, Post, PostTitle};
-use bevy_ecs::prelude::{Query, Without};
-use bevy_ecs::query::With;
+use crate::{
+    components::navigation::Navigation,
+    pages::blog_post::{DraftPost, Post, PostTitle},
+};
+use bevy_ecs::{
+    prelude::{Query, Without},
+    query::With,
+};
 use cinnog::{run_system, FileName};
 use leptos::prelude::*;
 
@@ -10,7 +14,7 @@ pub fn Blog() -> impl IntoView {
     let posts = run_system(get_posts);
 
     view! {
-        <Navigation/>
+        // <Navigation/>
         <h1>"Blog posts:"</h1>
 
         <ul class="people-links">
@@ -29,10 +33,15 @@ pub fn Blog() -> impl IntoView {
 }
 
 fn get_posts(
-    posts: Query<(&PostTitle, &FileName), (With<Post>, Without<DraftPost>)>,
+    posts: Query<
+        (&PostTitle, &FileName),
+        (With<Post>, Without<DraftPost>),
+    >,
 ) -> Vec<(PostTitle, FileName)> {
     posts
         .iter()
-        .map(|(title, file_name)| (title.clone(), file_name.clone()))
+        .map(|(title, file_name)| {
+            (title.clone(), file_name.clone())
+        })
         .collect()
 }

@@ -5,10 +5,15 @@ edition = "2021"
 
 [dependencies]
 app = { path = "../app", default-features = false, features = ["ssr"] }
-leptos = { workspace = true, features = [ "ssr" ]}
+leptos = { workspace = true, features = ["ssr"] }
 cinnog = { workspace = true, features = ["generator"] }
 bevy_ecs.workspace = true
-
+bevy_app.workspace = true
+comrak = "0.36"
+gray_matter = "0.2.8"
+cinnog_mod_markdown = { path = "../crates/cinnog_mod_markdown", features = [
+    "generator",
+] }
 serde.workspace = true
 
 tokio = { version = "1.33.0", features = ["full"] }

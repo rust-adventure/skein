@@ -2,29 +2,34 @@
 mod components;
 pub mod pages;
 
-use components::navigation::Navigation;
-use pages::blog::Blog;
-use pages::home_page::HomePage;
-use pages::not_found::NotFound;
+use components::layout::Layout;
+pub use components::navigation::{
+    NavItem, NavLink, NavigationItems,
+};
+use pages::{
+    blog::Blog,
+    doc_post::{Doc, DocPost},
+    home_page::HomePage,
+    not_found::NotFound,
+};
 
 use crate::pages::blog_post::BlogPost;
-use bevy_ecs::prelude::Resource;
-use bevy_ecs::query::With;
-use bevy_ecs::system::Query;
+use bevy_ecs::{
+    prelude::Resource, query::With, system::Query,
+};
 use cinnog::{run_system, FileName};
-use leptos::prelude::*;
-use leptos::IntoView;
+use leptos::{prelude::*, IntoView};
 use leptos_meta::*;
-use leptos_router::components::*;
-use leptos_router::static_routes::StaticRoute;
-use leptos_router::{path, SsrMode};
-use pages::blog_post::Post;
-use pages::home_page::PersonName;
+use leptos_router::{
+    components::*, path, static_routes::StaticRoute,
+    SsrMode,
+};
+use pages::{blog_post::Post, home_page::PersonName};
 
 pub fn shell(options: LeptosOptions) -> impl IntoView {
     view! {
         <!DOCTYPE html>
-        <html lang="en">
+        <html lang="en" class="h-full antialiased">
             <head>
                 <meta charset="utf-8"/>
                 <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -32,7 +37,7 @@ pub fn shell(options: LeptosOptions) -> impl IntoView {
                 <HydrationScripts options islands=true/>
                 <MetaTags/>
             </head>
-            <body>
+            <body class="flex min-h-full bg-white dark:bg-slate-900">
                 <App/>
             </body>
         </html>
@@ -42,14 +47,15 @@ pub fn shell(options: LeptosOptions) -> impl IntoView {
 #[component]
 pub fn App() -> impl IntoView {
     provide_meta_context();
-    let fallback = || view! { "Page not found." }.into_view();
+    let fallback =
+        || view! { "Page not found." }.into_view();
 
     view! {
         <Stylesheet href="/pkg/cinnog_example.css"/>
-        <Title text="Welcome to Leptos"/>
+        <Title text="Skein: Bevy and Blender"/>
 
         <Router>
-            <main>
+        <Layout>
                 <FlatRoutes fallback>
                     <Route
                         path=path!("/")
@@ -99,18 +105,41 @@ pub fn App() -> impl IntoView {
                                 }),
                         )
                     />
+
+                    <Route
+                        path=path!("/docs/*doc")
+                        view=DocPost
+                        ssr=SsrMode::Static(
+                            StaticRoute::new()
+                                .prerender_params(|| async move {
+                                    [("doc".into(), run_system(docs_static_params))]
+                                        .into_iter()
+                                        .collect()
+                                }),
+                        )
+                    />
                 </FlatRoutes>
-            </main>
+            </Layout>
         </Router>
     }
 }
 
-fn people_static_params(people: Query<&FileName, With<PersonName>>) -> Vec<String> {
+fn people_static_params(
+    people: Query<&FileName, With<PersonName>>,
+) -> Vec<String> {
     people.iter().map(|person| person.0.clone()).collect()
 }
 
-fn blog_static_params(posts: Query<&FileName, With<Post>>) -> Vec<String> {
+fn blog_static_params(
+    posts: Query<&FileName, With<Post>>,
+) -> Vec<String> {
     posts.iter().map(|post| post.0.clone()).collect()
+}
+
+fn docs_static_params(
+    docs: Query<&FileName, With<Doc>>,
+) -> Vec<String> {
+    docs.iter().map(|doc| doc.0.clone()).collect()
 }
 
 #[derive(Resource, Clone)]

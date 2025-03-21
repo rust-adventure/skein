@@ -28,8 +28,12 @@ async fn main() -> io::Result<()> {
             title: "Introduction",
             links: vec![
                 NavLink {
-                    title: "Getting started",
+                    title: "Overview",
                     href: "/",
+                },
+                NavLink {
+                    title: "Getting started",
+                    href: "/docs/getting-started",
                 },
                 NavLink {
                     title: "Installation",
@@ -45,28 +49,41 @@ async fn main() -> io::Result<()> {
                     href: "/docs/bevy-remote-protocol",
                 },
                 NavLink {
-                    title: "Inserting a Component",
-                    href: "/docs/inserting-a-component",
-                },
-                NavLink {
-                    title: "Components on Materials",
-                    href: "/docs/components-on-objects",
-                },
-                NavLink {
-                    title: "Components on Meshes",
-                    href: "/docs/components-on-meshes",
-                },
-                NavLink {
-                    title: "Components on Materials",
-                    href: "/docs/components-on-materials",
+                    title: "Inserting Components",
+                    href: "/docs/inserting-components",
                 },
                 NavLink {
                     title: "Using Blender Drivers",
                     href: "/docs/using-blender-drivers",
                 },
                 NavLink {
-                    title: "Collection Instances",
-                    href: "/docs/collection-instances",
+                    title: "Collection Instances and Library Overrides",
+                    href: "/docs/collections-instances-and-library-overrides",
+                },
+                NavLink {
+                    title: "Exporting: The Basics",
+                    href: "/docs/exporting-the-basics"
+                }
+            ],
+        },
+        NavItem {
+            title: "Use Cases",
+            links: vec![
+                NavLink {
+                    title: "Build a Level",
+                    href: "/docs/build-a-level",
+                },
+                NavLink {
+                    title: "Replace a Blender Material",
+                    href: "/docs/replace-a-blender-material",
+                },
+                NavLink {
+                    title: "Sync Cube Size to Avian Collider",
+                    href: "/docs/sync-cube-size-to-avian-collider",
+                },
+                NavLink {
+                    title: "Exporting Materials to Files",
+                    href: "/docs/exporting-materials-to-files",
                 },
             ],
         },
@@ -88,23 +105,6 @@ async fn main() -> io::Result<()> {
                 NavLink {
                     title: "Testing",
                     href: "/docs/testing",
-                },
-            ],
-        },
-        NavItem {
-            title: "Use Cases",
-            links: vec![
-                NavLink {
-                    title: "Build a Level",
-                    href: "/docs/build-a-level",
-                },
-                NavLink {
-                    title: "Replace a Blender Material",
-                    href: "/docs/replace-a-blender-material",
-                },
-                NavLink {
-                    title: "Sync Cube Size to Avian Collider",
-                    href: "/docs/sync-cube-size-to-avian-collider",
                 },
             ],
         },
@@ -181,6 +181,8 @@ impl Ingest for PostFrontMatter {
 pub struct DocFrontMatter {
     pub href: String,
     pub title: String,
+    pub description: String,
+    pub opengraph_image: String,
     pub draft: bool,
 }
 
@@ -188,7 +190,9 @@ impl Ingest for DocFrontMatter {
     fn ingest(self, commands: &mut EntityCommands) {
         commands.insert((
             // doc_post::TestFontMatter(self.test),
+            doc_post::OpengraphImage(self.opengraph_image),
             doc_post::PostTitle(self.title),
+            doc_post::PostDescription(self.description),
         ));
         if self.draft {
             commands.insert(doc_post::DraftDoc);

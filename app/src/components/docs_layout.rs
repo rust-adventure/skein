@@ -20,12 +20,10 @@ use crate::{
 pub fn DocsLayout(
     children: Children,
     title: String,
+    #[prop(optional)]
+    table_of_contents: cinnog_mod_markdown::TableOfContents,
 ) -> impl IntoView {
-    // nodes
-    //   let tableOfContents = collectSections(nodes)
-
     view! {
-
         <div class="max-w-2xl min-w-0 flex-auto px-4 py-16 lg:max-w-none lg:pr-0 lg:pl-8 xl:px-16">
           <article>
             <DocsHeader title={title} />
@@ -33,7 +31,7 @@ pub fn DocsLayout(
           </article>
           // <PrevNextLinks />
         </div>
-        <TableOfContents table_of_contents={vec![]} />
+        <TableOfContents table_of_contents={table_of_contents} />
 
     }
 }

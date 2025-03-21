@@ -12,7 +12,7 @@ use cinnog::Ingest;
 #[cfg(feature = "generator")]
 use cinnog::generator::Generator;
 use gray_matter::{Matter, engine::YAML};
-use serde::de::DeserializeOwned;
+use serde::{Deserialize, Serialize, de::DeserializeOwned};
 use std::{
     fs::{self, read_to_string},
     io::{self, Cursor},
@@ -269,10 +269,97 @@ fn convert_markdown_to_html(
             markdown, &options, &plugins,
         );
 
-        commands.entity(file).insert(Html(formatted));
+        let table_of_contents =
+            build_table_of_contents(markdown);
+        commands
+            .entity(file)
+            .insert((Html(formatted), table_of_contents));
     }
 }
 
 /// Component containing HTML
 #[derive(Component, Clone)]
 pub struct Html(pub String);
+
+#[derive(
+    Component, Clone, Debug, Default, Serialize, Deserialize,
+)]
+pub struct TableOfContents {
+    pub items: Vec<TocNode>,
+}
+
+#[derive(Clone, Debug, Default, Serialize, Deserialize)]
+pub struct TocNode {
+    pub text: String,
+    pub id: String,
+    pub items: Vec<TocNode>,
+}
+
+#[cfg(feature = "generator")]
+fn build_table_of_contents(
+    document: &str,
+) -> TableOfContents {
+    use comrak::{
+        Anchorizer, Arena, Options, nodes::NodeValue,
+        parse_document,
+    };
+    let mut anchorizer = Anchorizer::new();
+
+    // The returned nodes are created in the supplied
+    // Arena, and are bound by its lifetime.
+    let arena = Arena::new();
+
+    // Parse the document into a root `AstNode`
+    let root = parse_document(
+        &arena,
+        document,
+        &Options::default(),
+    );
+
+    let mut table_of_contents =
+        TableOfContents { items: vec![] };
+    // heading level 2 is "make new TocNode"
+    // heading level 3 is "insert into current
+    // TocNode" we ignore all other heading levels
+    for node in root.descendants() {
+        if let NodeValue::Heading(heading) =
+            node.data.borrow().value
+        {
+            if let Some(NodeValue::Text(text)) = node
+                .first_child()
+                .map(|n| n.data.borrow().value.clone())
+            {
+                match heading.level {
+                    2 => {
+                        let output = anchorizer
+                            .anchorize(text.clone());
+                        table_of_contents.items.push(
+                            TocNode {
+                                text,
+                                id: output,
+                                items: vec![],
+                            },
+                        );
+                    }
+                    3 => {
+                        let Some(node) = table_of_contents
+                            .items
+                            .last_mut()
+                        else {
+                            continue;
+                        };
+                        let output = anchorizer
+                            .anchorize(text.clone());
+                        node.items.push(TocNode {
+                            text,
+                            id: output,
+                            items: vec![],
+                        });
+                    }
+                    _ => {}
+                }
+            }
+        }
+    }
+    table_of_contents
+}

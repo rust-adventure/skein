@@ -109,7 +109,10 @@ def process_registry(context, registry):
                 # maybe we hash the type_paths in the future to contrain the length
                 if len(type_path) <= 63:
                     if inspect.get_annotations(property_group_or_property):
-                        fake_component_enum_annotations[type_path] = bpy.props.PointerProperty(type=property_group_or_property)
+                        fake_component_enum_annotations[type_path] = bpy.props.PointerProperty(
+                            type=property_group_or_property,
+                            override={"LIBRARY_OVERRIDABLE"},
+                        )
                     else:
                         fake_component_enum_annotations[type_path] = property_group_or_property
                 else:
@@ -128,6 +131,15 @@ def process_registry(context, registry):
     bpy.utils.register_class(component_container)
 
     # new component list data. Must be set to read component data from .blend file
-    bpy.types.Object.skein_two = bpy.props.CollectionProperty(type=component_container)
-    bpy.types.Mesh.skein_two = bpy.props.CollectionProperty(type=component_container)
-    bpy.types.Material.skein_two = bpy.props.CollectionProperty(type=component_container)
+    bpy.types.Object.skein_two = bpy.props.CollectionProperty(
+        type=component_container,
+        override={"LIBRARY_OVERRIDABLE"},
+    )
+    bpy.types.Mesh.skein_two = bpy.props.CollectionProperty(
+        type=component_container,
+        override={"LIBRARY_OVERRIDABLE"},
+    )
+    bpy.types.Material.skein_two = bpy.props.CollectionProperty(
+        type=component_container,
+        override={"LIBRARY_OVERRIDABLE"},
+    )

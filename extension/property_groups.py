@@ -86,6 +86,7 @@ def make_property(
                     # TODO: make an enum default value
                     skein_property_groups[type_path] = bpy.props.EnumProperty(
                         items=items,
+                        override={"LIBRARY_OVERRIDABLE"},
                     )
 
                     return skein_property_groups[type_path]
@@ -104,6 +105,7 @@ def make_property(
                     annotations["skein_enum_index"] = bpy.props.EnumProperty(
                         name="variant",
                         items=items,
+                        override={"LIBRARY_OVERRIDABLE"},
                     )
 
                     for option in component["oneOf"]:
@@ -125,7 +127,10 @@ def make_property(
                                 option
                             )
                             if inspect.isclass(property):
-                                annotations[key] = bpy.props.PointerProperty(type=property)
+                                annotations[key] = bpy.props.PointerProperty(
+                                    type=property,
+                                    override={"LIBRARY_OVERRIDABLE"},
+                                )
                             else:
                                 annotations[key] = property
 
@@ -171,7 +176,10 @@ def make_property(
                         component["properties"][key]["type"]["$ref"]
                     )
                     if inspect.isclass(property):
-                        annotations[key] = bpy.props.PointerProperty(type=property)
+                        annotations[key] = bpy.props.PointerProperty(
+                            type=property,
+                            override={"LIBRARY_OVERRIDABLE"},
+                        )
                     else:
                         annotations[key] = property
 
@@ -224,18 +232,22 @@ def make_property(
             # print("- component[type]:  ", component["type"])
             match component["type"]:
                 case "boolean":
-                    return bpy.props.BoolProperty()
+                    return bpy.props.BoolProperty(
+                        override={"LIBRARY_OVERRIDABLE"}
+                    )
                 case "uint":
                     match type_path:
                         case "u8":
                             return bpy.props.IntProperty(
                                 min=0,
                                 max=255,
+                                override={"LIBRARY_OVERRIDABLE"},
                             )
                         case "u16":
                             return bpy.props.IntProperty(
                                 min=0,
                                 max=65535,
+                                override={"LIBRARY_OVERRIDABLE"},
                             )
                         case "u32":
                             return bpy.props.IntProperty(
@@ -244,6 +256,7 @@ def make_property(
                                 # 2^31, not 2^32, so not sure if we can even set
                                 # those numbers from inside blender
                                 # max=4294967295,
+                                override={"LIBRARY_OVERRIDABLE"},
                         )
                         case "u64":
                             return bpy.props.IntProperty(
@@ -252,6 +265,7 @@ def make_property(
                                 # 2^31, not 2^32, so not sure if we can even set
                                 # those numbers from inside blender
                                 # max=4294967295,
+                                override={"LIBRARY_OVERRIDABLE"},
                         )
                         case "u128":
                             return bpy.props.IntProperty(
@@ -259,6 +273,7 @@ def make_property(
                                 # blender actually sets the default hard maximum to
                                 # 2^31, not 2^32, so not sure if we can even set
                                 # numbers bigger than this for u128 in Blender
+                                override={"LIBRARY_OVERRIDABLE"},
                         )
                         case "usize":
                             return bpy.props.IntProperty(
@@ -267,82 +282,132 @@ def make_property(
                                 # 2^31, not 2^32, so not sure if we can even set
                                 # those numbers from inside blender
                                 # max=4294967295,
+                                override={"LIBRARY_OVERRIDABLE"},
                         )
                         case _:
                             print("unknown uint type: ", type_path)
-                            return bpy.props.IntProperty(min=0, )
+                            return bpy.props.IntProperty(
+                                min=0,
+                                override={"LIBRARY_OVERRIDABLE"}
+                            )
                 case "int":
                     match type_path:
                         case "i8":
                             return bpy.props.IntProperty(
                                 min=-128,
                                 max=127,
+                                override={"LIBRARY_OVERRIDABLE"},
                             )
                         case "i16":
                             return bpy.props.IntProperty(
                                 min=-32_768,
                                 max=32_767,
+                                override={"LIBRARY_OVERRIDABLE"},
                             )
                         case "i32":
                             return bpy.props.IntProperty(
                                 min=-2_147_483_648,
                                 max=2_147_483_647,
+                                override={"LIBRARY_OVERRIDABLE"},
                         )
                         case "i64":
-                            return bpy.props.IntProperty()
+                            return bpy.props.IntProperty(
+                                override={"LIBRARY_OVERRIDABLE"},
+                            )
                         case "isize":
-                            return bpy.props.IntProperty()
+                            return bpy.props.IntProperty(
+                                override={"LIBRARY_OVERRIDABLE"},
+                            )
                         case _:
                             print("unknown iint type: ", type_path)
-                            return bpy.props.IntProperty(min=0, )
+                            return bpy.props.IntProperty(
+                                min=0,
+                                override={"LIBRARY_OVERRIDABLE"},
+                            )
                 case "float":
-                    return bpy.props.FloatProperty()
+                    return bpy.props.FloatProperty(
+                        override={"LIBRARY_OVERRIDABLE"},
+                    )
                 case "string":
-                    return bpy.props.StringProperty()
+                    return bpy.props.StringProperty(
+                        override={"LIBRARY_OVERRIDABLE"},
+                    )
                 case "object":
                     if debug:
                         print("component: ", component)
                     match component["typePath"]:
                         case "core::num::NonZeroU8":
-                            return bpy.props.IntProperty(min=0, max=255, default=1)
+                            return bpy.props.IntProperty(
+                                min=0,
+                                max=255,
+                                default=1,
+                                override={"LIBRARY_OVERRIDABLE"},
+                            )
                         case "core::num::NonZeroU16":
-                            return bpy.props.IntProperty(min=1, max=65535, default=1)
+                            return bpy.props.IntProperty(
+                                min=1,
+                                max=65535,
+                                 default=1,
+                                override={"LIBRARY_OVERRIDABLE"},
+                            )
                         case "core::num::NonZeroU32":
-                            return bpy.props.IntProperty(min=1, default=1)
+                            return bpy.props.IntProperty(
+                                min=1,
+                                default=1,
+                                override={"LIBRARY_OVERRIDABLE"},
+                            )
                         case "core::num::NonZeroU64":
-                            return bpy.props.IntProperty(min=1, default=1)
+                            return bpy.props.IntProperty(
+                                min=1,
+                                default=1,
+                                override={"LIBRARY_OVERRIDABLE"},
+                            )
                         # TODO: prevent 0 from being valid for NonZeroI* values, but how?
                         case "core::num::NonZeroI8":
                             return bpy.props.IntProperty(
                                 min=-128,
                                 max=127,
-                                default=1
+                                default=1,
+                                override={"LIBRARY_OVERRIDABLE"},
                             )
                         case "core::num::NonZeroI16":
                             return bpy.props.IntProperty(
                                 min=-32_768,
                                 max=32_767,
-                                default=1
+                                default=1,
+                                override={"LIBRARY_OVERRIDABLE"},
                             )
                         case "core::num::NonZeroI32":
                             return bpy.props.IntProperty(
                                 min=-2_147_483_648,
                                 max=2_147_483_647,
-                                default=1
+                                default=1,
+                                override={"LIBRARY_OVERRIDABLE"},
                         )
                         case "core::num::NonZeroI64":
-                            return bpy.props.IntProperty(default=1)
+                            return bpy.props.IntProperty(
+                                default=1,
+                                override={"LIBRARY_OVERRIDABLE"},
+                            )
                         case "smol_str::SmolStr":
-                            return bpy.props.StringProperty()
+                            return bpy.props.StringProperty(
+                                override={"LIBRARY_OVERRIDABLE"},
+                            )
                         case "alloc::borrow::Cow<str>":
-                            return bpy.props.StringProperty()
+                            return bpy.props.StringProperty(
+                                override={"LIBRARY_OVERRIDABLE"},
+                            )
                         case "avian3d::collision::collider::parry::TrimeshFlags":
                             # TODO: What do we do about this. hard coding third-party crate
                             # primitive Value handling is... not great. Can we figure out
                             # how to insert this data into the reflection information?
                             # its opaque intentionally, so really this is a set of checkboxes
                             # represented as a bitfield and the UI should reflect that.
-                            return bpy.props.IntProperty(min=0, max=255)
+                            return bpy.props.IntProperty(
+                                min=0,
+                                max=255,
+                                override={"LIBRARY_OVERRIDABLE"},
+                            )
                         case "core::time::Duration":
                             if debug:
                                 print("core::time::Duration is currently not handled")

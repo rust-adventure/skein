@@ -89,20 +89,23 @@ def register():
 
     # set up per-object data types that are required to render panels
     bpy.types.Object.active_component_index = bpy.props.IntProperty(
-        min=0
+        min=0,
+        override={"LIBRARY_OVERRIDABLE"},
     )
     bpy.types.Mesh.active_component_index = bpy.props.IntProperty(
-        min=0
+        min=0,
+        override={"LIBRARY_OVERRIDABLE"},
     )
     bpy.types.Material.active_component_index = bpy.props.IntProperty(
-        min=0
+        min=0,
+        override={"LIBRARY_OVERRIDABLE"},
     )
 
     # TODO: move this to common property group for all object, material, mesh, etc extras
     bpy.types.WindowManager.selected_component = bpy.props.StringProperty(
         name="component type path",
         description="The component that will be added if selected",
-        update=on_select_new_component
+        update=on_select_new_component,
     )
     # skein_property_groups is a dict keyed by component type_path
     # each type_path's value is a PropertyGroup that we can introspect

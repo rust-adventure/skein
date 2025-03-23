@@ -1,11 +1,11 @@
 [package]
 name = "{{project-name}}"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 
 [dependencies]
-bevy = "0.15"
-bevy_skein = "0.1.1"
+bevy = "0.16.0-rc.1"
+bevy_skein = "0.2.0-rc.1"
 # Set max log levels. This helps avoid unwanted low-severity log spam, which can affect performance.
 log = { version = "0.4", features = [
     "max_level_debug",

@@ -133,6 +133,7 @@ def draw_generic_panel(context, obj, layout, execute_mode):
                     box.label(text="No property group for " + type_path)
 
 def render_props(layout, context, context_key, component_data, is_first_recurse):
+    print(context_key, component_data)
     if not is_first_recurse:
         fields = getattr(getattr(context, context_key), "__annotations__")
         if "skein_enum_index" in fields:
@@ -156,7 +157,7 @@ def render_props(layout, context, context_key, component_data, is_first_recurse)
                 # layout.prop(getattr(context, context_key), key)
                 if "PointerProperty" == value.function.__name__:
                     box = layout
-                    if "skein_enum_index" not in component_fields:
+                    if "skein_enum_index" not in fields:
                         box.label(text=key + ":")
                     render_props(box.box(), getattr(context, context_key), key, value, False)
                 else:
@@ -187,6 +188,7 @@ def render_props(layout, context, context_key, component_data, is_first_recurse)
 
     # render ui for any fields
     if component_fields:
+        print(component_fields)
         # if there are component_fields, then we're dealing with a struct or enum
         for key in component_fields:
             if "PointerProperty" == component_fields[key].function.__name__:

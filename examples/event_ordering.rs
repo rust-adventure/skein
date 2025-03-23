@@ -3,8 +3,8 @@
 use bevy::prelude::*;
 use bevy_log::tracing::instrument;
 use bevy_scene::SceneInstanceReady;
+use bevy_skein::SkeinPlugin;
 use serde::{Deserialize, Serialize};
-use skein::SkeinPlugin;
 
 fn main() {
     App::new()

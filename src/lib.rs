@@ -1,9 +1,4 @@
-//! Skein!
-//!
-//! Store reflected component data in glTF extras using
-//! software like Blender, and insert components based
-//! on those extras.
-//!
+#![doc = include_str!("../README.md")]
 use bevy_app::{App, Plugin};
 use bevy_ecs::{
     name::Name,
@@ -43,7 +38,7 @@ impl Default for SkeinPlugin {
 
 impl Plugin for SkeinPlugin {
     fn build(&self, app: &mut App) {
-        app.add_observer(postprocess_scene);
+        app.add_observer(skein_processing);
 
         if self.handle_brp {
             app.add_plugins((
@@ -64,7 +59,7 @@ impl Plugin for SkeinPlugin {
     names,
     commands,
 ))]
-fn postprocess_scene(
+fn skein_processing(
     trigger: Trigger<
         OnAdd,
         (
@@ -82,8 +77,13 @@ fn postprocess_scene(
     names: Query<&Name>,
     mut commands: Commands,
 ) {
-    trace!("global_scene_instance_ready");
     let entity = trigger.target();
+
+    trace!(
+        ?entity,
+        name = ?names.get(entity).ok(),
+        "skein_processing"
+    );
 
     // Each of the possible extras.
     let gltf_extra =
@@ -104,6 +104,7 @@ fn postprocess_scene(
     .iter()
     .filter_map(|p| p.ok())
     {
+        trace!(extras);
         let obj = match serde_json::from_str(extras) {
             Ok(Value::Object(obj)) => obj,
             Ok(Value::Null) => {
@@ -147,14 +148,12 @@ fn postprocess_scene(
             None => {
                 // the skein field not existing is *normal* for most
                 // entities
-                // a skein field being an array would be an error
+                // a skein field being an object would be an error
                 continue;
             }
         };
 
-        // construct a Value::Object for each component entry because Bevy's reflection expects an
-        // Value::Object with a single-key where the key is the component path and the value is the
-        // component value
+        // for each component, attempt to reflect it and insert it
         for json_component in skein.iter() {
             let type_registry = type_registry.read();
 
@@ -169,12 +168,13 @@ fn postprocess_scene(
                     error!(
                         ?err,
                         ?obj,
-                        "failed to instantiate component data from blender"
+                        "failed to instantiate component data from glTF data"
                     );
                     continue;
                 }
             };
 
+            trace!(?reflect_value);
             // TODO: can we do this insert without panic
             // if the intended component
             commands
@@ -190,7 +190,7 @@ mod tests {
 
     use bevy::{asset::uuid::Uuid, prelude::*};
     use bevy_reflect::{
-        TypeRegistry, serde::ReflectSerializer,
+        serde::ReflectSerializer, TypeRegistry,
     };
     use test_components::*;
 
@@ -511,6 +511,30 @@ mod tests {
         assert_eq!(
             json_string,
             r#"{"test_components::AStructWithColor":{"base":{"Hsla":{"hue":20.0,"saturation":50.0,"lightness":50.0,"alpha":1.0}},"highlight":{"Oklcha":{"lightness":1.0,"chroma":1.0,"hue":1.0,"alpha":1.0}}}}"#
+        );
+    }
+
+    #[test]
+    fn timer_support() {
+        let value = TimerContainer(Timer::from_seconds(
+            2.,
+            TimerMode::Once,
+        ));
+
+        let mut type_registry = TypeRegistry::new();
+
+        type_registry.register::<TimerContainer>();
+
+        // serialize
+        let serializer =
+            ReflectSerializer::new(&value, &type_registry);
+        let json_string =
+            serde_json::ser::to_string(&serializer)
+                .unwrap();
+
+        assert_eq!(
+            json_string,
+            r#"{"test_components::TimerContainer":{"stopwatch":{"elapsed":{"secs":0,"nanos":0},"is_paused":false},"duration":{"secs":2,"nanos":0},"mode":"Once","finished":false,"times_finished_this_tick":0}}"#
         );
     }
 }

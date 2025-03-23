@@ -1,9 +1,6 @@
-> [!CAUTION]
-> in-progress crate. bevy 0.15 compatible version is backported from main and published.
-
 # Skein
 
-A Bevy Plugin and a Blender extension for improving the efficiency of Bevy/Blender workflows.
+A Bevy Plugin and a Blender extension for improving the efficiency of Bevy/Blender workflows: Store reflected component data in glTF extras using software like Blender, and insert components based on those extras.
 
 tldr:
 
@@ -16,7 +13,7 @@ tldr:
 
 Add the plugin and register components (`reflect(Component)` is important!)
 
-```rust
+```rust no_run
 use bevy::prelude::*;
 use bevy_skein::SkeinPlugin;
 
@@ -45,7 +42,7 @@ struct Player {
 - Export to glTF
 - Spawn a Scene from the glTF file, which will have components instantiated
 
-```rust
+```rust ignore
 commands.spawn(SceneRoot(asset_server.load(
     GltfAssetLabel::Scene(0).from_asset("my_export.gltf"),
 )));
@@ -56,6 +53,22 @@ commands.spawn(SceneRoot(asset_server.load(
 - Apply Bevy Components in Blender
 - Replace materials from Blender with materials defined in Bevy ([example](examples/replace_material.rs))
 - Use Blender Drivers to power Bevy Component values
+
+## Compatible Bevy versions
+
+The Bevy plugin and the Blender addon have separate release cycles and versions. The contact points are the BRP Registry API format for ingesting Bevy data into Blender and the glTF format we store data in to get data back into Bevy. These clearly-defined API points mean the Bevy Plugin and the Blender addon can evolve independently.
+
+All versions of `bevy_skein` are currently compatible with all versions of the `skein` Blender addon.
+
+| Bevy version | `bevy_skein` version |
+| :----------- | :------------------- |
+| `0.16`       | branch `main`        |
+| `0.15`       | `0.1`                |
+
+| Blender version | `skein` addon version |
+| :-------------- | :-------------------- |
+| `>4.2`          | `0.1+`                |
+| `>4.2`          | branch `main`         |
 
 ## Why is it named Skein?
 

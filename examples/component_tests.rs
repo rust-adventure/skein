@@ -8,7 +8,7 @@
 //! this example provides and is the minimal set of types required
 //! to reflect and construct values of the components registered here.
 use bevy::prelude::*;
-use skein::SkeinPlugin;
+use bevy_skein::SkeinPlugin;
 use test_components::*;
 
 fn main() {

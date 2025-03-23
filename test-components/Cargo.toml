@@ -6,4 +6,4 @@ authors = ["Chris Biscardi"]
 edition = "2024"
 
 [dependencies]
-bevy = { git = "https://github.com/bevyengine/bevy", rev = "3b9e2e6" }
+bevy = "0.16.0-rc.1"

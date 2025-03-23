@@ -408,10 +408,48 @@ def make_property(
                                 max=255,
                                 override={"LIBRARY_OVERRIDABLE"},
                             )
-                        case "core::time::Duration":
-                            if debug:
-                                print("core::time::Duration is currently not handled")
-                            return
+                        case "core::time::Duration" | "bevy_utils::Duration":
+                            # Duration {
+                            #     secs: u64,
+                            #     nanos: Nanoseconds, // Always 0 <= nanos < NANOS_PER_SEC
+                            # }
+                            annotations = {}
+                            annotations["secs"] = bpy.props.IntProperty(
+                                    name="secs",
+                                    min=0,
+                                    # blender actually sets the default hard maximum to
+                                    # 2^31, not 2^32, so not sure if we can even set
+                                    # those numbers from inside blender
+                                    # max=4294967295,
+                                    override={"LIBRARY_OVERRIDABLE"},
+                            )
+
+                            # NANOS_PER_SEC == 1_000_000_000
+                            # so nanos must be: 0..=999_999_999
+                            annotations["nanos"] = bpy.props.IntProperty(
+                                    name="nanos",
+                                    min=0,
+                                    max=999999999,
+                                    override={"LIBRARY_OVERRIDABLE"},
+                            )
+                                        
+                            # add this struct type to the skein_property_groups so it 
+                            # can be accessed elsewhere by type_path
+                            t = capitalize_path(type_path)
+                            skein_property_groups[type_path] = type(t, (ComponentData,), {
+                                '__annotations__': annotations,
+                            })
+
+                            # registering the class is required for certain Blender
+                            # functionality to work.
+                            # if debug:
+                            print("REGISTERING: " + type_path)
+                            bpy.utils.register_class(
+                                skein_property_groups[type_path]
+                            )
+
+                            # return the type we just constructed
+                            return skein_property_groups[type_path]
                         case _:
                             # if debug:
                             print("unhandled `Value` of `object` type: ", component["typePath"], "\n  ", type_path)

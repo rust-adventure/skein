@@ -14,7 +14,7 @@
 use bevy::{
     color::palettes::tailwind::SKY_400, prelude::*,
 };
-use skein::SkeinPlugin;
+use bevy_skein::SkeinPlugin;
 
 fn main() {
     App::new()

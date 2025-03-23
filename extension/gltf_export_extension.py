@@ -112,6 +112,7 @@ def gather_skein_two(source, sink):
             type_path = component["selected_type_path"]
 
             if inspect.isclass(skein_property_groups[type_path]):
+                print("class:")
                 value = get_data_from_active_editor(
                     component,
                     type_path,
@@ -121,6 +122,7 @@ def gather_skein_two(source, sink):
                 obj[type_path] = value
                 objs.append(obj)
             else:
+                print("not class:")
                 # if the component is a tuple struct, etc
                 # retrieve the value directly instead of
                 # recursing

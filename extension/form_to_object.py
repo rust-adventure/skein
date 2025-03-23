@@ -2,6 +2,7 @@ import inspect
 
 # get json data from an active_editor
 def get_data_from_active_editor(context, context_key, component_data, is_first_recurse):
+    print(context, context_key, component_data)
     data = {}
     # print(getattr(getattr(context, context_key), "__annotations__"))
     if not is_first_recurse:
@@ -34,8 +35,13 @@ def get_data_from_active_editor(context, context_key, component_data, is_first_r
                         # unit variant??
                         return value
         else:
+            print("\n----: ", context_key)
             for key,value in fields.items():
-                data[key] = getattr(getattr(context, context_key), key)
+                if "PointerProperty" == value.function.__name__:
+                    get_data_from_active_editor(getattr(context, context_key), key, value, False)
+                else:
+                    print("    ", key, value)
+                    data[key] = getattr(getattr(context, context_key), key)
 
     # These two ways of access annotations return different results
     # so we have to handle both?
@@ -83,4 +89,5 @@ def get_data_from_active_editor(context, context_key, component_data, is_first_r
             else:
                 data[key] = getattr(getattr(context, context_key), key)
 
+    print(data)
     return data

@@ -24,7 +24,7 @@ use bevy::{
 use bevy_ecs::{
     component::HookContext, world::DeferredWorld,
 };
-use skein::SkeinPlugin;
+use bevy_skein::SkeinPlugin;
 
 fn main() {
     App::new()

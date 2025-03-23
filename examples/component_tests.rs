@@ -27,6 +27,7 @@ fn main() {
         .register_type::<TimerContainer>()
         .register_type::<BucketOfTypes>()
         .register_type::<RichAndUnitEnum>()
+        .register_type::<LinearVelocity>()
         // add plugins
         .add_plugins((
             DefaultPlugins,

@@ -132,3 +132,9 @@ pub struct AStructWithColor {
     pub highlight: Color,
     // TODO: what about LinearRgba?
 }
+
+/// Avian has LinearVelocity/AngularVelocity
+/// that is basically a Vec3
+#[derive(Component, Reflect, Debug)]
+#[reflect(Component)]
+pub struct LinearVelocity(pub Vec3);

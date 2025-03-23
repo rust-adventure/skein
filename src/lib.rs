@@ -190,7 +190,7 @@ mod tests {
 
     use bevy::{asset::uuid::Uuid, prelude::*};
     use bevy_reflect::{
-        serde::ReflectSerializer, TypeRegistry,
+        TypeRegistry, serde::ReflectSerializer,
     };
     use test_components::*;
 
@@ -535,6 +535,27 @@ mod tests {
         assert_eq!(
             json_string,
             r#"{"test_components::TimerContainer":{"stopwatch":{"elapsed":{"secs":0,"nanos":0},"is_paused":false},"duration":{"secs":2,"nanos":0},"mode":"Once","finished":false,"times_finished_this_tick":0}}"#
+        );
+    }
+
+    #[test]
+    fn vec3_support() {
+        let value = LinearVelocity(Vec3::splat(2.));
+
+        let mut type_registry = TypeRegistry::new();
+
+        type_registry.register::<TimerContainer>();
+
+        // serialize
+        let serializer =
+            ReflectSerializer::new(&value, &type_registry);
+        let json_string =
+            serde_json::ser::to_string(&serializer)
+                .unwrap();
+
+        assert_eq!(
+            json_string,
+            r#"{"test_components::LinearVelocity":{"x":2.0,"y":2.0,"z":2.0}}"#
         );
     }
 }

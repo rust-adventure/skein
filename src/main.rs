@@ -14,7 +14,7 @@ fn main() {
              children: Query<&Children>,
              characters: Query<&Character>| {
                 for entity in children
-                    .iter_descendants(trigger.entity())
+                    .iter_descendants(trigger.target())
                 {
                     let Ok(character) =
                         characters.get(entity)

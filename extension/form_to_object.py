@@ -4,20 +4,22 @@ import inspect
 def get_data_from_active_editor(context, context_key, component_data, is_first_recurse):
     # print("get_data_from_active_editor\n  ", context, "\n  ", context_key, "\n  ", component_data)
 
-    # This match handles types where the serialization format differs from the
-    # type information we get back from the Bevy type_registry.
-    # For example, Vec3 is a struct and has struct reflection information
-    # properly indicating that a Vec3 has x,y,z fields. BUT the serialization
-    # is overridden and actually needs to be an array of 3 values
-    match component_data.type_override():
-        case None:
-            print("No type_override")
-        case "glam::Vec3":
-            return [
-                getattr(getattr(context, context_key), "x"),
-                getattr(getattr(context, context_key), "y"),
-                getattr(getattr(context, context_key), "z"),
-            ]
+    # This can fail because not all PropertyGroups have the function defined as an Attribute
+    try:
+        # This match handles types where the serialization format differs from the
+        # type information we get back from the Bevy type_registry.
+        # For example, Vec3 is a struct and has struct reflection information
+        # properly indicating that a Vec3 has x,y,z fields. BUT the serialization
+        # is overridden and actually needs to be an array of 3 values
+        match component_data.type_override():
+            case "glam::Vec3":
+                return [
+                    getattr(getattr(context, context_key), "x"),
+                    getattr(getattr(context, context_key), "y"),
+                    getattr(getattr(context, context_key), "z"),
+                ]
+    except AttributeError:
+        pass
     
     data = {}
     # print(getattr(getattr(context, context_key), "__annotations__"))
@@ -40,23 +42,21 @@ def get_data_from_active_editor(context, context_key, component_data, is_first_r
                     else:
                         return getattr(getattr(context, context_key), "Some")
                 # iterate
+                case value if value not in fields:
+                    return value
                 case value:
-                    if value in getattr(context, context_key):
-                        # variant data exists
-                        if "PointerProperty" == fields[value].function.__name__:
-                            return get_data_from_active_editor(getattr(context, context_key), value, fields[value], False)
-                        else:
-                            return getattr(getattr(context, context_key), value)
+                    # variant data exists
+                    if "PointerProperty" == fields[value].function.__name__:
+                        return {
+                            value: get_data_from_active_editor(getattr(context, context_key), value, fields[value], False)
+                        }
                     else:
-                        # unit variant??
-                        return value
+                        return getattr(getattr(context, context_key), key)
         else:
-            print("\n----: ", context_key)
             for key,value in fields.items():
                 if "PointerProperty" == value.function.__name__:
                     get_data_from_active_editor(getattr(context, context_key), key, value, False)
                 else:
-                    print("    ", key, value)
                     data[key] = getattr(getattr(context, context_key), key)
 
     # These two ways of access annotations return different results

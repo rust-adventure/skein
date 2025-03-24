@@ -22,6 +22,7 @@ fn main() {
         .register_type::<MultiElementTupleStruct>()
         .register_type::<AnOptionalName>()
         .register_type::<NonZeroNumbers>()
+        .register_type::<AStructWithColor>()
         // below this line are types that aren't expected to work
         // for example: Components containing Timers
         .register_type::<TimerContainer>()
@@ -33,5 +34,19 @@ fn main() {
             DefaultPlugins,
             SkeinPlugin::default(),
         ))
+        // .add_systems(Startup, setup)
         .run();
 }
+
+// fn setup(
+//     mut commands: Commands,
+//     asset_server: Res<AssetServer>,
+// ) {
+//     // replace this .gltf file to show data
+//     commands.spawn(SceneRoot(
+//         asset_server.load(
+//             GltfAssetLabel::Scene(0)
+//                 .from_asset("untitled.gltf"),
+//         ),
+//     ));
+// }

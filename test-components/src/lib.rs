@@ -138,3 +138,11 @@ pub struct AStructWithColor {
 #[derive(Component, Reflect, Debug)]
 #[reflect(Component)]
 pub struct LinearVelocity(pub Vec3);
+
+#[derive(Debug, Component, Reflect)]
+#[reflect(Component)]
+pub enum PlatformBehavior {
+    Rotate90X,
+    Rotate90Y,
+    MoveLinear { start: Vec3, end: Vec3 },
+}

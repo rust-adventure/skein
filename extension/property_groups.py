@@ -183,14 +183,14 @@ def make_property(
                     else:
                         annotations[key] = property
 
-            def type_override():
-                return type_path
+            # def type_override(self=None):
+            #     return type_path
             # add this struct type to the skein_property_groups so it 
             # can be accessed elsewhere by type_path
             t = hash_type_path(capitalize_path(type_path))
             skein_property_groups[type_path] = type(t, (ComponentData,), {
                 '__annotations__': annotations,
-                'type_override': type_override
+                'type_override': type_path
             })
 
             # registering the class is required for certain Blender

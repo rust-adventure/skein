@@ -11,7 +11,7 @@ def get_data_from_active_editor(context, context_key, component_data, is_first_r
         # For example, Vec3 is a struct and has struct reflection information
         # properly indicating that a Vec3 has x,y,z fields. BUT the serialization
         # is overridden and actually needs to be an array of 3 values
-        match component_data.type_override():
+        match component_data.type_override:
             case "glam::Vec3":
                 return [
                     getattr(getattr(context, context_key), "x"),
@@ -19,6 +19,17 @@ def get_data_from_active_editor(context, context_key, component_data, is_first_r
                     getattr(getattr(context, context_key), "z"),
                 ]
     except AttributeError:
+        try: 
+            obj = getattr(context, context_key)
+            match obj.type_override:
+                case "glam::Vec3":
+                    return [
+                        getattr(obj, "x"),
+                        getattr(obj, "y"),
+                        getattr(obj, "z"),
+                    ]
+        except AttributeError:
+            pass
         pass
     
     data = {}
@@ -55,7 +66,7 @@ def get_data_from_active_editor(context, context_key, component_data, is_first_r
         else:
             for key,value in fields.items():
                 if "PointerProperty" == value.function.__name__:
-                    get_data_from_active_editor(getattr(context, context_key), key, value, False)
+                    data[key] = get_data_from_active_editor(getattr(context, context_key), key, value, False)
                 else:
                     data[key] = getattr(getattr(context, context_key), key)
 
@@ -93,9 +104,9 @@ def get_data_from_active_editor(context, context_key, component_data, is_first_r
                     return getattr(getattr(context, context_key), key)
             case value if value not in component_fields:
                 return value
-            case _:
+            case value:
                 component_fields = {
-                    active_enum_variant: component_fields[active_enum_variant]
+                    value: component_fields[value]
                 }
 
     if component_fields:

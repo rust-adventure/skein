@@ -2,7 +2,23 @@ import inspect
 
 # get json data from an active_editor
 def get_data_from_active_editor(context, context_key, component_data, is_first_recurse):
-    print(context, context_key, component_data)
+    # print("get_data_from_active_editor\n  ", context, "\n  ", context_key, "\n  ", component_data)
+
+    # This match handles types where the serialization format differs from the
+    # type information we get back from the Bevy type_registry.
+    # For example, Vec3 is a struct and has struct reflection information
+    # properly indicating that a Vec3 has x,y,z fields. BUT the serialization
+    # is overridden and actually needs to be an array of 3 values
+    match component_data.type_override():
+        case None:
+            print("No type_override")
+        case "glam::Vec3":
+            return [
+                getattr(getattr(context, context_key), "x"),
+                getattr(getattr(context, context_key), "y"),
+                getattr(getattr(context, context_key), "z"),
+            ]
+    
     data = {}
     # print(getattr(getattr(context, context_key), "__annotations__"))
     if not is_first_recurse:
@@ -89,5 +105,4 @@ def get_data_from_active_editor(context, context_key, component_data, is_first_r
             else:
                 data[key] = getattr(getattr(context, context_key), key)
 
-    print(data)
     return data

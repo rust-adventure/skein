@@ -57,21 +57,21 @@
     "type": "object",
     "typePath": "glam::Vec3"
   },
-  "component_tests::Marker": {
+  "test_components::Marker": {
     "additionalProperties": false,
-    "crateName": "component_tests",
+    "crateName": "test_components",
     "kind": "Struct",
-    "modulePath": "component_tests",
+    "modulePath": "test_components",
     "reflectTypes": ["Component", "Serialize", "Deserialize"],
     "shortPath": "Marker",
     "type": "object",
-    "typePath": "component_tests::Marker"
+    "typePath": "test_components::Marker"
   },
-  "component_tests::Player": {
+  "test_components::Player": {
     "additionalProperties": false,
-    "crateName": "component_tests",
+    "crateName": "test_components",
     "kind": "Struct",
-    "modulePath": "component_tests",
+    "modulePath": "test_components",
     "properties": {
       "name": { "type": { "$ref": "#/$defs/alloc::string::String" } },
       "power": { "type": { "$ref": "#/$defs/f32" } },
@@ -81,12 +81,12 @@
     "required": ["name", "power", "test"],
     "shortPath": "Player",
     "type": "object",
-    "typePath": "component_tests::Player"
+    "typePath": "test_components::Player"
   },
-  "component_tests::SomeThings": {
-    "crateName": "component_tests",
+  "test_components::SomeThings": {
+    "crateName": "test_components",
     "kind": "Enum",
-    "modulePath": "component_tests",
+    "modulePath": "test_components",
     "oneOf": [
       {
         "additionalProperties": false,
@@ -100,7 +100,7 @@
         "required": ["name"],
         "shortPath": "OneThing",
         "type": "object",
-        "typePath": "component_tests::SomeThings::OneThing"
+        "typePath": "test_components::SomeThings::OneThing"
       },
       {
         "items": false,
@@ -108,64 +108,64 @@
         "prefixItems": [{ "type": { "$ref": "#/$defs/i32" } }],
         "shortPath": "Low",
         "type": "array",
-        "typePath": "component_tests::SomeThings::Low"
+        "typePath": "test_components::SomeThings::Low"
       }
     ],
     "reflectTypes": ["Component", "Serialize", "Deserialize"],
     "shortPath": "SomeThings",
     "type": "object",
-    "typePath": "component_tests::SomeThings"
+    "typePath": "test_components::SomeThings"
   },
-  "component_tests::TaskPriority": {
-    "crateName": "component_tests",
+  "test_components::TaskPriority": {
+    "crateName": "test_components",
     "kind": "Enum",
-    "modulePath": "component_tests",
+    "modulePath": "test_components",
     "oneOf": ["High", "Medium", "Low"],
     "reflectTypes": ["Component", "Serialize", "Deserialize"],
     "shortPath": "TaskPriority",
     "type": "string",
-    "typePath": "component_tests::TaskPriority"
+    "typePath": "test_components::TaskPriority"
   },
-  "component_tests::Team": {
-    "crateName": "component_tests",
+  "test_components::Team": {
+    "crateName": "test_components",
     "kind": "Enum",
-    "modulePath": "component_tests",
+    "modulePath": "test_components",
     "oneOf": ["Green", "Red", "Blue"],
     "shortPath": "Team",
     "type": "string",
-    "typePath": "component_tests::Team"
+    "typePath": "test_components::Team"
   },
-  "component_tests::TeamMember": {
+  "test_components::TeamMember": {
     "additionalProperties": false,
-    "crateName": "component_tests",
+    "crateName": "test_components",
     "kind": "Struct",
-    "modulePath": "component_tests",
+    "modulePath": "test_components",
     "properties": {
-      "player": { "type": { "$ref": "#/$defs/component_tests::Player" } },
-      "team": { "type": { "$ref": "#/$defs/component_tests::Team" } }
+      "player": { "type": { "$ref": "#/$defs/test_components::Player" } },
+      "team": { "type": { "$ref": "#/$defs/test_components::Team" } }
     },
     "reflectTypes": ["Component", "Serialize", "Deserialize"],
     "required": ["player", "team"],
     "shortPath": "TeamMember",
     "type": "object",
-    "typePath": "component_tests::TeamMember"
+    "typePath": "test_components::TeamMember"
   },
-  "component_tests::TupleStruct": {
-    "crateName": "component_tests",
+  "test_components::TupleStruct": {
+    "crateName": "test_components",
     "items": false,
     "kind": "TupleStruct",
-    "modulePath": "component_tests",
+    "modulePath": "test_components",
     "prefixItems": [{ "type": { "$ref": "#/$defs/u32" } }],
     "reflectTypes": ["Component", "Serialize", "Deserialize"],
     "shortPath": "TupleStruct",
     "type": "array",
-    "typePath": "component_tests::TupleStruct"
+    "typePath": "test_components::TupleStruct"
   },
-  "component_tests::MultiElementTupleStruct": {
-    "crateName": "component_tests",
+  "test_components::MultiElementTupleStruct": {
+    "crateName": "test_components",
     "items": false,
     "kind": "TupleStruct",
-    "modulePath": "component_tests",
+    "modulePath": "test_components",
     "prefixItems": [
       {
         "type": {
@@ -191,13 +191,13 @@
     "reflectTypes": ["Component", "Serialize", "Deserialize"],
     "shortPath": "MultiElementTupleStruct",
     "type": "array",
-    "typePath": "component_tests::MultiElementTupleStruct"
+    "typePath": "test_components::MultiElementTupleStruct"
   },
-  "component_tests::AnOptionalName": {
+  "test_components::AnOptionalName": {
     "additionalProperties": false,
-    "crateName": "component_tests",
+    "crateName": "test_components",
     "kind": "Struct",
-    "modulePath": "component_tests",
+    "modulePath": "test_components",
     "properties": {
       "name": {
         "type": {
@@ -208,7 +208,7 @@
     "reflectTypes": ["Component"],
     "shortPath": "AnOptionalName",
     "type": "object",
-    "typePath": "component_tests::AnOptionalName"
+    "typePath": "test_components::AnOptionalName"
   },
   "core::option::Option<alloc::string::String>": {
     "crateName": "core",
@@ -237,5 +237,22 @@
     "shortPath": "Option<String>",
     "type": "object",
     "typePath": "core::option::Option<alloc::string::String>"
+  },
+  "test_components::LinearVelocity": {
+    "crateName": "test_components",
+    "items": false,
+    "kind": "TupleStruct",
+    "modulePath": "test_components",
+    "prefixItems": [
+      {
+        "type": {
+          "$ref": "#/$defs/glam::Vec3"
+        }
+      }
+    ],
+    "reflectTypes": ["Component"],
+    "shortPath": "LinearVelocity",
+    "type": "array",
+    "typePath": "test_components::LinearVelocity"
   }
 }

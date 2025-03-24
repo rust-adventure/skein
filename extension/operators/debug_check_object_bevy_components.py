@@ -21,7 +21,6 @@ class DebugCheckObjectBevyComponents(bpy.types.Operator):
                 print("### ", component.selected_type_path, "")
                 skein_property_groups = context.window_manager.skein_property_groups
                 if inspect.isclass(skein_property_groups[component.selected_type_path]):
-                    print("object:")
                     print(get_data_from_active_editor(
                         component,
                         component.selected_type_path,
@@ -38,7 +37,6 @@ class DebugCheckObjectBevyComponents(bpy.types.Operator):
                 print("### ", component.selected_type_path, "")
                 skein_property_groups = context.window_manager.skein_property_groups
                 if inspect.isclass(skein_property_groups[component.selected_type_path]):
-                    print("object:")
                     print(get_data_from_active_editor(
                         component,
                         component.selected_type_path,

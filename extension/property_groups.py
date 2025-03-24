@@ -134,11 +134,19 @@ def make_property(
                             else:
                                 annotations[key] = property
 
-                    # add this struct type to the skein_property_groups so it 
-                    # can be accessed elsewhere by type_path
-                    skein_property_groups[type_path] = type(hash_type_path(capitalize_path(type_path)), (ComponentData,), {
-                        '__annotations__': annotations,
-                    })
+                    if "core::option::Option<" in type_path and component["modulePath"] == "core::option" and "Option<" in component["shortPath"]:
+                        # add this struct type to the skein_property_groups so it 
+                        # can be accessed elsewhere by type_path
+                        skein_property_groups[type_path] = type(hash_type_path(capitalize_path(type_path)), (ComponentData,), {
+                            '__annotations__': annotations,
+                            "is_core_option": True
+                        })
+                    else:
+                        # add this struct type to the skein_property_groups so it 
+                        # can be accessed elsewhere by type_path
+                        skein_property_groups[type_path] = type(hash_type_path(capitalize_path(type_path)), (ComponentData,), {
+                            '__annotations__': annotations,
+                        })
 
                     # registering the class is required for certain Blender
                     # functionality to work.
@@ -183,8 +191,6 @@ def make_property(
                     else:
                         annotations[key] = property
 
-            # def type_override(self=None):
-            #     return type_path
             # add this struct type to the skein_property_groups so it 
             # can be accessed elsewhere by type_path
             t = hash_type_path(capitalize_path(type_path))

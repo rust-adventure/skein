@@ -1,7 +1,6 @@
 import pytest
 import bpy
 
-from .form_to_object import get_data_from_active_editor
 from .property_groups import capitalize_path, hash_type_path, make_property
 import json
 import inspect

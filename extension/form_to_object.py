@@ -1,119 +1,85 @@
-import inspect
-
 # get json data from an active_editor
-def get_data_from_active_editor(context, context_key, component_data, is_first_recurse):
-    # print("get_data_from_active_editor\n  ", context, "\n  ", context_key, "\n  ", component_data)
+def get_data_from_active_editor(context, context_key):
+    """get the data from a ComponentContainer
+    The initial context is typically the ComponentContainer and the 
+    typicaly context_key is the type_path of the 
 
-    # This can fail because not all PropertyGroups have the function defined as an Attribute
+    @param: skein_property_groups All of the property groups constructed so far. Will mutate this to add more property groups.
+    @param: registry dict representation of the Bevy registry information
+    @param: original_type_path Either a full type_path (`component_tests::SomeThings::OneThing`) or a type_path with `#/#defs/alloc` on the front
+    @param: override_component An optional value that is used when you have access to the registry type information but that registry type information is not directly accessible by registry[type_path]. This happens in complex enums. (default None)
+    """
+    if context_key not in context:
+        return {}
+    
+    # The current PropertyGroup we're working with
+    obj = getattr(context, context_key)
+
+    # Handle core::option::Option specially, before other enums
+    # because "None" and "Some" have special meaning: null and "just the value"
     try:
-        # This match handles types where the serialization format differs from the
-        # type information we get back from the Bevy type_registry.
-        # For example, Vec3 is a struct and has struct reflection information
-        # properly indicating that a Vec3 has x,y,z fields. BUT the serialization
-        # is overridden and actually needs to be an array of 3 values
-        match component_data.type_override:
+        if obj.is_core_option:
+            match getattr(obj, "skein_enum_index"):
+                case "None":
+                    return None
+                case "Some":
+                    return get_data_from_active_editor(obj, "Some")
+    except AttributeError:
+        # Not all PropertyGroups have the is_core_option attribute, so
+        # this is a common failure case that doesn't actually mean failure
+        pass
+
+    # get the annotations, which will give us all of the field names
+    # and their value types for this PropertyGroup
+    annotations = getattr(obj, "__annotations__")
+
+    # If we have a `skein_enum_index`, then we have the representation
+    # of a Rust Enum. The index holds the currently selected enum 
+    # variant name as a string
+    if "skein_enum_index" in annotations:
+        match getattr(obj, "skein_enum_index"):
+            # If the enum variant name doesn't exist in the fields,
+            # then we have a "unit variant" and need to return
+            # the variant value as a string
+            case value if value not in obj:
+                return value
+            # return an object where the key is the enum variant name
+            # and the value is the recursed value
+            case value:
+                if "PointerProperty" == annotations[value].function.__name__:
+                    return {
+                        value: get_data_from_active_editor(obj, value)
+                    }
+                else:
+                    return { 
+                        value: getattr(obj, value)
+                    }
+
+    # attempt to handle any type overrides, like glam::Vec3
+    # These are mostly types where the serialization format differs from the
+    # type information we get back from the Bevy type_registry.
+    # For example, Vec3 is a struct and has struct reflection information
+    # properly indicating that a Vec3 has x,y,z fields. BUT the serialization
+    # is overridden and actually needs to be an array of 3 values
+    try:
+        match obj.type_override:
             case "glam::Vec3":
                 return [
-                    getattr(getattr(context, context_key), "x"),
-                    getattr(getattr(context, context_key), "y"),
-                    getattr(getattr(context, context_key), "z"),
+                    getattr(obj, "x"),
+                    getattr(obj, "y"),
+                    getattr(obj, "z"),
                 ]
     except AttributeError:
-        try: 
-            obj = getattr(context, context_key)
-            match obj.type_override:
-                case "glam::Vec3":
-                    return [
-                        getattr(obj, "x"),
-                        getattr(obj, "y"),
-                        getattr(obj, "z"),
-                    ]
-        except AttributeError:
-            pass
+        # Not all PropertyGroups have the type_override attribute, so
+        # this is a common failure case that doesn't actually mean failure
         pass
-    
+
+    # No more special handling, just take the keys and values that are
+    # in the annotations, and plug them into the object
     data = {}
-    # print(getattr(getattr(context, context_key), "__annotations__"))
-    if not is_first_recurse:
-        fields = getattr(getattr(context, context_key), "__annotations__")
-        if "skein_enum_index" in fields:
-            active_enum_variant = getattr(getattr(context, context_key), "skein_enum_index")
-            match active_enum_variant:
-                # if the shortName is "None" and the fields don't include any key
-                # for the "None" variant, then its pretty likely we have a core::option::Option
-                case "None" if "None" not in fields:
-                    return None
-                # Unfortunately the same trick doesn't work for "Some".
-                # Hopefully nobody names their custom enum variants "Some"
-                case "Some":
-                    # Some needs to return the underlying data, removing
-                    # the intermediate "Some" key
-                    if "PointerProperty" == fields["Some"].function.__name__:
-                        return get_data_from_active_editor(getattr(context, context_key), "Some", fields["Some"], False)
-                    else:
-                        return getattr(getattr(context, context_key), "Some")
-                # iterate
-                case value if value not in fields:
-                    return value
-                case value:
-                    # variant data exists
-                    if "PointerProperty" == fields[value].function.__name__:
-                        return {
-                            value: get_data_from_active_editor(getattr(context, context_key), value, fields[value], False)
-                        }
-                    else:
-                        return getattr(getattr(context, context_key), key)
+    for key, value in annotations.items():
+        if "PointerProperty" == value.function.__name__:
+            data[key] = get_data_from_active_editor(obj, key)
         else:
-            for key,value in fields.items():
-                if "PointerProperty" == value.function.__name__:
-                    data[key] = get_data_from_active_editor(getattr(context, context_key), key, value, False)
-                else:
-                    data[key] = getattr(getattr(context, context_key), key)
-
-    # These two ways of access annotations return different results
-    # so we have to handle both?
-    # getattr(getattr(context, context_key), "__annotations__")
-    component_fields = inspect.get_annotations(component_data)
-
-    # if key == "None" and "None" not in component_fields:
-    #     component_fields = {
-    #         "skein_enum_index": component_fields["skein_enum_index"]
-    #     }
-    #     pass
-    # elif
-    # TODO: move skein_enum_index logic to exporter maybe?
-    # possibly useful for moving active_form to components list
-    # This `if` changes the fields that are fetched, specifically
-    # so that we only export one of the variants in an enum (all variants
-    # have their own key in the object)
-    if "skein_enum_index" in component_fields:
-        active_enum_variant = getattr(getattr(context, context_key), "skein_enum_index")
-        match active_enum_variant:
-            # if the shortName is "None" and the component_fields don't include any key
-            # for the "None" variant, then its pretty likely we have a core::option::Option
-            case "None" if "None" not in component_fields:
-                return None
-            # Unfortunately the same trick doesn't work for "Some".
-            # Hopefully nobody names their custom enum variants "Some"
-            case "Some":
-                # Some needs to return the underlying data, removing
-                # the intermediate "Some" key
-                if "PointerProperty" == component_fields["Some"].function.__name__:
-                    return get_data_from_active_editor(getattr(context, context_key), key, component_fields[key], False)
-                else:
-                    return getattr(getattr(context, context_key), key)
-            case value if value not in component_fields:
-                return value
-            case value:
-                component_fields = {
-                    value: component_fields[value]
-                }
-
-    if component_fields:
-        for key in component_fields:
-            if "PointerProperty" == component_fields[key].function.__name__:
-                data[key] = get_data_from_active_editor(getattr(context, context_key), key, component_fields[key], False)
-            else:
-                data[key] = getattr(getattr(context, context_key), key)
-
+            data[key] = getattr(obj, key)
     return data

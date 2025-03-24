@@ -16,14 +16,12 @@ class TestClass:
         data = get_data_from_active_editor(
                 bpy.context.scene,
                 "active_editor",
-                skein_property_groups[type_path],
-                True
         )
-        assert data == {
+        assert {
                 "name": "test",
                 "power": 1.0,
                 "test": 20
-        }
+        } == data
 
     def test_linear_velocity(self):
         type_path = "test_components::LinearVelocity"
@@ -36,26 +34,22 @@ class TestClass:
         data = get_data_from_active_editor(
                 bpy.context.scene,
                 "active_editor",
-                skein_property_groups[type_path],
-                True
         )
-        assert data == [1.0, 2.0, 3.0]
+        assert [1.0, 2.0, 3.0] == data
 
-    def test_color(self):
-        type_path = "test_components::LinearVelocity"
-        skein_property_groups = {}
-        build_editor(type_path, skein_property_groups)
-        bpy.context.scene.active_editor.x = 1.0
-        bpy.context.scene.active_editor.y = 2.0
-        bpy.context.scene.active_editor.z = 3.
+    # def test_color(self):
+    #     type_path = "test_components::LinearVelocity"
+    #     skein_property_groups = {}
+    #     build_editor(type_path, skein_property_groups)
+    #     bpy.context.scene.active_editor.x = 1.0
+    #     bpy.context.scene.active_editor.y = 2.0
+    #     bpy.context.scene.active_editor.z = 3.
         
-        data = get_data_from_active_editor(
-                bpy.context.scene,
-                "active_editor",
-                skein_property_groups[type_path],
-                True
-        )
-        assert data == [1.0, 2.0, 3.0]
+    #     data = get_data_from_active_editor(
+    #             bpy.context.scene,
+    #             "active_editor",
+    #     )
+    #     assert data == [1.0, 2.0, 3.0]
 
     # def test_team_member_component(self):
     #     type_path = "test_components::TeamMember"

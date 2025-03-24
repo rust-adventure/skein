@@ -133,7 +133,6 @@ def draw_generic_panel(context, obj, layout, execute_mode):
                     box.label(text="No property group for " + type_path)
 
 def render_props(layout, context, context_key, component_data, is_first_recurse):
-    print(context_key, component_data)
     if not is_first_recurse:
         fields = getattr(getattr(context, context_key), "__annotations__")
         if "skein_enum_index" in fields:

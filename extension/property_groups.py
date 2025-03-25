@@ -228,13 +228,11 @@ def make_property(
             # { "skein::tests::TupleStruct": 12 }
             # ```
             if len(component["prefixItems"]) == 1:
-                print("Single Element TupleStruct")
                 skein_property_groups[type_path] = make_property(
                     skein_property_groups,
                     registry,
                     component["prefixItems"][0]["type"]["$ref"]
                 )
-                print("succeeded", type_path)
                 return skein_property_groups[type_path]
             else:
                 print("TupleStruct is unimplemented in make_property for lengths longer than 1 element: ", type_path)

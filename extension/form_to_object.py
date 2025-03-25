@@ -15,6 +15,10 @@ def get_data_from_active_editor(context, context_key):
     # The current PropertyGroup we're working with
     obj = getattr(context, context_key)
 
+    # get the annotations, which will give us all of the field names
+    # and their value types for this PropertyGroup
+    annotations = getattr(obj, "__annotations__")
+
     # Handle core::option::Option specially, before other enums
     # because "None" and "Some" have special meaning: null and "just the value"
     try:
@@ -23,15 +27,14 @@ def get_data_from_active_editor(context, context_key):
                 case "None":
                     return None
                 case "Some":
-                    return get_data_from_active_editor(obj, "Some")
+                    if "PointerProperty" == annotations["Some"].function.__name__:
+                        return get_data_from_active_editor(obj, "Some")
+                    else:
+                        return getattr(obj, "Some")
     except AttributeError:
         # Not all PropertyGroups have the is_core_option attribute, so
         # this is a common failure case that doesn't actually mean failure
         pass
-
-    # get the annotations, which will give us all of the field names
-    # and their value types for this PropertyGroup
-    annotations = getattr(obj, "__annotations__")
 
     # If we have a `skein_enum_index`, then we have the representation
     # of a Rust Enum. The index holds the currently selected enum 

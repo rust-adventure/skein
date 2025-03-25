@@ -187,7 +187,6 @@ def render_props(layout, context, context_key, component_data, is_first_recurse)
 
     # render ui for any fields
     if component_fields:
-        print(component_fields)
         # if there are component_fields, then we're dealing with a struct or enum
         for key in component_fields:
             if "PointerProperty" == component_fields[key].function.__name__:

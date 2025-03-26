@@ -2,12 +2,7 @@
 def get_data_from_active_editor(context, context_key):
     """get the data from a ComponentContainer
     The initial context is typically the ComponentContainer and the 
-    typicaly context_key is the type_path of the 
-
-    @param: skein_property_groups All of the property groups constructed so far. Will mutate this to add more property groups.
-    @param: registry dict representation of the Bevy registry information
-    @param: original_type_path Either a full type_path (`component_tests::SomeThings::OneThing`) or a type_path with `#/#defs/alloc` on the front
-    @param: override_component An optional value that is used when you have access to the registry type information but that registry type information is not directly accessible by registry[type_path]. This happens in complex enums. (default None)
+    typical context_key is the type_path of the Component
     """
     if context_key not in context:
         return {}

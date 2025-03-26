@@ -1,7 +1,7 @@
 ---
 title: Getting Started
 description: Your first steps with Skein, Bevy, and Blender
-opengraph_image: /opengraph/getting-started.jpg
+opengraph_image: /opengraph/opengraph-getting-started.jpg
 ---
 
 A Bevy Plugin and a Blender extension for improving the efficiency of Bevy/Blender workflows.

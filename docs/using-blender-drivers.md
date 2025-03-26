@@ -1,6 +1,7 @@
 ---
 title: Using Blender Drivers
-description: Quidem magni aut exercitationem maxime rerum eos.
+description: Powering Bevy Component data using Blender's Drivers
+opengraph_image: /opengraph/opengraph-using-blender-drivers.jpg
 ---
 
 [Blender Drivers](https://docs.blender.org/manual/en/latest/animation/drivers/index.html) are a way to control values of properties by means of a function, or a mathematical expression.

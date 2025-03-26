@@ -8,7 +8,8 @@
 use leptos::prelude::*;
 
 use crate::components::{
-    hero::Hero, navigation::Navigation,
+    hero::Hero, mobile_navigation::MobileNavigation,
+    navigation::Navigation,
 };
 
 #[component]
@@ -43,7 +44,7 @@ fn Header() -> impl IntoView {
       )
     >
       <div class="mr-6 flex lg:hidden">
-        // <MobileNavigation />
+        <MobileNavigation />
       </div>
       <div class="relative flex grow basis-0 items-center">
         <a href="/" aria-label="Home page">
@@ -69,6 +70,7 @@ pub fn Layout(children: Children) -> impl IntoView {
 
     view! {
       <div class="flex w-full flex-col">
+        <div class="hero-gradient"/>
         <Header />
 
         {(url.get().path() == "/").then_some(view!{<Hero />})}

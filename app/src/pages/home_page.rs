@@ -35,6 +35,7 @@ pub fn HomePage() -> impl IntoView {
         get_doc,
         "overview".to_string(),
     );
+    let title = "Bevy + Blender <3".to_string();
     view! {
 
         <Title text=title.clone() />
@@ -60,6 +61,8 @@ pub fn HomePage() -> impl IntoView {
             name="twitter:description"
             content=description
         />
+        <Meta property="twitter:image" content=format!("https://bevy-skein.netlify.app{}", opengraph_image.clone()) />
+
         <DocsLayout
             title=title
             table_of_contents=toc

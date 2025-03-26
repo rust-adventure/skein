@@ -1,6 +1,7 @@
 ---
 title: Installation
-description: Quidem magni aut exercitationem maxime rerum eos.
+description: Installing the Bevy Plugin and the Blender addon
+opengraph_image: /opengraph/opengraph-installation.jpg
 ---
 
 There are two pieces to Skein:

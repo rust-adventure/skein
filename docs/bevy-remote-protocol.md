@@ -1,6 +1,7 @@
 ---
 title: Bevy Remote Protocol
-description: Quidem magni aut exercitationem maxime rerum eos.
+description: Skein uses the Bevy Remote Protocol registry endpoint
+opengraph_image: /opengraph/opengraph-bevy-remote-protocol.jpg
 ---
 
 The [Bevy Remote Protocol](https://docs.rs/bevy/latest/bevy/remote/index.html) (**BRP**) is a JSON-RPC protocol designed to allow the remote access to a Bevy application.

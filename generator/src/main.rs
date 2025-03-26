@@ -39,6 +39,14 @@ async fn main() -> io::Result<()> {
                     title: "Installation",
                     href: "/docs/installation",
                 },
+                NavLink {
+                    title: "Fetching the Bevy Type Registry",
+                    href: "/docs/fetching-the-bevy-type-registry",
+                },
+                NavLink {
+                    title: "Inserting Components",
+                    href: "/docs/inserting-components",
+                },
             ],
         },
         NavItem {
@@ -48,10 +56,7 @@ async fn main() -> io::Result<()> {
                     title: "Bevy Remote Protocol",
                     href: "/docs/bevy-remote-protocol",
                 },
-                NavLink {
-                    title: "Inserting Components",
-                    href: "/docs/inserting-components",
-                },
+             
                 NavLink {
                     title: "Using Blender Drivers",
                     href: "/docs/using-blender-drivers",
@@ -63,7 +68,7 @@ async fn main() -> io::Result<()> {
                 NavLink {
                     title: "Exporting: The Basics",
                     href: "/docs/exporting-the-basics"
-                }
+                },
             ],
         },
         NavItem {

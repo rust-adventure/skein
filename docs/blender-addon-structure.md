@@ -1,7 +1,7 @@
 ---
 title: Blender Addon Structure
 description: How the Skein Blender addon works
-opengraph_image: /opengraph/opengraph-index.jpg
+opengraph_image: /opengraph/opengraph-blender-addon-structure.jpg
 ---
 
 The Blender addon is a series of Python files in the `extension` directory.

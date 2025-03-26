@@ -1,10 +1,12 @@
 ---
 title: Collection Instances and Library Overrides
 description: Blender includes the ability to instance Collections and link assets from other .blend files
-opengraph_image: /opengraph/opengraph-index.jpg
+opengraph_image: /opengraph/opengraph-collection-instances-and-library-overrides.jpg
 ---
 
 Blender has a number of ways to link data around, including: **Collection Instances** and **Library Overrides**.
+
+> ![WARNING] > `Object` data and `Object Data` are [_NOT THE SAME THING_](https://docs.blender.org/manual/en/latest/scene_layout/object/introduction.html)
 
 ## Collection Instances
 
@@ -21,3 +23,22 @@ TODO: Screenshots of collection instances
 Once you create an Asset in a separate .blend file, and instantiate a linked instance from that asset, **Library Overrides** allow you to override data represented by those linked assets, including Component data.
 
 TODO: screenshots and workflow for library overrides
+
+## Duplicated Objects
+
+### Linked
+
+### Not Linked
+
+- Collection Instance:
+  - Linked Everything
+  - Not Transform, etc
+- Duplicated Object (linked)
+  - (alt-D)
+  - linked data is MESH DATA, NOT OBJECT PANEL
+- Duplicated Object (not-linked)
+  - shift-D
+  - All Data is copied
+- Linked Override
+  - Collection Instance from other .blend file
+  - Has special support for overriding data using "Library Overrides"

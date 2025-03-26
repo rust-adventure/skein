@@ -1,6 +1,7 @@
 ---
 title: "Exporting: The Basics"
-description: Quidem magni aut exercitationem maxime rerum eos.
+description: The basics of exporting glTF with Skein
+opengraph_image: /opengraph/opengraph-exporting-the-basics.jpg
 ---
 
 The Blender addon includes Bevy Component data when exporting to glTF.

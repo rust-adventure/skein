@@ -1,6 +1,7 @@
 ---
 title: Inserting Components
-description: Quidem magni aut exercitationem maxime rerum eos.
+description: How to insert Bevy components in Blender using the Skein addon
+opengraph_image: /opengraph/opengraph-inserting-components.jpg
 ---
 
 _After_ fetching the **Bevy Type Registry** information; **Components** can be inserted on Blender **Objects**, **Meshes**, and **Materials**.

@@ -45,6 +45,46 @@
   }
 }
 
+.hero-gradient {
+  background-color: var(--color-sky-900);
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 2663 2663' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"),
+    radial-gradient(
+      circle at 52% 90%,
+      var(--color-slate-950) 14%,
+      transparent 89%
+    ),
+    radial-gradient(
+      circle at 31% 44%,
+      var(--color-sky-900) 14%,
+      transparent 89%
+    ),
+    radial-gradient(
+      circle at 86% 78%,
+      var(--color-slate-950) 14%,
+      transparent 89%
+    ),
+    radial-gradient(
+      circle at 79% 54%,
+      var(--color-slate-950) 31.80696242366164%,
+      transparent 63.93080038703818%
+    ),
+    radial-gradient(
+      circle at 19% 89%,
+      var(--color-slate-950) 21.12783401076858%,
+      transparent 89%
+    ),
+    radial-gradient(
+      circle at 13% 18%,
+      var(--color-slate-950) 10.288789004975525%,
+      transparent 49.159310217293616%
+    );
+  background-blend-mode: overlay, normal, normal, normal, normal, normal, normal;
+  height: 50vw;
+  position: absolute;
+  width: 100vw;
+  filter: blur(100px);
+  max-width: 100%;
+}
 /* Generic Alert styles */
 .markdown-alert {
   border-inline-start-width: 0.25rem;

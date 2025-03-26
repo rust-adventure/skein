@@ -1,6 +1,7 @@
 ---
 title: Property Groups
 description: How Skein uses PropertyGroups to create Component forms and other data
+opengraph_image: /opengraph/property-groups.jpg
 ---
 
 Blender has two concepts for custom data: Properties and IDData

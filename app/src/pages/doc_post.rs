@@ -57,7 +57,7 @@ pub fn DocPost() -> impl IntoView {
           rel="canonical"
           href=format!("https://bevy-skein.netlify.app/docs/{}", current_doc)
       />
-      <Meta property="og:image" content=opengraph_image.clone() />
+      <Meta property="og:image" content=format!("https://bevy-skein.netlify.app{}", opengraph_image.clone()) />
       <Meta name="twitter:card" content="summary_large_image" />
       <Meta name="twitter:creator" content="@chrisbiscardi" />
       <Meta name="twitter:title" content=title.clone() />
@@ -66,7 +66,7 @@ pub fn DocPost() -> impl IntoView {
           content=description
       />
 
-      <Meta name="twitter:image" content=opengraph_image />
+      <Meta property="twitter:image" content=format!("https://bevy-skein.netlify.app{}", opengraph_image.clone()) />
 
         <DocsLayout
             title=title

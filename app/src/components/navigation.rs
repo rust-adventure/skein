@@ -59,7 +59,6 @@ const COLORS_DARK: [&str; 9] = [
 #[component]
 pub fn Navigation(
     #[prop(default = "".to_string())] class: String,
-    // onLinkClick
 ) -> impl IntoView {
     let navigation = expect_resource::<NavigationItems>().0;
 

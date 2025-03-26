@@ -60,7 +60,7 @@ pub fn Hero() -> impl IntoView {
               //   priority
               // />
               <div class="relative">
-                <p class="inline bg-linear-to-r from-slate-400 via-[#e27204] to-red-400 bg-clip-text font-display text-5xl tracking-tight text-transparent font-black drop-shadow-[0_0_10px_rgba(255,255,255,0.20)]">
+                <p class="inline bg-linear-to-r from-slate-400 via-[#e27204] to-red-400 bg-clip-text font-display text-5xl tracking-tight text-transparent font-black">
                   "Bevy + Blender <3"
                 </p>
                 <p class="mt-3 text-2xl tracking-tight text-slate-400">

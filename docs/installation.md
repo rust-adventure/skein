@@ -45,7 +45,7 @@ commands.spawn(SceneRoot(asset_server.load(
 
 ## The Blender addon
 
-1. Download bevy_skein-0.1.0.zip
+1. Download the zip file from the latest [blender addon release](https://github.com/rust-adventure/skein/releases) on GitHub
 2. Open Blender, navigate to Edit -> Add-ons`
    ![addons](/images/docs/installation/addons.avif)
 3. Drag .zip file onto addons list and "Install from Disk"

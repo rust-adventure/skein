@@ -24,7 +24,7 @@ use leptos_router::{
     components::*, path, static_routes::StaticRoute,
     SsrMode,
 };
-use pages::{blog_post::Post, home_page::PersonName};
+use pages::blog_post::Post;
 
 pub fn shell(options: LeptosOptions) -> impl IntoView {
     view! {
@@ -74,18 +74,6 @@ pub fn App() -> impl IntoView {
                     />
 
                     <Route
-                        path=path!("/person/*person")
-                        view=HomePage
-                        ssr=SsrMode::Static(
-                            StaticRoute::new()
-                                .prerender_params(|| async move {
-                                    [("person".into(), run_system(people_static_params))]
-                                        .into_iter()
-                                        .collect()
-                                }),)
-                    />
-
-                    <Route
                         path=path!("/blog")
                         view=Blog
                         ssr=SsrMode::Static(
@@ -122,12 +110,6 @@ pub fn App() -> impl IntoView {
             </Layout>
         </Router>
     }
-}
-
-fn people_static_params(
-    people: Query<&FileName, With<PersonName>>,
-) -> Vec<String> {
-    people.iter().map(|person| person.0.clone()).collect()
 }
 
 fn blog_static_params(

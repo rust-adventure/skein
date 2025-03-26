@@ -1,7 +1,6 @@
 use crate::{
     components::{
-        counter::Counter, docs_layout::DocsLayout,
-        navigation::Navigation,
+        docs_layout::DocsLayout, navigation::Navigation,
     },
     pages::doc_post::{OpengraphImage, PostDescription},
 };
@@ -16,12 +15,6 @@ use leptos_meta::{Link, Meta, Title};
 use leptos_router::hooks::use_params_map;
 
 use super::doc_post::{Doc, PostTitle};
-
-#[derive(Component, Clone)]
-pub struct PersonName(pub String);
-
-#[derive(Component)]
-pub struct Age(pub u8);
 
 #[component]
 pub fn HomePage() -> impl IntoView {

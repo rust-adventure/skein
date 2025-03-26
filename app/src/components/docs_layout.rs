@@ -1,20 +1,13 @@
 use cinnog::expect_resource;
-// import { DocsHeader } from
-// '@/components/DocsHeader'
-// import { PrevNextLinks } from
-// '@/components/PrevNextLinks' import { Prose }
-// from '@/components/Prose'
-// import { TableOfContents } from
-// '@/components/TableOfContents'
-// import { collectSections } from
-// '@/lib/sections'
 use leptos::{either::EitherOf4, prelude::*};
 use table_of_contents::TableOfContents;
+mod prev_next_links;
 mod table_of_contents;
 
 use crate::{
     components::prose::Prose, NavLink, NavigationItems,
 };
+use prev_next_links::PrevNextLinks;
 
 #[component]
 pub fn DocsLayout(
@@ -29,15 +22,12 @@ pub fn DocsLayout(
             <DocsHeader title={title} />
             <Prose>{children()}</Prose>
           </article>
-          // <PrevNextLinks />
+          <PrevNextLinks />
         </div>
         <TableOfContents table_of_contents={table_of_contents} />
 
     }
 }
-
-// import { usePathname } from 'next/navigation'
-// import { navigation } from '@/lib/navigation'
 
 #[component]
 fn DocsHeader(
@@ -53,10 +43,6 @@ fn DocsHeader(
             .find(|link| link.href == url.get().path())
             .is_some()
     });
-
-    // if title.is_none() && section.is_none() {
-    //     return view! {};
-    // }
 
     view! {
         <header class="mb-9 space-y-1">

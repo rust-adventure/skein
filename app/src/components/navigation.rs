@@ -80,7 +80,6 @@ pub fn Navigation(
                 <li class="relative">
                   <a
                     href={link.href}
-                    // onClick={onLinkClick}
                     class={format!(
                       "block w-full pl-3.5 before:pointer-events-none before:absolute before:top-1/2 before:-left-1 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full {}",
                       if link.href == url.get().path() {

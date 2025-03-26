@@ -1,10 +1,3 @@
-// import { Hero } from '@/components/Hero'
-// import { Logo, Logomark } from
-// '@/components/Logo' import { MobileNavigation }
-// from '@/components/MobileNavigation'
-// import { Navigation } from
-// '@/components/Navigation' import { Search }
-// from '@/components/Search'
 use leptos::prelude::*;
 
 use crate::components::{
@@ -56,7 +49,7 @@ fn Header() -> impl IntoView {
         // <Search />
       </div>
       <div class="relative flex basis-0 justify-end gap-6 sm:gap-8 md:grow">
-        <a href="https://github.com" class="group" aria-label="GitHub">
+        <a href="https://github.com/rust-adventure/skein" class="group" aria-label="GitHub">
           <GitHubIcon class="h-6 w-6 fill-slate-400 group-hover:fill-slate-500 dark:group-hover:fill-slate-300".to_string() />
         </a>
       </div>

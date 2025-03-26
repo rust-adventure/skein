@@ -178,3 +178,111 @@
 .markdown-alert-caution .markdown-alert-title {
   color: var(--color-red-400);
 }
+
+/* markdown list elements */
+
+.prose li:nth-child(1)::marker {
+  color: var(--color-indigo-500);
+}
+/* .prose li:nth-child(2)::marker {
+  color: var(--color-violet-500);
+} */
+.prose li:nth-child(2)::marker {
+  color: var(--color-purple-500);
+}
+/* .prose li:nth-child(4)::marker {
+  color: var(--color-fuchsia-500);
+} */
+.prose li:nth-child(3)::marker {
+  color: var(--color-pink-500);
+}
+/* .prose li:nth-child(6)::marker {
+  color: var(--color-rose-500);
+} */
+.prose li:nth-child(4)::marker {
+  color: var(--color-red-500);
+}
+/* .prose li:nth-child(1)::marker {
+  color: var(--color-orange-500);
+} */
+.prose li:nth-child(5)::marker {
+  color: var(--color-amber-500);
+}
+/* .prose li:nth-child(1)::marker {
+  color: var(--color-yellow-500);
+} */
+.prose li:nth-child(6)::marker {
+  color: var(--color-lime-500);
+}
+/* .prose li:nth-child(1)::marker {
+  color: var(--color-green-500);
+} */
+.prose li:nth-child(7)::marker {
+  color: var(--color-emerald-500);
+}
+/* .prose li:nth-child(1)::marker {
+  color: var(--color-teal-500);
+} */
+.prose li:nth-child(8)::marker {
+  color: var(--color-cyan-500);
+}
+/* .prose li:nth-child(1)::marker {
+  color: var(--color-sky-500);
+} */
+.prose li:nth-child(9)::marker {
+  color: var(--color-blue-500);
+}
+
+@media (prefers-color-scheme: dark) {
+  .prose li:nth-child(1)::marker {
+    color: var(--color-indigo-400);
+  }
+  /* .prose li:nth-child(2)::marker {
+    color: var(--color-violet-400);
+  } */
+  .prose li:nth-child(2)::marker {
+    color: var(--color-purple-400);
+  }
+  /* .prose li:nth-child(4)::marker {
+    color: var(--color-fuchsia-400);
+  } */
+  .prose li:nth-child(3)::marker {
+    color: var(--color-pink-400);
+  }
+  /* .prose li:nth-child(6)::marker {
+    color: var(--color-rose-400);
+  } */
+  .prose li:nth-child(4)::marker {
+    color: var(--color-red-400);
+  }
+  /* .prose li:nth-child(1)::marker {
+    color: var(--color-orange-400);
+  } */
+  .prose li:nth-child(4)::marker {
+    color: var(--color-amber-400);
+  }
+  /* .prose li:nth-child(1)::marker {
+    color: var(--color-yellow-400);
+  } */
+  .prose li:nth-child(6)::marker {
+    color: var(--color-lime-400);
+  }
+  /* .prose li:nth-child(1)::marker {
+    color: var(--color-green-400);
+  } */
+  .prose li:nth-child(7)::marker {
+    color: var(--color-emerald-400);
+  }
+  /* .prose li:nth-child(1)::marker {
+    color: var(--color-teal-400);
+  } */
+  .prose li:nth-child(8)::marker {
+    color: var(--color-cyan-400);
+  }
+  /* .prose li:nth-child(1)::marker {
+    color: var(--color-sky-400);
+  } */
+  .prose li:nth-child(9)::marker {
+    color: var(--color-blue-400);
+  }
+}

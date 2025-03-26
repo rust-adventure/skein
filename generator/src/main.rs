@@ -1,7 +1,6 @@
 use app::{
     pages::{
         blog_post, doc_post,
-        home_page::{Age, PersonName},
     },
     shell, NavItem, NavLink, NavigationItems, SiteName,
 };
@@ -69,27 +68,31 @@ async fn main() -> io::Result<()> {
                     title: "Exporting: The Basics",
                     href: "/docs/exporting-the-basics"
                 },
+                NavLink {
+                    title: "Exporting: Multiple Collections",
+                    href: "/docs/exporting-multiple-collections"
+                },
             ],
         },
         NavItem {
-            title: "Use Cases",
+            title: "Use Cases (coming soon)",
             links: vec![
-                NavLink {
-                    title: "Build a Level",
-                    href: "/docs/build-a-level",
-                },
-                NavLink {
-                    title: "Replace a Blender Material",
-                    href: "/docs/replace-a-blender-material",
-                },
-                NavLink {
-                    title: "Sync Cube Size to Avian Collider",
-                    href: "/docs/sync-cube-size-to-avian-collider",
-                },
-                NavLink {
-                    title: "Exporting Materials to Files",
-                    href: "/docs/exporting-materials-to-files",
-                },
+                // NavLink {
+                //     title: "Build a Level",
+                //     href: "/docs/build-a-level",
+                // },
+                // NavLink {
+                //     title: "Replace a Blender Material",
+                //     href: "/docs/replace-a-blender-material",
+                // },
+                // NavLink {
+                //     title: "Sync Cube Size to Avian Collider",
+                //     href: "/docs/sync-cube-size-to-avian-collider",
+                // },
+                // NavLink {
+                //     title: "Exporting Materials to Files",
+                //     href: "/docs/exporting-materials-to-files",
+                // },
             ],
         },
         NavItem {
@@ -124,26 +127,12 @@ async fn main() -> io::Result<()> {
             "docs",
         )
         .add_markdown_directory::<PostFrontMatter>("blog")
-        .add_ron_directory::<PersonData>("people")
         .add_plugins(ConvertMarkdownToHtml)
         .add_plugins(
             cinnog_mod_markdown::ConvertMarkdownToHtml,
         )
         .build(shell)
         .await
-}
-
-#[derive(serde::Deserialize)]
-struct PersonData {
-    name: String,
-    age: u8,
-}
-
-impl Ingest for PersonData {
-    fn ingest(self, commands: &mut EntityCommands) {
-        commands
-            .insert((PersonName(self.name), Age(self.age)));
-    }
 }
 
 #[derive(serde::Deserialize, Default)]

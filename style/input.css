@@ -32,8 +32,8 @@
   --text-9xl: 8rem;
   --text-9xl--line-height: 1;
 
-  --font-sans: "Outfit";
-  --font-display: var(--font-lexend);
+  --font-sans: "Outfit", "sans-serif";
+  --font-display: var(--font-sans);
   --font-display--font-feature-settings: "ss01";
 
   --container-8xl: 88rem;

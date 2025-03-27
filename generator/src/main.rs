@@ -31,6 +31,10 @@ async fn main() -> io::Result<()> {
                     href: "/",
                 },
                 NavLink {
+                    title: "Quickstart",
+                    href: "/docs/quickstart",
+                },
+                NavLink {
                     title: "Getting started",
                     href: "/docs/getting-started",
                 },

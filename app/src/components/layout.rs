@@ -63,7 +63,7 @@ pub fn Layout(children: Children) -> impl IntoView {
 
     view! {
       <div class="flex w-full flex-col">
-        <div class="hero-gradient"/>
+        <div class="remove-on-light hero-gradient oversized-hero-gradient"/>
         <Header />
 
         {(url.get().path() == "/").then_some(view!{<Hero />})}

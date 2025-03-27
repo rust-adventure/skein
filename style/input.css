@@ -79,11 +79,25 @@
       transparent 49.159310217293616%
     );
   background-blend-mode: overlay, normal, normal, normal, normal, normal, normal;
+}
+.oversized-hero-gradient {
   height: 50vw;
   position: absolute;
   width: 100vw;
   filter: blur(100px);
   max-width: 100%;
+}
+@media (prefers-color-scheme: light) {
+  .remove-on-light.hero-gradient {
+    background-image: none;
+    background-color: transparent;
+  }
+}
+@media (prefers-color-scheme: dark) {
+  .remove-on-dark.hero-gradient {
+    background-image: none;
+    background-color: transparent;
+  }
 }
 /* Generic Alert styles */
 .markdown-alert {

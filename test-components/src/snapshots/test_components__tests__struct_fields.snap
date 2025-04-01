@@ -1,0 +1,12 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "test_components::Player": {
+    "name": "Chris Biscardi",
+    "power": 100.0,
+    "test": 4
+  }
+}

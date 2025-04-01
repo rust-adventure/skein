@@ -23,12 +23,12 @@ fn main() {
         .register_type::<AnOptionalName>()
         .register_type::<NonZeroNumbers>()
         .register_type::<AStructWithColor>()
-        // below this line are types that aren't expected to work
-        // for example: Components containing Timers
         .register_type::<TimerContainer>()
-        .register_type::<BucketOfTypes>()
         .register_type::<RichAndUnitEnum>()
         .register_type::<LinearVelocity>()
+        .register_type::<SuperGlam>()
+        // below this line are types that aren't expected to work
+        .register_type::<BucketOfTypes>()
         // add plugins
         .add_plugins((
             DefaultPlugins,

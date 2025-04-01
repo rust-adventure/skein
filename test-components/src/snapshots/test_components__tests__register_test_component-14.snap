@@ -1,0 +1,23 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "test_components::TimerContainer": {
+    "stopwatch": {
+      "elapsed": {
+        "secs": 0,
+        "nanos": 0
+      },
+      "is_paused": false
+    },
+    "duration": {
+      "secs": 2,
+      "nanos": 0
+    },
+    "mode": "Once",
+    "finished": false,
+    "times_finished_this_tick": 0
+  }
+}

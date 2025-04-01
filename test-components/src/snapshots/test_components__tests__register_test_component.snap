@@ -1,0 +1,15 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "test_components::TeamMember": {
+    "player": {
+      "name": "Chris Biscardi",
+      "power": 100.0,
+      "test": 4
+    },
+    "team": "Green"
+  }
+}

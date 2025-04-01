@@ -1,0 +1,14 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "test_components::RichAndUnitEnum": {
+    "Player": {
+      "name": "Chris",
+      "power": 10.0,
+      "test": 42
+    }
+  }
+}

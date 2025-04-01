@@ -7,3 +7,10 @@ edition = "2024"
 
 [dependencies]
 bevy = "0.16.0-rc.1"
+
+[dev-dependencies]
+insta = { version = "1.41.1", features = ["json"] }
+
+[profile.dev.package]
+insta.opt-level = 3
+similar.opt-level = 3

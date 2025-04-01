@@ -1,0 +1,10 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "test_components::SomeThings": {
+    "Low": 12
+  }
+}

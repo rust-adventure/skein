@@ -1,0 +1,12 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "test_components::LinearVelocity": [
+    2.0,
+    2.0,
+    2.0
+  ]
+}

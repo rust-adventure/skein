@@ -3,7 +3,7 @@
 This document covers the design goals for Skein.
 
 - Maintainability is a core concern
-- Prefer alignment over new APIs
+- Prefer deep integration over new APIs
 - Bevy Plugin and Addon boundaries
 
 ## Maintainability
@@ -18,7 +18,7 @@ We could build a custom glTF asset processing pipeline to more directly integrat
 
 Blender's Python API is more stable than the .blend format and official word is that .blend file parsing isn't a viable target for integration.
 
-## Prefer alignment over new APIs
+## Prefer deep integration over new APIs
 
 Whenever possible, Skein should prioritize supporting existing expected usage before creating new API abstractions.
 

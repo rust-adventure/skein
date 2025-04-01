@@ -1,0 +1,16 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "test_components::BucketOfTypes": {
+    "entity": 8589934591,
+    "uuid": "16c27292-862e-4555-af16-d3d8e624c6de",
+    "bvec": [
+      true,
+      false,
+      true
+    ]
+  }
+}

@@ -1,0 +1,10 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "test_components::AnOptionalName": {
+    "name": "A Test Name"
+  }
+}

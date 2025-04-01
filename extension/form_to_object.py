@@ -61,12 +61,25 @@ def get_data_from_active_editor(context, context_key):
     # is overridden and actually needs to be an array of 3 values
     try:
         match obj.type_override:
+            case "glam::Vec2":
+                return [
+                    getattr(obj, "x"),
+                    getattr(obj, "y"),
+                ]
             case "glam::Vec3":
                 return [
                     getattr(obj, "x"),
                     getattr(obj, "y"),
                     getattr(obj, "z"),
                 ]
+            case "glam::Vec4":
+                return [
+                    getattr(obj, "x"),
+                    getattr(obj, "y"),
+                    getattr(obj, "z"),
+                    getattr(obj, "w"),
+                ]
+  
     except AttributeError:
         # Not all PropertyGroups have the type_override attribute, so
         # this is a common failure case that doesn't actually mean failure

@@ -1,0 +1,25 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "test_components::AStructWithColor": {
+    "base": {
+      "Hsla": {
+        "hue": 20.0,
+        "saturation": 50.0,
+        "lightness": 50.0,
+        "alpha": 1.0
+      }
+    },
+    "highlight": {
+      "Oklcha": {
+        "lightness": 1.0,
+        "chroma": 1.0,
+        "hue": 1.0,
+        "alpha": 1.0
+      }
+    }
+  }
+}

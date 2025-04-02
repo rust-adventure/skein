@@ -1,7 +1,7 @@
 import inspect
 import bpy # type: ignore
 
-from ..form_to_object import get_data_from_active_editor # type: ignore
+from .form_to_object import get_data_from_active_editor # type: ignore
 
 class DebugCheckObjectBevyComponents(bpy.types.Operator):
     """Iterate over all objects and print the skein component data to console

@@ -48,7 +48,7 @@ def make_property(
     preferences = bpy.context.preferences
     debug = False
     if 'unittest' not in sys.modules.keys():
-        debug = preferences.addons["bl_ext.user_default.bevy_skein"].preferences.debug
+        debug = preferences.addons[__package__].preferences.debug
 
     type_path = original_type_path.removeprefix("#/$defs/")
     component = override_component if override_component != None else registry[type_path]

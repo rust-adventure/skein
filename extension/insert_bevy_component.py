@@ -28,6 +28,7 @@ class InsertBevyComponent(bpy.types.Operator):
             print("execute_mode not set for InsertBevyComponent Operator, can't insert without knowing what to insert on")
             return {'CANCELLED'}
 
+        print("mode: ", self.execute_mode)
         match self.execute_mode:
             case "object":
                 obj = context.active_object
@@ -59,7 +60,6 @@ class InsertBevyComponent(bpy.types.Operator):
                 # active_component_index to show the right editor
                 # for the newly inserted component
                 obj.active_component_index = len(obj.skein_two) - 1
-
             else:
                 print("no data in registry")
         else:

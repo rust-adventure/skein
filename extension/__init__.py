@@ -1,10 +1,10 @@
 import bpy # type: ignore
 import json
 from bpy.app.handlers import persistent # type: ignore
-from .operators.insert_bevy_component import InsertBevyComponent
-from .operators.fetch_bevy_type_registry import FetchBevyTypeRegistry, brp_fetch_registry_schema, process_registry
-from .operators.remove_bevy_component import RemoveBevyComponent
-from .operators.debug_check_object_bevy_components import DebugCheckObjectBevyComponents
+from .insert_bevy_component import InsertBevyComponent
+from .fetch_bevy_type_registry import FetchBevyTypeRegistry, brp_fetch_registry_schema, process_registry
+from .remove_bevy_component import RemoveBevyComponent
+from .debug_check_object_bevy_components import DebugCheckObjectBevyComponents
 from .property_groups import ComponentData
 from .skein_panel import SkeinPanelObject, SkeinPanelMesh, SkeinPanelMaterial
 # these imports appear unused, but are *required* for the export extension to work

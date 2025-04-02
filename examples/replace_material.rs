@@ -16,12 +16,12 @@
 //!
 use bevy::{
     asset::RenderAssetUsages,
+    color::palettes::tailwind::SLATE_950,
     core_pipeline::{
         bloom::Bloom,
         prepass::{DepthPrepass, NormalPrepass},
     },
     input::common_conditions::input_just_pressed,
-    pbr::{NotShadowCaster, NotShadowReceiver},
     prelude::*,
     render::render_resource::{
         AsBindGroup, Extent3d, ShaderRef, TextureDimension,
@@ -35,6 +35,7 @@ use bevy_skein::SkeinPlugin;
 
 fn main() {
     App::new()
+        .insert_resource(ClearColor(SLATE_950.into()))
         .register_type::<UseDebugMaterial>()
         .register_type::<UseForceFieldMaterial>()
         .add_plugins((
@@ -44,50 +45,7 @@ fn main() {
             MaterialPlugin::<ForceFieldMaterial>::default(),
         ))
         .add_systems(Startup, setup)
-        .add_systems(
-            Update,
-            swap_material
-                .run_if(input_just_pressed(KeyCode::Space)),
-        )
-        // .add_systems(Update, debug)
-        // .add_observer(|trigger: Trigger<OnAdd, UseForceFieldMaterial>, mats: Res<MaterialStore>, mut commands: Commands| {
-        //     let force_field =mats
-        //         .force_field
-        //         .clone();
-        //         commands
-        //         .entity(trigger.target())
-        //         .remove::<MeshMaterial3d<StandardMaterial>>()
-        //         .insert(MeshMaterial3d(force_field));
-        // })
         .run();
-}
-
-fn swap_material(
-    mut commands: Commands,
-    query: Query<Entity, With<UseForceFieldMaterial>>,
-    asset_server: Res<AssetServer>,
-    mats: Res<MaterialStore>,
-) {
-    for entity in &query {
-        let force_field = mats.force_field.clone();
-
-        commands
-            .entity(entity)
-            .remove::<MeshMaterial3d<StandardMaterial>>()
-            .insert(MeshMaterial3d(force_field));
-    }
-}
-
-fn debug(
-    mut commands: Commands,
-    query: Query<
-        Entity,
-        With<MeshMaterial3d<ForceFieldMaterial>>,
-    >,
-) {
-    for q in &query {
-        commands.entity(q).log_components();
-    }
 }
 
 fn setup(
@@ -97,22 +55,11 @@ fn setup(
     mut materials_force_field: ResMut<
         Assets<ForceFieldMaterial>,
     >,
-    mut meshes: ResMut<Assets<Mesh>>,
     asset_server: Res<AssetServer>,
 ) {
     // Create and insert a handle to the debug material
     // as a Resource we can access later
-    // commands.insert_resource(MaterialStore {
-    //     debug: materials.add(StandardMaterial {
-    //         base_color_texture: Some(
-    //             images.add(uv_debug_texture()),
-    //         ),
-    //         ..default()
-    //     }),
-    //     force_field: materials_force_field
-    //         .add(ForceFieldMaterial {}),
-    // });
-    let res = MaterialStore {
+    commands.insert_resource(MaterialStore {
         debug: materials.add(StandardMaterial {
             base_color_texture: Some(
                 images.add(uv_debug_texture()),
@@ -121,54 +68,29 @@ fn setup(
         }),
         force_field: materials_force_field
             .add(ForceFieldMaterial {}),
-    };
-    let a = res.force_field.clone();
-    commands.insert_resource(res);
+    });
 
-    // commands.spawn((
-    //     Mesh3d(
-    //         meshes.add(Sphere::new(1.25).mesh().uv(64, 64)),
-    //     ),
-    //     MeshMaterial3d(a),
-    //     Transform::from_xyz(5.0, 0.5, 0.0).with_rotation(
-    //         Quat::from_axis_angle(
-    //             Vec3::X,
-    //             std::f32::consts::FRAC_PI_2,
-    //         ),
-    //     ),
-    //     NotShadowReceiver,
-    //     NotShadowCaster,
-    //     GltfExtras {
-    //         value: r#"{
-    //             "skein": [{
-    //                 "replace_material::UseForceFieldMaterial": {}
-    //             }]
-    //         }"#.to_string(),
-    //     },
-    // ));
-
-    // // Spawn a camera in to reduce additional gltf data for
-    // // examples. A camera can also be exported from Blender
-    // // with the right export settings
-    // commands.spawn((
-    //     Camera3d::default(),
-    //     Camera {
-    //         hdr: true,
-    //         ..default()
-    //     },
-    //     Transform::from_xyz(0.0, 7., 14.0)
-    //         .looking_at(Vec3::new(0., 1., 0.), Vec3::Y),
-    //     DepthPrepass,
-    //     NormalPrepass,
-    //     Bloom::default(),
-    // ));
-
-    commands.spawn(SceneRoot(
-        asset_server.load(
-            GltfAssetLabel::Scene(0)
-                .from_asset("replace_material/replace_material.gltf"),
-        ),
+    // Spawn a camera in to reduce additional gltf data for
+    // examples. A camera can also be exported from Blender
+    // with the right export settings
+    commands.spawn((
+        Camera3d::default(),
+        Camera {
+            hdr: true,
+            ..default()
+        },
+        Transform::from_xyz(12.0, 7., 12.0)
+            .looking_at(Vec3::new(0., 1., 0.), Vec3::Y),
+        DepthPrepass,
+        NormalPrepass,
+        Bloom::default(),
     ));
+
+    commands.spawn(SceneRoot(asset_server.load(
+        GltfAssetLabel::Scene(0).from_asset(
+            "replace_material/replace_material.gltf",
+        ),
+    )));
 }
 
 #[derive(Resource)]
@@ -240,7 +162,7 @@ const MATERIAL_SHADER_ASSET_PATH: &str =
 
 #[derive(Component, Reflect)]
 #[reflect(Component)]
-// #[component(on_add = on_add_use_force_field_material)]
+#[component(on_add = on_add_use_force_field_material)]
 struct UseForceFieldMaterial;
 
 /// The on_add hook that will run when the component is

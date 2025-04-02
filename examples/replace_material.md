@@ -1,13 +1,13 @@
 # Replace Material Example
 
-![bevy application running](../documentation/replace_material_run.avif)
+![bevy application running](../documentation/replace_material.avif)
 
 This example shows using a `Component`'s `on_add` hooks to replace materials defined in Blender when the Bevy application runs.
 
-In Blender, a `Component` (`UseDebugMaterial` in this example) can be added to a Material.
+In Blender, a `Component` (`UseDebugMaterial` or `UseForceField` in this example) can be added to a Material.
 Any object this Material is attached to will also have this `Component`.
 
-![blender ui](../documentation/replace_material_blender.avif)
+![blender ui](../documentation/replace_material_blend.avif)
 
 This `UseDebugMaterial` has an on_add hook that replaces the `StandardMaterial` with a Bevy handle to another material.
 
@@ -24,7 +24,7 @@ fn on_add_use_debug_material(
     HookContext { entity, .. }: HookContext,
 ) {
     let debug_material =
-        world.resource::<DebugMaterial>().0.clone();
+        world.resource::<MaterialStore>().debug.clone();
 
     world
         .commands()
@@ -34,10 +34,10 @@ fn on_add_use_debug_material(
 ```
 
 > [!TIP]  
-> In this example we create and store the material handle in a `Resource` at startup, allowing us to re-use the handle as many times as needed. You could use a HashMap instead to handle many handles like this.
+> In this example we create and store the material handle in a `Resource` at startup, allowing us to re-use the handle as many times as needed. You could use a HashMap instead to handle many handles like this or ignore it completely and recreate the material if you don't care.
 
 > [!CAUTION]  
-> The demo shows that any mesh that hasn't been UV unwrapped will not have the texture applied. This shows in the .gltf file as a missing `TEXCOORD_0` field. `Suzanne` in the following example glTF data has it, and `rock` does not.
+> Any mesh that hasn't been UV unwrapped may seem like it isn't working. This shows up in .gltf files as a missing `TEXCOORD_0` field. `Suzanne` in the following example glTF data has it, and `rock` does not. This is something you can check for in Blender.
 
 ```rust
 {

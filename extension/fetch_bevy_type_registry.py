@@ -1,9 +1,10 @@
 import inspect
 from pathlib import Path
+import sys
 import bpy # type: ignore
 import json
 import requests # type: ignore
-from ..property_groups import make_property
+from .property_groups import make_property
 # --------------------------------- #
 #  Fetch and store the bevy type    #
 #  registry, for panel display      #
@@ -18,8 +19,12 @@ class FetchBevyTypeRegistry(bpy.types.Operator):
     # execute is called to run the operator
     def execute(self, context):
         preferences = context.preferences
-        addon_prefs = preferences.addons["bl_ext.user_default.bevy_skein"].preferences
-        if addon_prefs.debug:
+        debug = False        
+
+        if 'unittest' not in sys.modules.keys():
+            debug = preferences.addons[__package__].preferences.debug
+
+        if debug:
             print("\nexecute: FetchBevyTypeRegistry")
 
         brp_response = None
@@ -32,7 +37,7 @@ class FetchBevyTypeRegistry(bpy.types.Operator):
 
         # If the bevy remote protocol returns an error, report it to the user
         if brp_response is not None and "error" in brp_response:
-            if addon_prefs.debug:
+            if debug:
                 print("bevy request errored out", brp_response["error"])
             self.report({"ERROR"}, "request for Bevy registry data returned an error, is the Bevy Remote Protocol Plugin added and is the Bevy app running? :: " + brp_response["error"]["message"])
             return {'CANCELLED'}
@@ -66,7 +71,10 @@ def process_registry(context, registry):
     """
 
     preferences = bpy.context.preferences
-    addon_prefs = preferences.addons["bl_ext.user_default.bevy_skein"].preferences
+    debug = False        
+
+    if 'unittest' not in sys.modules.keys():
+        debug = preferences.addons[__package__].preferences.debug
 
     global_skein = context.window_manager.skein
     skein_property_groups = context.window_manager.skein_property_groups
@@ -117,10 +125,10 @@ def process_registry(context, registry):
                     else:
                         fake_component_enum_annotations[type_path] = property_group_or_property
                 else:
-                    if addon_prefs.debug:
+                    if debug:
                         print("opting out for: ", type_path)
         except Exception as e:
-            if addon_prefs.debug:
+            if debug:
                 print("failed to make_property for: ", type_path)
                 print(repr(e))
     

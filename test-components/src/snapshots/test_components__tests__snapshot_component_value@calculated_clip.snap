@@ -1,0 +1,19 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "bevy_ui::ui_node::CalculatedClip": {
+    "clip": {
+      "min": [
+        0.0,
+        0.0
+      ],
+      "max": [
+        0.0,
+        0.0
+      ]
+    }
+  }
+}

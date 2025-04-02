@@ -1,0 +1,25 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "bevy_transform::components::transform::Transform": {
+    "translation": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "rotation": [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ],
+    "scale": [
+      1.0,
+      1.0,
+      1.0
+    ]
+  }
+}

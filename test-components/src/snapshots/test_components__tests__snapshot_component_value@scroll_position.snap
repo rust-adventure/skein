@@ -1,0 +1,11 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "bevy_ui::ui_node::ScrollPosition": {
+    "offset_x": 0.0,
+    "offset_y": 0.0
+  }
+}

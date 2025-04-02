@@ -1,0 +1,19 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "bevy_render::primitives::Aabb": {
+    "center": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "half_extents": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  }
+}

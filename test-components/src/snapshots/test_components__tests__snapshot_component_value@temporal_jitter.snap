@@ -1,0 +1,13 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "bevy_render::camera::camera::TemporalJitter": {
+    "offset": [
+      0.0,
+      0.0
+    ]
+  }
+}

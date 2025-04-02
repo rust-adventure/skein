@@ -1,0 +1,10 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "bevy_core_pipeline::smaa::Smaa": {
+    "preset": "High"
+  }
+}

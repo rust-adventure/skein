@@ -1,0 +1,23 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "bevy_core_pipeline::skybox::Skybox": {
+    "image": {
+      "Weak": {
+        "Uuid": {
+          "uuid": "97128bb1-2588-480b-bdc6-87b4adbec477"
+        }
+      }
+    },
+    "brightness": 0.0,
+    "rotation": [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  }
+}

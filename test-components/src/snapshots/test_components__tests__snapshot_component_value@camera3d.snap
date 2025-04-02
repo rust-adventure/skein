@@ -1,0 +1,15 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "bevy_core_pipeline::core_3d::camera_3d::Camera3d": {
+    "depth_load_op": {
+      "Clear": 0.0
+    },
+    "depth_texture_usages": 16,
+    "screen_space_specular_transmission_steps": 1,
+    "screen_space_specular_transmission_quality": "Medium"
+  }
+}

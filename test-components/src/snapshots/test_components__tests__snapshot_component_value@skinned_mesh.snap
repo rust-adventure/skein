@@ -1,0 +1,17 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "bevy_mesh::skinning::SkinnedMesh": {
+    "inverse_bindposes": {
+      "Weak": {
+        "Uuid": {
+          "uuid": "97128bb1-2588-480b-bdc6-87b4adbec477"
+        }
+      }
+    },
+    "joints": []
+  }
+}

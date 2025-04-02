@@ -1,0 +1,17 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "bevy_pbr::light::CascadeShadowConfig": {
+    "bounds": [
+      10.0,
+      24.66212,
+      60.82202,
+      149.99998
+    ],
+    "overlap_proportion": 0.2,
+    "minimum_distance": 0.1
+  }
+}

@@ -1,0 +1,19 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "bevy_pbr::light::ambient_light::AmbientLight": {
+    "color": {
+      "LinearRgba": {
+        "red": 1.0,
+        "green": 1.0,
+        "blue": 1.0,
+        "alpha": 1.0
+      }
+    },
+    "brightness": 80.0,
+    "affects_lightmapped_meshes": true
+  }
+}

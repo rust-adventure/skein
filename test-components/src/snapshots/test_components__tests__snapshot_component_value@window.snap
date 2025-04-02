@@ -1,0 +1,75 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "bevy_window::window::Window": {
+    "cursor_options": {
+      "visible": true,
+      "grab_mode": "None",
+      "hit_test": true
+    },
+    "present_mode": "Fifo",
+    "mode": "Windowed",
+    "position": "Automatic",
+    "resolution": {
+      "physical_width": 1280,
+      "physical_height": 720,
+      "scale_factor_override": null,
+      "scale_factor": 1.0
+    },
+    "title": "App",
+    "name": null,
+    "composite_alpha_mode": "Auto",
+    "resize_constraints": {
+      "min_width": 180.0,
+      "min_height": 120.0,
+      "max_width": null,
+      "max_height": null
+    },
+    "resizable": true,
+    "enabled_buttons": {
+      "minimize": true,
+      "maximize": true,
+      "close": true
+    },
+    "decorations": true,
+    "transparent": false,
+    "focused": true,
+    "window_level": "Normal",
+    "canvas": null,
+    "fit_canvas_to_parent": false,
+    "prevent_default_event_handling": true,
+    "internal": {
+      "minimize_request": null,
+      "maximize_request": null,
+      "drag_move_request": false,
+      "drag_resize_request": null,
+      "physical_cursor_position": null
+    },
+    "ime_enabled": false,
+    "ime_position": [
+      0.0,
+      0.0
+    ],
+    "window_theme": null,
+    "visible": true,
+    "skip_taskbar": false,
+    "clip_children": true,
+    "desired_maximum_frame_latency": null,
+    "recognize_pinch_gesture": false,
+    "recognize_rotation_gesture": false,
+    "recognize_doubletap_gesture": false,
+    "recognize_pan_gesture": null,
+    "movable_by_window_background": false,
+    "fullsize_content_view": false,
+    "has_shadow": true,
+    "titlebar_shown": true,
+    "titlebar_transparent": false,
+    "titlebar_show_title": true,
+    "titlebar_show_buttons": true,
+    "prefers_home_indicator_hidden": false,
+    "prefers_status_bar_hidden": false
+  }
+}

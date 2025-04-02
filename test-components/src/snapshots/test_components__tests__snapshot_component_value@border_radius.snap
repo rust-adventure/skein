@@ -1,0 +1,21 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "bevy_ui::ui_node::BorderRadius": {
+    "top_left": {
+      "Px": 0.0
+    },
+    "top_right": {
+      "Px": 0.0
+    },
+    "bottom_left": {
+      "Px": 0.0
+    },
+    "bottom_right": {
+      "Px": 0.0
+    }
+  }
+}

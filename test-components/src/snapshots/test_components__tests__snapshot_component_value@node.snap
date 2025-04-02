@@ -1,0 +1,105 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "bevy_ui::ui_node::Node": {
+    "display": "Flex",
+    "box_sizing": "BorderBox",
+    "position_type": "Relative",
+    "overflow": {
+      "x": "Visible",
+      "y": "Visible"
+    },
+    "overflow_clip_margin": {
+      "visual_box": "ContentBox",
+      "margin": 0.0
+    },
+    "left": "Auto",
+    "right": "Auto",
+    "top": "Auto",
+    "bottom": "Auto",
+    "width": "Auto",
+    "height": "Auto",
+    "min_width": "Auto",
+    "min_height": "Auto",
+    "max_width": "Auto",
+    "max_height": "Auto",
+    "aspect_ratio": null,
+    "align_items": "Default",
+    "justify_items": "Default",
+    "align_self": "Auto",
+    "justify_self": "Auto",
+    "align_content": "Default",
+    "justify_content": "Default",
+    "margin": {
+      "left": {
+        "Px": 0.0
+      },
+      "right": {
+        "Px": 0.0
+      },
+      "top": {
+        "Px": 0.0
+      },
+      "bottom": {
+        "Px": 0.0
+      }
+    },
+    "padding": {
+      "left": {
+        "Px": 0.0
+      },
+      "right": {
+        "Px": 0.0
+      },
+      "top": {
+        "Px": 0.0
+      },
+      "bottom": {
+        "Px": 0.0
+      }
+    },
+    "border": {
+      "left": {
+        "Px": 0.0
+      },
+      "right": {
+        "Px": 0.0
+      },
+      "top": {
+        "Px": 0.0
+      },
+      "bottom": {
+        "Px": 0.0
+      }
+    },
+    "flex_direction": "Row",
+    "flex_wrap": "NoWrap",
+    "flex_grow": 0.0,
+    "flex_shrink": 1.0,
+    "flex_basis": "Auto",
+    "row_gap": {
+      "Px": 0.0
+    },
+    "column_gap": {
+      "Px": 0.0
+    },
+    "grid_auto_flow": "Row",
+    "grid_template_rows": [],
+    "grid_template_columns": [],
+    "grid_auto_rows": [],
+    "grid_auto_columns": [],
+    "grid_row": {
+      "start": null,
+      "span": 1,
+      "end": null
+    },
+    "grid_column": {
+      "start": null,
+      "span": 1,
+      "end": null
+    }
+  }
+}

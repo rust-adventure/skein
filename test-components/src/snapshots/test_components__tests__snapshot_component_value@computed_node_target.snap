@@ -1,0 +1,15 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "bevy_ui::ui_node::ComputedNodeTarget": {
+    "camera": 8589934591,
+    "scale_factor": 1.0,
+    "physical_size": [
+      0,
+      0
+    ]
+  }
+}

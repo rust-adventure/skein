@@ -1,0 +1,28 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "bevy_window::monitor::Monitor": {
+    "name": "Probably dont use Monitor in Blender lol",
+    "physical_height": 1920,
+    "physical_width": 1080,
+    "physical_position": [
+      0,
+      0
+    ],
+    "refresh_rate_millihertz": 60,
+    "scale_factor": 1.0,
+    "video_modes": [
+      {
+        "physical_size": [
+          1920,
+          1080
+        ],
+        "bit_depth": 8,
+        "refresh_rate_millihertz": 10
+      }
+    ]
+  }
+}

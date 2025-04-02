@@ -1,0 +1,11 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "bevy_picking::Pickable": {
+    "should_block_lower": true,
+    "is_hoverable": true
+  }
+}

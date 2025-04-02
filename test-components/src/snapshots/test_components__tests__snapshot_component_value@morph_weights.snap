@@ -1,0 +1,11 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "bevy_mesh::morph::MorphWeights": {
+    "weights": [],
+    "first_mesh": null
+  }
+}

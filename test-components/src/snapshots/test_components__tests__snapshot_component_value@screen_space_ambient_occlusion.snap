@@ -1,0 +1,11 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "bevy_pbr::ssao::ScreenSpaceAmbientOcclusion": {
+    "quality_level": "High",
+    "constant_object_thickness": 0.25
+  }
+}

@@ -1,0 +1,43 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "bevy_ui::ui_node::ComputedNode": {
+    "stack_index": 0,
+    "size": [
+      0.0,
+      0.0
+    ],
+    "content_size": [
+      0.0,
+      0.0
+    ],
+    "outline_width": 0.0,
+    "outline_offset": 0.0,
+    "unrounded_size": [
+      0.0,
+      0.0
+    ],
+    "border": {
+      "left": 0.0,
+      "right": 0.0,
+      "top": 0.0,
+      "bottom": 0.0
+    },
+    "border_radius": {
+      "top_left": 0.0,
+      "top_right": 0.0,
+      "bottom_left": 0.0,
+      "bottom_right": 0.0
+    },
+    "padding": {
+      "left": 0.0,
+      "right": 0.0,
+      "top": 0.0,
+      "bottom": 0.0
+    },
+    "inverse_scale_factor": 1.0
+  }
+}

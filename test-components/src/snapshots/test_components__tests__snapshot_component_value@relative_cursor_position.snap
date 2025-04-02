@@ -1,0 +1,20 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "bevy_ui::focus::RelativeCursorPosition": {
+    "normalized_visible_node_rect": {
+      "min": [
+        0.0,
+        0.0
+      ],
+      "max": [
+        0.0,
+        0.0
+      ]
+    },
+    "normalized": null
+  }
+}

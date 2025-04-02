@@ -1,0 +1,14 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "bevy_render::mesh::components::Mesh2d": {
+    "Weak": {
+      "Uuid": {
+        "uuid": "97128bb1-2588-480b-bdc6-87b4adbec477"
+      }
+    }
+  }
+}

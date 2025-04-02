@@ -1,0 +1,14 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "bevy_text::pipeline::TextLayoutInfo": {
+    "glyphs": [],
+    "size": [
+      0.0,
+      0.0
+    ]
+  }
+}

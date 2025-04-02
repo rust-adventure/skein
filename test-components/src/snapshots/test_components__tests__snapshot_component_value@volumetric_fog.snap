@@ -1,0 +1,20 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "bevy_pbr::volumetric_fog::VolumetricFog": {
+    "ambient_color": {
+      "LinearRgba": {
+        "red": 1.0,
+        "green": 1.0,
+        "blue": 1.0,
+        "alpha": 1.0
+      }
+    },
+    "ambient_intensity": 0.1,
+    "jitter": 0.0,
+    "step_count": 64
+  }
+}

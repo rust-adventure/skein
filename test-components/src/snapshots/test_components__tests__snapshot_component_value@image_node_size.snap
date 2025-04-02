@@ -1,0 +1,13 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "bevy_ui::widget::image::ImageNodeSize": {
+    "size": [
+      0,
+      0
+    ]
+  }
+}

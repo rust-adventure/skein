@@ -1,0 +1,11 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "bevy_text::text::ComputedTextBlock": {
+    "entities": [],
+    "needs_rerender": true
+  }
+}

@@ -1,0 +1,25 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "bevy_pbr::light::point_light::PointLight": {
+    "color": {
+      "LinearRgba": {
+        "red": 1.0,
+        "green": 1.0,
+        "blue": 1.0,
+        "alpha": 1.0
+      }
+    },
+    "intensity": 1000000.0,
+    "range": 20.0,
+    "radius": 0.0,
+    "shadows_enabled": false,
+    "affects_lightmapped_mesh_diffuse": true,
+    "shadow_depth_bias": 0.08,
+    "shadow_normal_bias": 0.6,
+    "shadow_map_near_z": 0.1
+  }
+}

@@ -1,0 +1,12 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "bevy_core_pipeline::fxaa::Fxaa": {
+    "enabled": true,
+    "edge_threshold": "High",
+    "edge_threshold_min": "High"
+  }
+}

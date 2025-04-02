@@ -1,0 +1,32 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "bevy_pbr::fog::DistanceFog": {
+    "color": {
+      "LinearRgba": {
+        "red": 1.0,
+        "green": 1.0,
+        "blue": 1.0,
+        "alpha": 1.0
+      }
+    },
+    "directional_light_color": {
+      "LinearRgba": {
+        "red": 0.0,
+        "green": 0.0,
+        "blue": 0.0,
+        "alpha": 0.0
+      }
+    },
+    "directional_light_exponent": 8.0,
+    "falloff": {
+      "Linear": {
+        "start": 0.0,
+        "end": 100.0
+      }
+    }
+  }
+}

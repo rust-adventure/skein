@@ -1,0 +1,28 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "bevy_input::gamepad::GamepadSettings": {
+    "default_button_settings": {
+      "press_threshold": 0.75,
+      "release_threshold": 0.65
+    },
+    "default_axis_settings": {
+      "livezone_upperbound": 1.0,
+      "deadzone_upperbound": 0.05,
+      "deadzone_lowerbound": -0.05,
+      "livezone_lowerbound": -1.0,
+      "threshold": 0.01
+    },
+    "default_button_axis_settings": {
+      "high": 0.95,
+      "low": 0.05,
+      "threshold": 0.01
+    },
+    "button_settings": {},
+    "axis_settings": {},
+    "button_axis_settings": {}
+  }
+}

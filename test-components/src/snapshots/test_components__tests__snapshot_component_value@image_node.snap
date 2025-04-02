@@ -1,0 +1,29 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "bevy_ui::widget::image::ImageNode": {
+    "color": {
+      "LinearRgba": {
+        "red": 1.0,
+        "green": 1.0,
+        "blue": 1.0,
+        "alpha": 1.0
+      }
+    },
+    "image": {
+      "Weak": {
+        "Uuid": {
+          "uuid": "d18ad97e-a322-4981-9505-44c59a4b5e46"
+        }
+      }
+    },
+    "texture_atlas": null,
+    "flip_x": false,
+    "flip_y": false,
+    "rect": null,
+    "image_mode": "Auto"
+  }
+}

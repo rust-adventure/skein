@@ -1,0 +1,21 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "bevy_text::text::TextFont": {
+    "font": {
+      "Weak": {
+        "Uuid": {
+          "uuid": "97128bb1-2588-480b-bdc6-87b4adbec477"
+        }
+      }
+    },
+    "font_size": 20.0,
+    "line_height": {
+      "RelativeToFont": 1.2
+    },
+    "font_smoothing": "AntiAliased"
+  }
+}

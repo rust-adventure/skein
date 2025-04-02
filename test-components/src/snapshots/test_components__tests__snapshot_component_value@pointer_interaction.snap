@@ -1,0 +1,10 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "bevy_picking::pointer::PointerInteraction": {
+    "sorted_entities": []
+  }
+}

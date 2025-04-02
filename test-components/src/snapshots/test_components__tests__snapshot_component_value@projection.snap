@@ -1,0 +1,15 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "bevy_render::camera::projection::Projection": {
+    "Perspective": {
+      "fov": 0.7853982,
+      "aspect_ratio": 1.0,
+      "near": 0.1,
+      "far": 1000.0
+    }
+  }
+}

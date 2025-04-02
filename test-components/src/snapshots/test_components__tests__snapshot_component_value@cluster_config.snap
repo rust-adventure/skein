@@ -1,0 +1,18 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "bevy_pbr::cluster::ClusterConfig": {
+    "FixedZ": {
+      "total": 4096,
+      "z_slices": 24,
+      "z_config": {
+        "first_slice_depth": 5.0,
+        "far_z_mode": "MaxClusterableObjectRange"
+      },
+      "dynamic_resizing": true
+    }
+  }
+}

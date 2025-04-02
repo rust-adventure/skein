@@ -1,0 +1,11 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "bevy_ui::widget::text::TextNodeFlags": {
+    "needs_measure_fn": true,
+    "needs_recompute": true
+  }
+}

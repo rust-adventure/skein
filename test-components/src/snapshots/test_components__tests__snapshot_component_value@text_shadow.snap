@@ -1,0 +1,21 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "bevy_ui::ui_node::TextShadow": {
+    "offset": [
+      4.0,
+      4.0
+    ],
+    "color": {
+      "LinearRgba": {
+        "red": 0.0,
+        "green": 0.0,
+        "blue": 0.0,
+        "alpha": 0.75
+      }
+    }
+  }
+}

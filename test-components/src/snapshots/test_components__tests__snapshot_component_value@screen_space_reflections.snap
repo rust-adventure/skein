@@ -1,0 +1,15 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "bevy_pbr::ssr::ScreenSpaceReflections": {
+    "perceptual_roughness_threshold": 0.1,
+    "thickness": 0.25,
+    "linear_steps": 16,
+    "linear_march_exponent": 1.0,
+    "bisection_steps": 4,
+    "use_secant": true
+  }
+}

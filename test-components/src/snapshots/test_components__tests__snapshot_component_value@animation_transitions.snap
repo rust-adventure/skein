@@ -1,0 +1,11 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "bevy_animation::transition::AnimationTransitions": {
+    "main_animation": null,
+    "transitions": []
+  }
+}

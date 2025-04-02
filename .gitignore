@@ -1,4 +1,4 @@
-/target
+target
 __pycache__
 bevy_skein-*.zip
 registry.json

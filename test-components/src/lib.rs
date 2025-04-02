@@ -246,10 +246,13 @@ mod tests {
     };
     use std::str::FromStr;
 
+
+
     fn snapshot_component_value<
         T: PartialReflect + GetTypeRegistration,
     >(
         value: &T,
+        label: &str
     ) {
         let mut type_registry = TypeRegistry::new();
         type_registry.register::<T>();
@@ -257,7 +260,11 @@ mod tests {
         // serialize
         let serializer =
             ReflectSerializer::new(value, &type_registry);
-        insta::assert_json_snapshot!(serializer);
+            
+        let mut settings = insta::Settings::clone_current();
+        settings.set_snapshot_suffix(label);
+        let _guard = settings.bind_to_scope();
+       insta::assert_json_snapshot!(serializer);
     }
 
     #[test]
@@ -268,7 +275,7 @@ mod tests {
             test: 4,
         };
 
-        snapshot_component_value(&value);
+        snapshot_component_value(&value, "player");
     }
 
     #[test]
@@ -282,14 +289,14 @@ mod tests {
             team: Team::Green,
         };
 
-        snapshot_component_value(&value);
+        snapshot_component_value(&value, "team_member");
     }
 
     #[test]
     fn tuple_struct() {
         let value = ATupleStruct(12);
 
-        snapshot_component_value(&value);
+        snapshot_component_value(&value, "tuple_struct");
     }
 
     #[test]
@@ -301,21 +308,21 @@ mod tests {
             "testing".to_string(),
         );
 
-        snapshot_component_value(&value);
+        snapshot_component_value(&value, "multi_element_tuple_struct");
     }
 
     #[test]
     fn marker_component() {
         let value = Marker;
 
-        snapshot_component_value(&value);
+        snapshot_component_value(&value, "marker");
     }
 
     #[test]
     fn enum_component() {
         let value = TaskPriority::High;
 
-        snapshot_component_value(&value);
+        snapshot_component_value(&value, "task_priority");
     }
 
     #[test]
@@ -324,14 +331,14 @@ mod tests {
             name: "testing".to_string(),
         };
 
-        snapshot_component_value(&value);
+        snapshot_component_value(&value, "some_things__one_thing");
     }
 
     #[test]
     fn enum_component_with_fields_alt() {
         let value = SomeThings::Low(12);
 
-        snapshot_component_value(&value);
+        snapshot_component_value(&value, "some_things__low");
     }
 
     #[test]
@@ -340,10 +347,10 @@ mod tests {
             name: Some("A Test Name".to_string()),
         };
 
-        snapshot_component_value(&value);
+        snapshot_component_value(&value, "an_optional_name__some");
 
         let value = AnOptionalName { name: None };
-        snapshot_component_value(&value);
+        snapshot_component_value(&value, "an_optional_name__none");
     }
 
     #[test]
@@ -353,7 +360,7 @@ mod tests {
             an_int: std::num::NonZeroI16::new(-493)
                 .unwrap(),
         };
-        snapshot_component_value(&value);
+        snapshot_component_value(&value, "non_zero_numbers");
     }
 
     #[test]
@@ -368,7 +375,7 @@ mod tests {
             bvec: BVec3A::new(true, false, true),
         };
 
-        snapshot_component_value(&value);
+        snapshot_component_value(&value, "bucket_of_types");
     }
 
     #[test]
@@ -379,14 +386,14 @@ mod tests {
             test: 42,
         });
 
-        snapshot_component_value(&value);
+        snapshot_component_value(&value, "rich_and_unit_enum__player");
     }
 
     #[test]
     fn enum_component_rich_and_unit_enum_alt() {
         let value = RichAndUnitEnum::NotAPlayer;
 
-        snapshot_component_value(&value);
+        snapshot_component_value(&value, "rich_and_unit_enum__not_a_player");
     }
 
     #[test]
@@ -396,7 +403,7 @@ mod tests {
             highlight: Color::oklch(1., 1., 1.),
         };
 
-        snapshot_component_value(&value);
+        snapshot_component_value(&value, "struct_with_color");
     }
 
     #[test]
@@ -406,13 +413,72 @@ mod tests {
             TimerMode::Once,
         ));
 
-        snapshot_component_value(&value);
+        snapshot_component_value(&value, "timer_container");
     }
 
     #[test]
     fn vec3_support() {
         let value = LinearVelocity(Vec3::splat(2.));
 
-        snapshot_component_value(&value);
+        snapshot_component_value(&value, "linear_velocity");
+    }
+
+    #[test]
+    fn super_glam() {
+        let value = SuperGlam {
+            vec2: Vec2::default(),
+            vec3: Vec3::default(),
+            vec3a: Vec3A::default(),
+            vec4: Vec4::default(),
+            mat2: Mat2::default(),
+            mat3: Mat3::default(),
+            mat3a: Mat3A::default(),
+            mat4: Mat4::default(),
+            quat: Quat::default(),
+            affine2: Affine2::default(),
+            affine3a: Affine3A::default(),
+            d_vec2: DVec2::default(),
+            d_vec3: DVec3::default(),
+            d_vec4: DVec4::default(),
+            d_mat2: DMat2::default(),
+            d_mat3: DMat3::default(),
+            d_mat4: DMat4::default(),
+            d_quat: DQuat::default(),
+            d_affine2: DAffine2::default(),
+            d_affine3: DAffine3::default(),
+            i8_vec2: I8Vec2::default(),
+            i8_vec3: I8Vec3::default(),
+            i8_vec4: I8Vec4::default(),
+            u8_vec2: U8Vec2::default(),
+            u8_vec3: U8Vec3::default(),
+            u8_vec4: U8Vec4::default(),
+            i16_vec2: I16Vec2::default(),
+            i16_vec3: I16Vec3::default(),
+            i16_vec4: I16Vec4::default(),
+            u16_vec2: U16Vec2::default(),
+            u16_vec3: U16Vec3::default(),
+            u16_vec4: U16Vec4::default(),
+            i_vec2: IVec2::default(),
+            i_vec3: IVec3::default(),
+            i_vec4: IVec4::default(),
+            u_vec2: UVec2::default(),
+            u_vec3: UVec3::default(),
+            u_vec4: UVec4::default(),
+            i64_vec2: I64Vec2::default(),
+            i64_vec3: I64Vec3::default(),
+            i64_vec4: I64Vec4::default(),
+            u64_vec2: U64Vec2::default(),
+            u64_vec3: U64Vec3::default(),
+            u64_vec4: U64Vec4::default(),
+            // usize vecs are in glam but not in bevy::math
+            // u_size_vec2: USizeVec2::default(),
+            // u_size_vec3: USizeVec3::default(),
+            // u_size_vec4: USizeVec4::default(),
+            b_vec2: BVec2::default(),
+            b_vec3: BVec3::default(),
+            b_vec4: BVec4::default(),
+        };
+
+        snapshot_component_value(&value, "all_glam_types");
     }
 }

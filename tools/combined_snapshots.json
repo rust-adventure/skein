@@ -1,0 +1,669 @@
+[
+  {
+    "bevy_render::primitives::Aabb": {
+      "center": [0, 0, 0],
+      "half_extents": [0, 0, 0]
+    }
+  },
+  {
+    "test_components::SuperGlam": {
+      "vec2": [0.0, 0.0],
+      "vec3": [0.0, 0.0, 0.0],
+      "vec3a": [0.0, 0.0, 0.0],
+      "vec4": [0.0, 0.0, 0.0, 0.0],
+      "mat2": [0.0, 0.0, 0.0, 0.0],
+      "mat3": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+      "mat3a": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+      "mat4": [
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0
+      ],
+      "quat": [0.0, 0.0, 0.0, 0.0],
+      "affine2": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+      "affine3a": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+      "d_vec2": [0.0, 0.0],
+      "d_vec3": [0.0, 0.0, 0.0],
+      "d_vec4": [0.0, 0.0, 0.0, 0.0],
+      "d_mat2": [0.0, 0.0, 0.0, 0.0],
+      "d_mat3": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+      "d_mat4": [
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0
+      ],
+      "d_quat": [0.0, 0.0, 0.0, 0.0],
+      "d_affine2": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+      "d_affine3": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+      "i8_vec2": [0, 0],
+      "i8_vec3": [0, 0, 0],
+      "i8_vec4": [0, 0, 0, 0],
+      "u8_vec2": [0, 0],
+      "u8_vec3": [0, 0, 0],
+      "u8_vec4": [0, 0, 0, 0],
+      "i16_vec2": [0, 0],
+      "i16_vec3": [0, 0, 0],
+      "i16_vec4": [0, 0, 0, 0],
+      "u16_vec2": [0, 0],
+      "u16_vec3": [0, 0, 0],
+      "u16_vec4": [0, 0, 0, 0],
+      "i_vec2": [0, 0],
+      "i_vec3": [0, 0, 0],
+      "i_vec4": [0, 0, 0, 0],
+      "u_vec2": [0, 0],
+      "u_vec3": [0, 0, 0],
+      "u_vec4": [0, 0, 0, 0],
+      "i64_vec2": [0, 0],
+      "i64_vec3": [0, 0, 0],
+      "i64_vec4": [0, 0, 0, 0],
+      "u64_vec2": [0, 0],
+      "u64_vec3": [0, 0, 0],
+      "u64_vec4": [0, 0, 0, 0],
+      "b_vec2": [false, false],
+      "b_vec3": [false, false, false],
+      "b_vec4": [false, false, false, false]
+    }
+  },
+  {
+    "bevy_pbr::light::ambient_light::AmbientLight": {
+      "color": {
+        "Srgba": {
+          "red": 0,
+          "green": 0,
+          "blue": 0,
+          "alpha": 0
+        }
+      },
+      "brightness": 0,
+      "affects_lightmapped_meshes": false
+    }
+  },
+  {
+    "test_components::AnOptionalName": {
+      "name": null
+    }
+  },
+  {
+    "bevy_sprite::sprite::Anchor": "Center"
+  },
+  {
+    "bevy_ui::ui_node::BackgroundColor": {
+      "Srgba": {
+        "red": 0,
+        "green": 0,
+        "blue": 0,
+        "alpha": 0
+      }
+    }
+  },
+  {
+    "bevy_core_pipeline::bloom::settings::Bloom": {
+      "intensity": 0,
+      "low_frequency_boost": 0,
+      "low_frequency_boost_curvature": 0,
+      "high_pass_frequency": 0,
+      "prefilter": {
+        "threshold": 0,
+        "threshold_softness": 0
+      },
+      "composite_mode": "EnergyConserving",
+      "max_mip_dimension": 0,
+      "scale": [0, 0]
+    }
+  },
+  {
+    "bevy_core_pipeline::fxaa::Fxaa": {
+      "enabled": false,
+      "edge_threshold": "Low",
+      "edge_threshold_min": "Low"
+    }
+  },
+  {
+    "bevy_ui::ui_node::BorderColor": {
+      "Srgba": {
+        "red": 0,
+        "green": 0,
+        "blue": 0,
+        "alpha": 0
+      }
+    }
+  },
+  {
+    "bevy_ui::ui_node::BorderRadius": {
+      "top_left": "Auto",
+      "top_right": "Auto",
+      "bottom_left": "Auto",
+      "bottom_right": "Auto"
+    }
+  },
+  {
+    "bevy_ui::ui_node::BoxShadowSamples": 0
+  },
+  {
+    "bevy_ui::widget::button::Button": {}
+  },
+  {
+    "bevy_ui::ui_node::CalculatedClip": {
+      "clip": {
+        "min": [0, 0],
+        "max": [0, 0]
+      }
+    }
+  },
+  {
+    "bevy_render::camera::camera::Camera": {
+      "viewport": null,
+      "order": 0,
+      "is_active": false,
+      "target": {
+        "Window": "Primary"
+      },
+      "hdr": false,
+      "msaa_writeback": false,
+      "clear_color": "Default",
+      "sub_camera_view": null
+    }
+  },
+  {
+    "bevy_core_pipeline::core_2d::camera_2d::Camera2d": {}
+  },
+  {
+    "bevy_render::primitives::CascadesFrusta": {}
+  },
+  {
+    "bevy_pbr::components::CascadesVisibleEntities": {}
+  },
+  {
+    "bevy_pbr::cluster::ClusterConfig": "None"
+  },
+  {
+    "bevy_ui::ui_node::ComputedNode": {
+      "stack_index": 0,
+      "size": [0, 0],
+      "content_size": [0, 0],
+      "outline_width": 0,
+      "outline_offset": 0,
+      "unrounded_size": [0, 0],
+      "border": {
+        "left": 0,
+        "right": 0,
+        "top": 0,
+        "bottom": 0
+      },
+      "border_radius": {
+        "top_left": 0,
+        "top_right": 0,
+        "bottom_left": 0,
+        "bottom_right": 0
+      },
+      "padding": {
+        "left": 0,
+        "right": 0,
+        "top": 0,
+        "bottom": 0
+      },
+      "inverse_scale_factor": 0
+    }
+  },
+  {
+    "bevy_ui::measurement::ContentSize": {}
+  },
+  {
+    "bevy_render::primitives::CubemapFrusta": {}
+  },
+  {
+    "bevy_pbr::components::CubemapVisibleEntities": {}
+  },
+  {
+    "bevy_core_pipeline::tonemapping::DebandDither": "Disabled"
+  },
+  {
+    "bevy_core_pipeline::prepass::DeferredPrepass": {}
+  },
+  {
+    "bevy_core_pipeline::dof::DepthOfField": {
+      "mode": "Bokeh",
+      "focal_distance": 0,
+      "sensor_height": 0,
+      "aperture_f_stops": 0,
+      "max_circle_of_confusion_diameter": 0,
+      "max_depth": 0
+    }
+  },
+  {
+    "bevy_core_pipeline::prepass::DepthPrepass": {}
+  },
+  {
+    "bevy_pbr::light::directional_light::DirectionalLight": {
+      "color": {
+        "Srgba": {
+          "red": 0,
+          "green": 0,
+          "blue": 0,
+          "alpha": 0
+        }
+      },
+      "illuminance": 0,
+      "shadows_enabled": false,
+      "affects_lightmapped_mesh_diffuse": false,
+      "shadow_depth_bias": 0,
+      "shadow_normal_bias": 0
+    }
+  },
+  {
+    "bevy_pbr::fog::DistanceFog": {
+      "color": {
+        "Srgba": {
+          "red": 0,
+          "green": 0,
+          "blue": 0,
+          "alpha": 0
+        }
+      },
+      "directional_light_color": {
+        "Srgba": {
+          "red": 0,
+          "green": 0,
+          "blue": 0,
+          "alpha": 0
+        }
+      },
+      "directional_light_exponent": 0,
+      "falloff": {
+        "Linear": {
+          "start": 0,
+          "end": 0
+        }
+      }
+    }
+  },
+  {
+    "bevy_ui::focus::FocusPolicy": "Block"
+  },
+  {
+    "bevy_render::primitives::Frustum": {}
+  },
+  {
+    "bevy_transform::components::global_transform::GlobalTransform": [
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    ]
+  },
+  {
+    "bevy_ui::widget::image::ImageNodeSize": {
+      "size": [0, 0]
+    }
+  },
+  {
+    "bevy_render::view::visibility::InheritedVisibility": false
+  },
+  {
+    "bevy_ui::focus::Interaction": "Pressed"
+  },
+  {
+    "bevy_ui::widget::label::Label": {}
+  },
+  {
+    "bevy_pbr::light_probe::LightProbe": {}
+  },
+  {
+    "test_components::LinearVelocity": [0, 0, 0]
+  },
+  {
+    "test_components::Marker": {}
+  },
+  {
+    "bevy_render::camera::camera::MipBias": 0
+  },
+  {
+    "bevy_core_pipeline::prepass::MotionVectorPrepass": {}
+  },
+  {
+    "bevy_render::view::Msaa": "Off"
+  },
+  {
+    "bevy_render::view::visibility::NoFrustumCulling": {}
+  },
+  {
+    "test_components::NonZeroNumbers": {
+      "small": 1,
+      "an_int": 1
+    }
+  },
+  {
+    "bevy_core_pipeline::prepass::NormalPrepass": {}
+  },
+  {
+    "bevy_pbr::light::NotShadowCaster": {}
+  },
+  {
+    "bevy_pbr::light::NotShadowReceiver": {}
+  },
+  {
+    "bevy_render::experimental::occlusion_culling::OcclusionCulling": {}
+  },
+  {
+    "bevy_ui::ui_node::Outline": {
+      "width": "Auto",
+      "offset": "Auto",
+      "color": {
+        "Srgba": {
+          "red": 0,
+          "green": 0,
+          "blue": 0,
+          "alpha": 0
+        }
+      }
+    }
+  },
+  {
+    "bevy_picking::Pickable": {
+      "should_block_lower": false,
+      "is_hoverable": false
+    }
+  },
+  {
+    "bevy_picking::hover::PickingInteraction": "Pressed"
+  },
+  {
+    "test_components::Player": {
+      "name": "",
+      "power": 0,
+      "test": 0
+    }
+  },
+  {
+    "bevy_pbr::light::point_light::PointLight": {
+      "color": {
+        "Srgba": {
+          "red": 0,
+          "green": 0,
+          "blue": 0,
+          "alpha": 0
+        }
+      },
+      "intensity": 0,
+      "range": 0,
+      "radius": 0,
+      "shadows_enabled": false,
+      "affects_lightmapped_mesh_diffuse": false,
+      "shadow_depth_bias": 0,
+      "shadow_normal_bias": 0,
+      "shadow_map_near_z": 0
+    }
+  },
+  {
+    "bevy_picking::pointer::PointerId": "Mouse"
+  },
+  {
+    "bevy_picking::pointer::PointerLocation": {}
+  },
+  {
+    "bevy_picking::pointer::PointerPress": {
+      "primary": false,
+      "secondary": false,
+      "middle": false
+    }
+  },
+  {
+    "bevy_window::window::PrimaryWindow": {}
+  },
+  {
+    "bevy_render::camera::projection::Projection": {
+      "Perspective": {
+        "fov": 0,
+        "aspect_ratio": 0,
+        "near": 0,
+        "far": 0
+      }
+    }
+  },
+  {
+    "bevy_ui::focus::RelativeCursorPosition": {
+      "normalized_visible_node_rect": {
+        "min": [0, 0],
+        "max": [0, 0]
+      },
+      "normalized": null
+    }
+  },
+  {
+    "test_components::RichAndUnitEnum": {
+      "Player": {
+        "name": "",
+        "power": 0,
+        "test": 0
+      }
+    }
+  },
+  {
+    "bevy_pbr::ssao::ScreenSpaceAmbientOcclusion": {
+      "quality_level": "Low",
+      "constant_object_thickness": 0
+    }
+  },
+  {
+    "bevy_pbr::ssr::ScreenSpaceReflections": {
+      "perceptual_roughness_threshold": 0,
+      "thickness": 0,
+      "linear_steps": 0,
+      "linear_march_exponent": 0,
+      "bisection_steps": 0,
+      "use_secant": false
+    }
+  },
+  {
+    "bevy_ui::ui_node::ScrollPosition": {
+      "offset_x": 0,
+      "offset_y": 0
+    }
+  },
+  {
+    "bevy_pbr::light::ShadowFilteringMethod": "Hardware2x2"
+  },
+
+  {
+    "bevy_core_pipeline::smaa::Smaa": {
+      "preset": "Low"
+    }
+  },
+  {
+    "test_components::SomeThings": {
+      "OneThing": {
+        "name": ""
+      }
+    }
+  },
+  {
+    "bevy_audio::audio::SpatialListener": {
+      "left_ear_offset": [-0, 0, 0],
+      "right_ear_offset": [0, 0, 0]
+    }
+  },
+  {
+    "bevy_pbr::light::spot_light::SpotLight": {
+      "color": {
+        "Srgba": {
+          "red": 0,
+          "green": 0,
+          "blue": 0,
+          "alpha": 0
+        }
+      },
+      "intensity": 0,
+      "range": 0,
+      "radius": 0,
+      "shadows_enabled": false,
+      "affects_lightmapped_mesh_diffuse": false,
+      "shadow_depth_bias": 0.0,
+      "shadow_normal_bias": 0,
+      "shadow_map_near_z": 0.0,
+      "outer_angle": 0,
+      "inner_angle": 0
+    }
+  },
+  {
+    "bevy_sprite::picking_backend::SpritePickingCamera": {}
+  },
+  {
+    "test_components::AStructWithColor": {
+      "base": {
+        "Srgba": {
+          "red": 0,
+          "green": 0,
+          "blue": 0,
+          "alpha": 0
+        }
+      },
+      "highlight": {
+        "Srgba": {
+          "red": 0,
+          "green": 0,
+          "blue": 0,
+          "alpha": 0
+        }
+      }
+    }
+  },
+  {
+    "bevy_render::sync_world::SyncToRenderWorld": {}
+  },
+  {
+    "test_components::TaskPriority": "High"
+  },
+  {
+    "test_components::TeamMember": {
+      "player": {
+        "name": "",
+        "power": 0,
+        "test": 0
+      },
+      "team": "Green"
+    }
+  },
+  {
+    "bevy_render::camera::camera::TemporalJitter": {
+      "offset": [0, 0]
+    }
+  },
+  {
+    "bevy_ui::widget::text::Text": ""
+  },
+  {
+    "bevy_text::text2d::Text2d": ""
+  },
+  {
+    "bevy_text::bounds::TextBounds": {
+      "width": null,
+      "height": null
+    }
+  },
+  {
+    "bevy_text::text::TextColor": {
+      "Srgba": {
+        "red": 0.0,
+        "green": 0.0,
+        "blue": 0.0,
+        "alpha": 0.0
+      }
+    }
+  },
+  {
+    "bevy_text::text::TextLayout": {
+      "justify": "Left",
+      "linebreak": "WordBoundary"
+    }
+  },
+  {
+    "bevy_ui::widget::text::TextNodeFlags": {
+      "needs_measure_fn": false,
+      "needs_recompute": false
+    }
+  },
+  {
+    "bevy_ui::ui_node::TextShadow": {
+      "offset": [0.0, 0.0],
+      "color": {
+        "Srgba": {
+          "red": 0.0,
+          "green": 0.0,
+          "blue": 0.0,
+          "alpha": 0.0
+        }
+      }
+    }
+  },
+  {
+    "bevy_text::text::TextSpan": ""
+  },
+  {
+    "test_components::TimerContainer": {
+      "stopwatch": {
+        "elapsed": {
+          "secs": 0,
+          "nanos": 0
+        },
+        "is_paused": false
+      },
+      "duration": {
+        "secs": 0,
+        "nanos": 0
+      },
+      "mode": "Once",
+      "finished": false,
+      "times_finished_this_tick": 0
+    }
+  },
+  {
+    "bevy_core_pipeline::tonemapping::Tonemapping": "None"
+  },
+  {
+    "bevy_transform::components::transform::Transform": {
+      "translation": [0, 0, 0],
+      "rotation": [0, 0, 0, 0],
+      "scale": [0, 0, 0]
+    }
+  },
+  {
+    "bevy_transform::components::transform::TransformTreeChanged": {}
+  },
+  {
+    "test_components::ATupleStruct": 0
+  },
+  {
+    "bevy_ui::ui_node::UiAntiAlias": "On"
+  },
+  {
+    "bevy_ui::picking_backend::UiPickingCamera": {}
+  },
+  {
+    "bevy_render::view::visibility::ViewVisibility": false
+  },
+  {
+    "bevy_render::view::visibility::Visibility": "Inherited"
+  },
+  {
+    "bevy_render::view::visibility::VisibleEntities": {}
+  },
+  {
+    "bevy_pbr::components::VisibleMeshEntities": {}
+  },
+  {
+    "bevy_pbr::volumetric_fog::VolumetricFog": {
+      "ambient_color": {
+        "Srgba": {
+          "red": 0.0,
+          "green": 0.0,
+          "blue": 0.0,
+          "alpha": 0.0
+        }
+      },
+      "ambient_intensity": 0.0,
+      "jitter": 0,
+      "step_count": 0
+    }
+  },
+  {
+    "bevy_pbr::volumetric_fog::VolumetricLight": {}
+  },
+  {
+    "bevy_ui::ui_node::ZIndex": 0
+  }
+]

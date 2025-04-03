@@ -19,7 +19,7 @@ class FetchBevyTypeRegistry(bpy.types.Operator):
     # execute is called to run the operator
     def execute(self, context):
         preferences = context.preferences
-        debug = False        
+        debug = False
 
         if 'unittest' not in sys.modules.keys():
             debug = preferences.addons[__package__].preferences.debug

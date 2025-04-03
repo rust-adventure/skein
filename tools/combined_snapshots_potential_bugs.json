@@ -1,0 +1,432 @@
+[
+  {
+    "bevy_render::camera::manual_texture_view::ManualTextureViewHandle": 0
+  },
+
+  {
+    "bevy_ui::ui_node::BoxShadow": []
+  },
+  {
+    "bevy_core_pipeline::contrast_adaptive_sharpening::ContrastAdaptiveSharpening": {
+      "enabled": false,
+      "sharpening_strength": 0,
+      "denoise": false
+    }
+  },
+  {
+    "bevy_audio::audio::PlaybackSettings": {
+      "mode": "Once",
+      "volume": {
+        "Linear": 0
+      },
+      "speed": 0.0,
+      "paused": false,
+      "muted": false,
+      "spatial": false,
+      "spatial_scale": null
+    }
+  },
+  {
+    "bevy_text::text::TextFont": {
+      "font": "Strong",
+      "font_size": 0.0,
+      "line_height": {
+        "RelativeToFont": 1.2
+      },
+      "font_smoothing": "None"
+    }
+  },
+  {
+    "bevy_render::view::visibility::render_layers::RenderLayers": [1]
+  },
+  {
+    "bevy_core_pipeline::core_3d::camera_3d::Camera3d": {
+      "depth_load_op": {
+        "Clear": 0
+      },
+      "depth_texture_usages": 0,
+      "screen_space_specular_transmission_steps": 0,
+      "screen_space_specular_transmission_quality": "Low"
+    }
+  },
+  {
+    "bevy_animation::graph::AnimationGraphHandle": {
+      "Weak": {
+        "Uuid": {
+          "uuid": "97128bb1-2588-480b-bdc6-87b4adbec477"
+        }
+      }
+    }
+  },
+  {
+    "bevy_animation::AnimationTarget": {
+      "id": "16c27292-862e-4555-af16-d3d8e624c6de",
+      "player": 8589934591
+    }
+  },
+  {
+    "bevy_render::view::visibility::VisibilityClass": []
+  },
+  {
+    "bevy_ui::ui_node::UiTargetCamera": 8589934591
+  },
+  {
+    "bevy_sprite::sprite::Sprite": {
+      "image": {
+        "Weak": {
+          "Uuid": {
+            "uuid": "97128bb1-2588-480b-bdc6-87b4adbec477"
+          }
+        }
+      },
+      "texture_atlas": null,
+      "color": {
+        "Srgba": {
+          "red": 0,
+          "green": 0,
+          "blue": 0,
+          "alpha": 0
+        }
+      },
+      "flip_x": false,
+      "flip_y": false,
+      "custom_size": null,
+      "rect": null,
+      "anchor": "Center",
+      "image_mode": "Auto"
+    }
+  },
+  {
+    "bevy_core_pipeline::skybox::Skybox": {
+      "image": {
+        "Weak": {
+          "Uuid": {
+            "uuid": "97128bb1-2588-480b-bdc6-87b4adbec477"
+          }
+        }
+      },
+      "brightness": 0,
+      "rotation": [0, 0, 0, 1]
+    }
+  },
+  {
+    "bevy_scene::components::DynamicSceneRoot": {
+      "Weak": {
+        "Uuid": {
+          "uuid": "97128bb1-2588-480b-bdc6-87b4adbec477"
+        }
+      }
+    }
+  },
+  {
+    "bevy_scene::components::SceneRoot": {
+      "Weak": {
+        "Uuid": {
+          "uuid": "97128bb1-2588-480b-bdc6-87b4adbec477"
+        }
+      }
+    }
+  },
+  {
+    "bevy_mesh::skinning::SkinnedMesh": {
+      "inverse_bindposes": {
+        "Weak": {
+          "Uuid": {
+            "uuid": "97128bb1-2588-480b-bdc6-87b4adbec477"
+          }
+        }
+      },
+      "joints": []
+    }
+  },
+  {
+    "bevy_core_pipeline::post_process::ChromaticAberration": {
+      "color_lut": {
+        "Weak": {
+          "Uuid": {
+            "uuid": "dc3e3307-40a1-49bb-be6d-e0634e8836b2"
+          }
+        }
+      },
+      "intensity": 0.02,
+      "max_samples": 8
+    }
+  },
+  {
+    "bevy_pbr::light_probe::environment_map::EnvironmentMapLight": {
+      "diffuse_map": {
+        "Weak": {
+          "Uuid": {
+            "uuid": "97128bb1-2588-480b-bdc6-87b4adbec477"
+          }
+        }
+      },
+      "specular_map": {
+        "Weak": {
+          "Uuid": {
+            "uuid": "97128bb1-2588-480b-bdc6-87b4adbec477"
+          }
+        }
+      },
+      "intensity": 0,
+      "rotation": [0, 0, 0, 1],
+      "affects_lightmapped_mesh_diffuse": false
+    }
+  },
+  {
+    "bevy_ui::widget::image::ImageNode": {
+      "color": {
+        "Srgba": {
+          "red": 0,
+          "green": 0,
+          "blue": 0,
+          "alpha": 0
+        }
+      },
+      "image": {
+        "Weak": {
+          "Uuid": {
+            "uuid": "d18ad97e-a322-4981-9505-44c59a4b5e46"
+          }
+        }
+      },
+      "texture_atlas": null,
+      "flip_x": false,
+      "flip_y": false,
+      "rect": null,
+      "image_mode": "Auto"
+    }
+  },
+  {
+    "bevy_render::mesh::components::Mesh2d": {
+      "Weak": {
+        "Uuid": {
+          "uuid": "97128bb1-2588-480b-bdc6-87b4adbec477"
+        }
+      }
+    }
+  },
+  {
+    "bevy_render::mesh::components::Mesh3d": {
+      "Weak": {
+        "Uuid": {
+          "uuid": "97128bb1-2588-480b-bdc6-87b4adbec477"
+        }
+      }
+    }
+  },
+  {
+    "bevy_pbr::light_probe::irradiance_volume::IrradianceVolume": {
+      "voxels": {
+        "Weak": {
+          "Uuid": {
+            "uuid": "97128bb1-2588-480b-bdc6-87b4adbec477"
+          }
+        }
+      },
+      "intensity": 0,
+      "affects_lightmapped_meshes": false
+    }
+  },
+  {
+    "bevy_text::pipeline::TextLayoutInfo": {
+      "glyphs": [],
+      "size": [0, 0]
+    }
+  },
+  {
+    "bevy_picking::pointer::PointerInteraction": {
+      "sorted_entities": []
+    }
+  },
+  {
+    "bevy_animation::transition::AnimationTransitions": {
+      "main_animation": null,
+      "transitions": []
+    }
+  },
+  {
+    "bevy_animation::AnimationPlayer": {
+      "active_animations": {},
+      "blend_weights": {}
+    }
+  },
+  {
+    "bevy_ui::ui_node::Node": {
+      "display": "Flex",
+      "box_sizing": "BorderBox",
+      "position_type": "Relative",
+      "overflow": {
+        "x": "Visible",
+        "y": "Visible"
+      },
+      "overflow_clip_margin": {
+        "visual_box": "ContentBox",
+        "margin": 0
+      },
+      "left": "Auto",
+      "right": "Auto",
+      "top": "Auto",
+      "bottom": "Auto",
+      "width": "Auto",
+      "height": "Auto",
+      "min_width": "Auto",
+      "min_height": "Auto",
+      "max_width": "Auto",
+      "max_height": "Auto",
+      "aspect_ratio": null,
+      "align_items": "Default",
+      "justify_items": "Default",
+      "align_self": "Auto",
+      "justify_self": "Auto",
+      "align_content": "Default",
+      "justify_content": "Default",
+      "margin": {
+        "left": {
+          "Px": 0
+        },
+        "right": {
+          "Px": 0
+        },
+        "top": {
+          "Px": 0
+        },
+        "bottom": {
+          "Px": 0
+        }
+      },
+      "padding": {
+        "left": {
+          "Px": 0
+        },
+        "right": {
+          "Px": 0
+        },
+        "top": {
+          "Px": 0
+        },
+        "bottom": {
+          "Px": 0
+        }
+      },
+      "border": {
+        "left": {
+          "Px": 0
+        },
+        "right": {
+          "Px": 0
+        },
+        "top": {
+          "Px": 0
+        },
+        "bottom": {
+          "Px": 0
+        }
+      },
+      "flex_direction": "Row",
+      "flex_wrap": "NoWrap",
+      "flex_grow": 0,
+      "flex_shrink": 1,
+      "flex_basis": "Auto",
+      "row_gap": {
+        "Px": 0
+      },
+      "column_gap": {
+        "Px": 0
+      },
+      "grid_auto_flow": "Row",
+      "grid_template_rows": [],
+      "grid_template_columns": [],
+      "grid_auto_rows": [],
+      "grid_auto_columns": [],
+      "grid_row": {
+        "start": null,
+        "span": 1,
+        "end": null
+      },
+      "grid_column": {
+        "start": null,
+        "span": 1,
+        "end": null
+      }
+    }
+  },
+  {
+    "test_components::MultiElementTupleStruct": [0, [0, 0, 0], 0, ""]
+  },
+  {
+    "bevy_mesh::morph::MeshMorphWeights": {
+      "weights": []
+    }
+  },
+  {
+    "bevy_mesh::morph::MorphWeights": {
+      "weights": [],
+      "first_mesh": null
+    }
+  },
+  {
+    "bevy_window::monitor::Monitor": {
+      "name": "Probably dont use Monitor in Blender lol",
+      "physical_height": 1920,
+      "physical_width": 1080,
+      "physical_position": [0, 0],
+      "refresh_rate_millihertz": 60,
+      "scale_factor": 1,
+      "video_modes": [
+        {
+          "physical_size": [1920, 1080],
+          "bit_depth": 8,
+          "refresh_rate_millihertz": 10
+        }
+      ]
+    }
+  },
+  {
+    "bevy_input::gamepad::GamepadSettings": {
+      "default_button_settings": {
+        "press_threshold": 0.75,
+        "release_threshold": 0.65
+      },
+      "default_axis_settings": {
+        "livezone_upperbound": 1,
+        "deadzone_upperbound": 0.05,
+        "deadzone_lowerbound": -0.05,
+        "livezone_lowerbound": -1,
+        "threshold": 0.01
+      },
+      "default_button_axis_settings": {
+        "high": 0.95,
+        "low": 0.05,
+        "threshold": 0.01
+      },
+      "button_settings": {},
+      "axis_settings": {},
+      "button_axis_settings": {}
+    }
+  },
+  {
+    "bevy_pbr::light::Cascades": {
+      "cascades": {}
+    }
+  },
+  {
+    "test_components::BucketOfTypes": {
+      "entity": 8589934591,
+      "uuid": "16c27292-862e-4555-af16-d3d8e624c6de",
+      "bvec": [false, false, false]
+    }
+  },
+  {
+    "bevy_pbr::light::CascadeShadowConfig": {
+      "bounds": [10, 24.66212, 60.82202, 149.99998],
+      "overlap_proportion": 0.2,
+      "minimum_distance": 0.1
+    }
+  },
+  {
+    "bevy_winit::cursor::CursorIcon": {
+      "System": "Default"
+    }
+  }
+]

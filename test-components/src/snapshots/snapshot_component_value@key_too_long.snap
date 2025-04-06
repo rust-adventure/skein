@@ -1,0 +1,11 @@
+---
+source: src/lib.rs
+expression: serializer
+snapshot_kind: text
+---
+{
+  "test_components::ThisIsOverThePythonKeyLengthLimitForBlenderProperties": {
+    "are_you_feeling_it_now_mr_krabs": true,
+    "im_ready_im_ready_im_ready": "Spongebob"
+  }
+}

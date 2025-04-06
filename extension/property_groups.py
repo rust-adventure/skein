@@ -28,6 +28,16 @@ def hash_type_path(data):
     output = base64_bytes.decode("ascii")
     return "SKEIN_" + output
 
+# hash a type_path if its length is over 63, which can 
+# cause classes to fail to register
+# TODO: could this be a getter on ComponentContainer?
+def hash_over_64(type_path):
+    maybe_hashed_type_path = type_path
+    if len(type_path) > 63:
+        maybe_hashed_type_path = hash_type_path(type_path)
+    
+    return maybe_hashed_type_path
+
 def make_property(
         skein_property_groups,
         registry,

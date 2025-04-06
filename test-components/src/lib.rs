@@ -4,6 +4,15 @@ use std::num::{NonZeroI16, NonZeroU8};
 /// A Component with fields
 #[derive(Component, Reflect, Debug)]
 #[reflect(Component)]
+pub struct ThisIsOverThePythonKeyLengthLimitForBlenderProperties
+{
+    pub are_you_feeling_it_now_mr_krabs: bool,
+    pub im_ready_im_ready_im_ready: String,
+}
+
+/// A Component with fields
+#[derive(Component, Reflect, Debug)]
+#[reflect(Component)]
 pub struct Player {
     pub name: String,
     pub power: f32,
@@ -264,6 +273,16 @@ mod tests {
         settings.set_prepend_module_to_snapshot(false);
         let _guard = settings.bind_to_scope();
         insta::assert_json_snapshot!(serializer);
+    }
+
+    #[test]
+    fn key_too_long() {
+        let value = ThisIsOverThePythonKeyLengthLimitForBlenderProperties {
+            are_you_feeling_it_now_mr_krabs: true,
+            im_ready_im_ready_im_ready: "Spongebob".to_string(),
+        };
+
+        snapshot_component_value(&value, "key_too_long");
     }
 
     #[test]

@@ -1,17 +1,6 @@
 [
   {
-    "bevy_render::camera::manual_texture_view::ManualTextureViewHandle": 0
-  },
-
-  {
     "bevy_ui::ui_node::BoxShadow": []
-  },
-  {
-    "bevy_core_pipeline::contrast_adaptive_sharpening::ContrastAdaptiveSharpening": {
-      "enabled": false,
-      "sharpening_strength": 0,
-      "denoise": false
-    }
   },
   {
     "bevy_audio::audio::PlaybackSettings": {

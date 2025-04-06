@@ -1,5 +1,21 @@
 [
   {
+    "test_components::ThisIsOverThePythonKeyLengthLimitForBlenderProperties": {
+      "are_you_feeling_it_now_mr_krabs": false,
+      "im_ready_im_ready_im_ready": ""
+    }
+  },
+  {
+    "bevy_render::camera::manual_texture_view::ManualTextureViewHandle": 0
+  },
+  {
+    "bevy_core_pipeline::contrast_adaptive_sharpening::ContrastAdaptiveSharpening": {
+      "enabled": false,
+      "sharpening_strength": 0,
+      "denoise": false
+    }
+  },
+  {
     "bevy_render::primitives::Aabb": {
       "center": [0, 0, 0],
       "half_extents": [0, 0, 0]

@@ -1,6 +1,7 @@
 import inspect
-import bpy # type: ignore
+import bpy
 
+from .property_groups import hash_over_64 # type: ignore
 from .form_to_object import get_data_from_active_editor # type: ignore
 
 class DebugCheckObjectBevyComponents(bpy.types.Operator):
@@ -23,7 +24,7 @@ class DebugCheckObjectBevyComponents(bpy.types.Operator):
                 if inspect.isclass(skein_property_groups[component.selected_type_path]):
                     print(get_data_from_active_editor(
                         component,
-                        component.selected_type_path,
+                        hash_over_64(component.selected_type_path),
                     ))
                 else:
                     print(getattr(component, component.selected_type_path))
@@ -37,7 +38,7 @@ class DebugCheckObjectBevyComponents(bpy.types.Operator):
                 if inspect.isclass(skein_property_groups[component.selected_type_path]):
                     print(get_data_from_active_editor(
                         component,
-                        component.selected_type_path,
+                        hash_over_64(component.selected_type_path),
                     ))
                 else:
                     print(getattr(component, component.selected_type_path))

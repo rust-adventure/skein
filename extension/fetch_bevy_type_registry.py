@@ -4,7 +4,7 @@ import sys
 import bpy # type: ignore
 import json
 import requests # type: ignore
-from .property_groups import make_property
+from .property_groups import hash_over_64, make_property
 # --------------------------------- #
 #  Fetch and store the bevy type    #
 #  registry, for panel display      #
@@ -112,21 +112,23 @@ def process_registry(context, registry):
 
                 component_list.append((type_path, value["shortPath"], type_path))
 
-                # TODO: skip type_paths that are longer than 63 characters because they
+                # hash type_paths that are longer than 63 characters because they
                 # will make the type class registration fail:
                 # TypeError: 'bevy_render::camera::manual_texture_view::ManualTextureViewHandle' too long, max length is 63
-                # maybe we hash the type_paths in the future to contrain the length
-                if len(type_path) <= 63:
-                    if inspect.get_annotations(property_group_or_property):
-                        fake_component_enum_annotations[type_path] = bpy.props.PointerProperty(
-                            type=property_group_or_property,
-                            override={"LIBRARY_OVERRIDABLE"},
-                        )
-                    else:
-                        fake_component_enum_annotations[type_path] = property_group_or_property
+                # 
+                # We try to only do it for type_paths that exceed
+                # the limit, because the hash shows up in error messages, reducing readability
+                # and debuggability... or blender's python implementation could allows key lengths...
+                maybe_hashed_type_path = hash_over_64(type_path)
+                if inspect.get_annotations(property_group_or_property):
+                    fake_component_enum_annotations[maybe_hashed_type_path] = bpy.props.PointerProperty(
+                        type=property_group_or_property,
+                        override={"LIBRARY_OVERRIDABLE"},
+                    )
                 else:
-                    if debug:
-                        print("opting out for: ", type_path)
+                    fake_component_enum_annotations[maybe_hashed_type_path] = property_group_or_property
+
+
         except Exception as e:
             if debug:
                 print("failed to make_property for: ", type_path)

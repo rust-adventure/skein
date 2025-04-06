@@ -13,6 +13,7 @@ sys.path.append(os.path.dirname(SCRIPT_DIR))
 from extension import register as breg, unregister as bunreg
 from extension.fetch_bevy_type_registry import process_registry
 from extension.form_to_object import get_data_from_active_editor
+from extension.property_groups import hash_over_64
 
 snapshots = {}
 with open("tools/combined_snapshots.json") as snapshots_file:
@@ -46,10 +47,12 @@ class ComponentPropertyTests(unittest.TestCase):
             with self.subTest(snapshot):  
                 # assert test.expected == make_relative(path=test.path, root=test.root)
                 # each snapshot is a single key/value pair
-                for key, value in snapshot.items():
+                for type_path, value in snapshot.items():
 
-                    bpy.context.window_manager.selected_component = key;
+                    bpy.context.window_manager.selected_component = type_path;
                     bpy.ops.bevy.insert_bevy_component()
+
+                    maybe_hashed_type_path = hash_over_64(type_path)
 
                     container = bpy.context.active_object.skein_two[0]
 
@@ -58,15 +61,15 @@ class ComponentPropertyTests(unittest.TestCase):
                             # load-bearing getattrs
                             # without this, the PointerProperty values
                             # don't actually get initialized
-                            touch_all_fields(container, key)
+                            touch_all_fields(container, maybe_hashed_type_path)
 
                             data = get_data_from_active_editor(
                                 container,
-                                container.selected_type_path
+                                maybe_hashed_type_path
                             )
                             self.assertEqual(data, value)
                         else:
-                            data = getattr(container, container.selected_type_path)
+                            data = getattr(container, maybe_hashed_type_path)
                             self.assertEqual(data, value)
                     except Exception as e:
                         raise

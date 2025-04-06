@@ -2,6 +2,8 @@ import bpy # type: ignore
 import json
 import inspect
 
+from .property_groups import hash_over_64
+
 # ---------------------------------- #
 #  Skein Panel for adding components #
 #  This shows in the Properties      #
@@ -125,7 +127,7 @@ def draw_generic_panel(context, obj, layout, execute_mode):
                     render_props(
                         box,
                         active_component_data,
-                        type_path,
+                        hash_over_64(type_path),
                         component_data,
                         True
                     )

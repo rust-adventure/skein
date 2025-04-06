@@ -1,6 +1,7 @@
 import inspect
 import bpy
 
+from .property_groups import hash_over_64
 from .form_to_object import get_data_from_active_editor
 
 # glTF extensions are named following a convention with known prefixes.
@@ -114,7 +115,7 @@ def gather_skein_two(source, sink):
             if inspect.isclass(skein_property_groups[type_path]):
                 value = get_data_from_active_editor(
                     component,
-                    type_path,
+                    hash_over_64(type_path),
                 )
                 obj[type_path] = value
                 objs.append(obj)

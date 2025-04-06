@@ -19810,6 +19810,32 @@
     "type": "object",
     "typePath": "test_components::TeamMember"
   },
+  "test_components::ThisIsOverThePythonKeyLengthLimitForBlenderProperties": {
+    "additionalProperties": false,
+    "crateName": "test_components",
+    "kind": "Struct",
+    "modulePath": "test_components",
+    "properties": {
+      "are_you_feeling_it_now_mr_krabs": {
+        "type": {
+          "$ref": "#/$defs/bool"
+        }
+      },
+      "im_ready_im_ready_im_ready": {
+        "type": {
+          "$ref": "#/$defs/alloc::string::String"
+        }
+      }
+    },
+    "reflectTypes": ["Component"],
+    "required": [
+      "are_you_feeling_it_now_mr_krabs",
+      "im_ready_im_ready_im_ready"
+    ],
+    "shortPath": "ThisIsOverThePythonKeyLengthLimitForBlenderProperties",
+    "type": "object",
+    "typePath": "test_components::ThisIsOverThePythonKeyLengthLimitForBlenderProperties"
+  },
   "test_components::TimerContainer": {
     "crateName": "test_components",
     "items": false,

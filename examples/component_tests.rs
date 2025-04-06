@@ -13,6 +13,7 @@ use test_components::*;
 
 fn main() {
     App::new()
+        .register_type::<ThisIsOverThePythonKeyLengthLimitForBlenderProperties>()
         .register_type::<Player>()
         .register_type::<TeamMember>()
         .register_type::<ATupleStruct>()

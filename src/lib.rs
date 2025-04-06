@@ -52,6 +52,7 @@ impl Plugin for SkeinPlugin {
     fn build(&self, app: &mut App) {
         app.add_observer(skein_processing);
 
+        #[cfg(not(target_family = "wasm"))]
         if self.handle_brp {
             app.add_plugins((
                 bevy_remote::RemotePlugin::default().with_method(

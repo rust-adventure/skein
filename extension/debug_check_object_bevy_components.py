@@ -9,7 +9,7 @@ class DebugCheckObjectBevyComponents(bpy.types.Operator):
 
     This can help debug storage and see what data is set for named objects
     """
-    bl_idname = "bevy.debug_check_object_bevy_components" # unique identifier. not specially named
+    bl_idname = "wm.debug_check_object_bevy_components" # unique identifier. "tag" should be
     bl_label = "Check the Skein data on all objects" # Shows up in the UI
     bl_options = {'REGISTER'}
 

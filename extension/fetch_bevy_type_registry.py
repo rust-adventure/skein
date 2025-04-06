@@ -1,6 +1,5 @@
 import inspect
 from pathlib import Path
-import sys
 import bpy # type: ignore
 import json
 import requests # type: ignore
@@ -12,17 +11,15 @@ from .property_groups import hash_over_64, make_property
 
 class FetchBevyTypeRegistry(bpy.types.Operator):
     """Fetch the Bevy type registry via the Bevy Remote Protocol"""
-    bl_idname = "bevy.fetch_type_registry" # unique identifier. not specially named
+    bl_idname = "wm.fetch_type_registry" # unique identifier. not specially named
     bl_label = "Fetch Bevy Type Registry" # Shows up in the UI
     bl_options = {'REGISTER', 'UNDO'} # enable undo (which we might not need)
 
     # execute is called to run the operator
     def execute(self, context):
-        preferences = context.preferences
         debug = False
-
-        if 'unittest' not in sys.modules.keys():
-            debug = preferences.addons[__package__].preferences.debug
+        if __package__ in context.preferences.addons:
+            debug = context.preferences.addons[__package__].preferences.debug
 
         if debug:
             print("\nexecute: FetchBevyTypeRegistry")
@@ -70,11 +67,9 @@ def process_registry(context, registry):
     registry is a dict
     """
 
-    preferences = bpy.context.preferences
-    debug = False        
-
-    if 'unittest' not in sys.modules.keys():
-        debug = preferences.addons[__package__].preferences.debug
+    debug = False
+    if __package__ in context.preferences.addons:
+        debug = context.preferences.addons[__package__].preferences.debug
 
     global_skein = context.window_manager.skein
     skein_property_groups = context.window_manager.skein_property_groups

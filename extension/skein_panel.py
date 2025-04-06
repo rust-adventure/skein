@@ -68,7 +68,7 @@ def draw_generic_panel(context, obj, layout, execute_mode):
         if not registry:
             layout.label(text="Bevy registry data must be loaded to work with component data")
             # TODO: show load registry
-            layout.operator("bevy.fetch_type_registry")
+            layout.operator("wm.fetch_type_registry")
             return
 
         row = layout.row()

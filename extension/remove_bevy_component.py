@@ -6,14 +6,14 @@ import bpy
 # --------------------------------- #
 
 class RemoveBevyComponent(bpy.types.Operator):
-    """Remove a component on the object (for development)"""
+    """Remove a component on the object"""
     bl_idname = "bevy.remove_bevy_component" # unique identifier. not specially named
-    bl_label = "Remove Bevy Component (Dev)" # Shows up in the UI
+    bl_label = "Remove Bevy Component" # Shows up in the UI
     bl_options = {'REGISTER', 'UNDO'} # enable undo (which we might not need)
 
 
     # this has to be set before using operator
-    # op = row.operator("bevy.insert_bevy_component")
+    # op = row.operator("bevy.remove_bevy_component")
     # op.execute_mode = "object"
     execute_mode: bpy.props.EnumProperty(
         items=[("object", "object", ""), ("mesh", "mesh", ""), ("material", "material", "")],

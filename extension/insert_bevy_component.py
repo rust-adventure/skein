@@ -8,9 +8,9 @@ import bpy
 # --------------------------------- #
 
 class InsertBevyComponent(bpy.types.Operator):
-    """Insert a component on the object (for development)"""
+    """Insert a component on the object"""
     bl_idname = "bevy.insert_bevy_component" # unique identifier. not specially named
-    bl_label = "Insert Bevy Component (Dev)" # Shows up in the UI
+    bl_label = "Insert Bevy Component" # Shows up in the UI
     bl_options = {'REGISTER', 'UNDO'} # enable undo (which we might not need)
 
     # this has to be set before using operator
@@ -22,13 +22,21 @@ class InsertBevyComponent(bpy.types.Operator):
 
     # execute is called to run the operator
     def execute(self, context):
-        print("\nexecute: InsertBevyComponent")
+
+        debug = False
+        if __package__ in bpy.context.preferences.addons:
+            debug = bpy.context.preferences.addons[__package__].preferences.debug
+
+        if debug:
+            print("\nexecute: InsertBevyComponent")
+
         obj = None
         if self.execute_mode is None:
             print("execute_mode not set for InsertBevyComponent Operator, can't insert without knowing what to insert on")
             return {'CANCELLED'}
 
-        print("mode: ", self.execute_mode)
+        if debug:
+            print("mode: ", self.execute_mode)
         match self.execute_mode:
             case "object":
                 obj = context.active_object
@@ -47,7 +55,8 @@ class InsertBevyComponent(bpy.types.Operator):
             registry = json.loads(global_skein.registry)
             if list(registry) and registry[selected_component]:
                 data = registry[selected_component]
-                print(data)
+                if debug:
+                    print(data)
 
                 # if we're inserting a marker, there is no data to set
                 # if data["kind"] == "Struct" and "properties" not in data:
@@ -65,7 +74,5 @@ class InsertBevyComponent(bpy.types.Operator):
         else:
             print("no global registry set")
 
-
-        print("execute/end: InsertBevyComponent\n")
         # blender uses strings to indicate when operation is done
         return {'FINISHED'}

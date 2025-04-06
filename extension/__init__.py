@@ -13,7 +13,7 @@ from .gltf_export_extension import glTF_extension_name, extension_is_required, S
 class SkeinAddonPreferences(bpy.types.AddonPreferences):
     # This must match the add-on name, use `__package__`
     # when defining this for add-on extensions or a sub-module of a python package.
-    bl_idname = __name__
+    bl_idname = __package__
 
     debug: bpy.props.BoolProperty(
         name="Debug",
@@ -21,7 +21,6 @@ class SkeinAddonPreferences(bpy.types.AddonPreferences):
         default=False
     ) # type: ignore
     def draw(self, context):
-        print(__name__)
         layout = self.layout
         layout.label(text="Skein Preferences")
         layout.prop(self, "debug")
@@ -41,17 +40,24 @@ def on_select_new_component(self, context):
 
     currently just for debugging. you can infer what fields should be shown in the ui by reading the registry data.
     """
-    print("\n###### on_select_new_component")
-    selected_component = context.window_manager.selected_component;
-    print("\nselected_component: ", selected_component)
-    global_skein = context.window_manager.skein
-    if global_skein.registry:
-        data = json.loads(global_skein.registry)
-        if selected_component in data and len(data.keys()) > 0:
-            print("\n", json.dumps(data[selected_component], indent=4))
-        else:
-            print("\nno data in registry")
-    print("\n######\n")
+
+    debug = False
+    if __package__ in bpy.context.preferences.addons:
+        debug = bpy.context.preferences.addons[__package__].preferences.debug
+
+    if debug:
+        print("\n###### on_select_new_component")
+        selected_component = context.window_manager.selected_component;
+
+        print("\nselected_component: ", selected_component)
+        global_skein = context.window_manager.skein
+        if global_skein.registry:
+            data = json.loads(global_skein.registry)
+            if selected_component in data and len(data.keys()) > 0:
+                print("\n", json.dumps(data[selected_component], indent=4))
+            else:
+                print("\nno data in registry")
+        print("\n######\n")
 
 # --------------------------------- #
 #  a hook to run when opening a     #
@@ -160,8 +166,3 @@ def unregister():
     # Use the following 2 lines to unregister the UI for this hook
     from io_scene_gltf2 import exporter_extension_layout_draw # type: ignore
     del exporter_extension_layout_draw['Example glTF Extension'] # Make sure to use the same name in register()
-
-# This is for testing, which allows running this script directly from Blender's Text editor
-# It enables running this script without installing
-if __name__ == "__main__":
-    register()

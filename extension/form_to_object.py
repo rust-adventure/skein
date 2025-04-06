@@ -60,7 +60,6 @@ def get_data_from_active_editor(context, context_key):
     # properly indicating that a Vec3 has x,y,z fields. BUT the serialization
     # is overridden and actually needs to be an array of 3 values
     try:
-        print("type_override", obj.type_override)
         match obj.type_override:
             case "glam::Vec2" | "glam::DVec2" | "glam::I8Vec2" | "glam::U8Vec2" | "glam::I16Vec2" | "glam::U16Vec2" | "glam::IVec2" | "glam::UVec2" | "glam::I64Vec2" | "glam::U64Vec2" | "glam::BVec2":
                 return [

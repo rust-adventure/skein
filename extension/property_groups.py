@@ -1,6 +1,5 @@
 import base64
 import hashlib
-import sys
 import bpy # type: ignore
 import re
 import inspect
@@ -54,11 +53,9 @@ def make_property(
     @param: override_component An optional value that is used when you have access to the registry type information but that registry type information is not directly accessible by registry[type_path]. This happens in complex enums. (default None)
     """
 
-    'unittest' in sys.modules.keys()
-    preferences = bpy.context.preferences
     debug = False
-    if 'unittest' not in sys.modules.keys():
-        debug = preferences.addons[__package__].preferences.debug
+    if __package__ in bpy.context.preferences.addons:
+        debug = bpy.context.preferences.addons[__package__].preferences.debug
 
     type_path = original_type_path.removeprefix("#/$defs/")
     component = override_component if override_component != None else registry[type_path]
@@ -76,10 +73,12 @@ def make_property(
         print(component)
 
     if "kind" not in component:
-        print("kind not in ", type_path, component)
+        if debug:
+            print("kind not in ", type_path, component)
     match component["kind"]:
         case "Array":
-            print("Array is unimplemented in make_property: ", type_path)
+            if debug:
+                print("Array is unimplemented in make_property: ", type_path)
             return
         case "Enum":
             if debug:
@@ -169,16 +168,20 @@ def make_property(
                     # return the type we just constructed
                     return skein_property_groups[type_path]
                 case _:
-                    print("unknown Enum type: ", component["type"], "\n  ", type_path)
+                    if debug:
+                        print("unknown Enum type: ", component["type"], "\n  ", type_path)
                     return
         case "List":
-            print("List is unimplemented in make_property: ", type_path)
+            if debug:
+                print("List is unimplemented in make_property: ", type_path)
             return
         case "Map":
-            print("Map is unimplemented in make_property: ", type_path)
+            if debug:
+                print("Map is unimplemented in make_property: ", type_path)
             return
         case "Set":
-            print("Set is unimplemented in make_property: ", type_path)
+            if debug:
+                print("Set is unimplemented in make_property: ", type_path)
             return
         case "Struct":
             annotations = {}
@@ -228,7 +231,8 @@ def make_property(
                 )
                 return skein_property_groups[type_path]
             else:
-                print("Tuple is unimplemented in make_property for lengths longer than 1 element: ", type_path)
+                if debug:
+                    print("Tuple is unimplemented in make_property for lengths longer than 1 element: ", type_path)
                 return
         case "TupleStruct":
             # single element tuple struct is a special case
@@ -245,7 +249,8 @@ def make_property(
                 )
                 return skein_property_groups[type_path]
             else:
-                print("TupleStruct is unimplemented in make_property for lengths longer than 1 element: ", type_path)
+                if debug:
+                    print("TupleStruct is unimplemented in make_property for lengths longer than 1 element: ", type_path)
                 return
         case "Value":
             # print("- component[type]:  ", component["type"])
@@ -304,7 +309,8 @@ def make_property(
                                 override={"LIBRARY_OVERRIDABLE"},
                         )
                         case _:
-                            print("unknown uint type: ", type_path)
+                            if debug:
+                                print("unknown uint type: ", type_path)
                             return bpy.props.IntProperty(
                                 min=0,
                                 override={"LIBRARY_OVERRIDABLE"}
@@ -338,7 +344,8 @@ def make_property(
                                 override={"LIBRARY_OVERRIDABLE"},
                             )
                         case _:
-                            print("unknown iint type: ", type_path)
+                            if debug:
+                                print("unknown iint type: ", type_path)
                             return bpy.props.IntProperty(
                                 min=0,
                                 override={"LIBRARY_OVERRIDABLE"},
@@ -461,8 +468,8 @@ def make_property(
 
                             # registering the class is required for certain Blender
                             # functionality to work.
-                            # if debug:
-                            print("REGISTERING: " + type_path)
+                            if debug:
+                                print("REGISTERING: " + type_path)
                             bpy.utils.register_class(
                                 skein_property_groups[type_path]
                             )
@@ -470,15 +477,15 @@ def make_property(
                             # return the type we just constructed
                             return skein_property_groups[type_path]
                         case _:
-                            # if debug:
-                            print("unhandled `Value` of `object` type: ", component["typePath"], "\n  ", type_path)
+                            if debug:
+                                print("unhandled `Value` of `object` type: ", component["typePath"], "\n  ", type_path)
                             return
                 case _:
-                    # if debug:
-                    print("unhandled type: ", component["type"])
+                    if debug:
+                        print("unhandled type: ", component["type"])
                     return
         # If an exact match is not confirmed, this last case will be used if provided
         case _:
-            # if debug:
-            print("unhandled kind:", component["kind"], "\n  ", type_path)
+            if debug:
+                print("unhandled kind:", component["kind"], "\n  ", type_path)
             return "Something's wrong with the world"

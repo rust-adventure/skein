@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+- [Support type_paths > 63 characters long](https://github.com/rust-adventure/skein/issues/1), like `avian3d::dynamics::rigid_body::mass_properties::components::Mass`
+
+## [0.1.3] - 2025-03-24
+
+- [Implement glam's special serialization](https://github.com/rust-adventure/skein/issues/4) (arrays instead of objects for Vec2/3/4/affine/matrix)
+
 ## [0.1.2] - 2025-03-24
 
 - [Correctly serialize nested enum values](https://github.com/rust-adventure/skein/issues/6)
@@ -20,7 +26,8 @@ All notable changes to this project will be documented in this file.
 
 Initial Release of Blender Addon
 
-[unreleased]: https://github.com/rust-adventure/skein/compare/blender-v0.1.2...HEAD
-[0.1.2]: https://github.com/rust-adventure/skein/compare/blender-v0.1.0...blender-v0.1.1
+[unreleased]: https://github.com/rust-adventure/skein/compare/blender-v0.1.3...HEAD
+[0.1.3]: https://github.com/rust-adventure/skein/compare/blender-v0.1.3...blender-v0.1.3
+[0.1.2]: https://github.com/rust-adventure/skein/compare/blender-v0.1.1...blender-v0.1.2
 [0.1.1]: https://github.com/rust-adventure/skein/compare/blender-v0.1.0...blender-v0.1.1
 [0.1.0]: https://github.com/rust-adventure/skein/releases/tag/blender-v0.1.0

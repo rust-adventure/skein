@@ -11,12 +11,15 @@ readme = "README.md"
 categories = ["games", "game-development"]
 keywords = ["bevy"]
 exclude = [
+    "art/",
     "assets/**/*",
     "test-project/**/*",
     ".github/**/*",
     "extension/**/*",
     "Justfile",
     "DESIGN.md",
+    "test-components/",
+    "tools/",
 ]
 
 [dependencies]

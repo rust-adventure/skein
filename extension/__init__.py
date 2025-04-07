@@ -2,7 +2,7 @@ import bpy # type: ignore
 import json
 from bpy.app.handlers import persistent # type: ignore
 from .insert_bevy_component import InsertBevyComponent
-from .fetch_bevy_type_registry import FetchBevyTypeRegistry, brp_fetch_registry_schema, process_registry
+from .fetch_bevy_type_registry import FetchBevyTypeRegistry, ReloadSkeinRegistryJson, brp_fetch_registry_schema, process_registry
 from .remove_bevy_component import RemoveBevyComponent
 from .debug_check_object_bevy_components import DebugCheckObjectBevyComponents
 from .property_groups import ComponentData
@@ -82,6 +82,7 @@ def on_post_blend_file_load(blend_file):
 def menu_func(self, context):
     self.layout.operator(FetchBevyTypeRegistry.bl_idname)
     self.layout.operator(DebugCheckObjectBevyComponents.bl_idname)
+    self.layout.operator(ReloadSkeinRegistryJson.bl_idname)
 
 def register():
     bpy.utils.register_class(SkeinAddonPreferences)
@@ -120,6 +121,7 @@ def register():
 
     # operations
     bpy.utils.register_class(FetchBevyTypeRegistry)
+    bpy.utils.register_class(ReloadSkeinRegistryJson)
     bpy.utils.register_class(InsertBevyComponent)
     bpy.utils.register_class(DebugCheckObjectBevyComponents)
     bpy.utils.register_class(RemoveBevyComponent)
@@ -151,6 +153,7 @@ def unregister():
     bpy.utils.unregister_class(ComponentData)
     # operations
     bpy.utils.unregister_class(FetchBevyTypeRegistry)
+    bpy.utils.unregister_class(ReloadSkeinRegistryJson)
     bpy.utils.unregister_class(InsertBevyComponent)
     bpy.utils.unregister_class(DebugCheckObjectBevyComponents)
     bpy.utils.unregister_class(RemoveBevyComponent)

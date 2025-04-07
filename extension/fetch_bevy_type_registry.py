@@ -62,6 +62,24 @@ def brp_fetch_registry_schema(host="http://127.0.0.1", port=15702):
     brp_response = r.json()
     return brp_response
 
+class ReloadSkeinRegistryJson(bpy.types.Operator):
+    """Reload the registry information from skein-registry.json"""
+    bl_idname = "wm.reload_skein_registry" # unique identifier. not specially named
+    bl_label = "Reload Skein Registry" # Shows up in the UI
+    bl_options = {'REGISTER', 'UNDO'} # enable undo (which we might not need)
+
+    # execute is called to run the operator
+    def execute(self, context):
+        if "skein-registry.json" in bpy.data.texts:
+            embedded_registry = json.loads(bpy.data.texts["skein-registry.json"].as_string())
+            process_registry(context, embedded_registry)
+
+        else:
+            self.report({"ERROR"}, "A skein-registry.json text block with configuration was not found.")
+            return {'CANCELLED'}
+
+        return {'FINISHED'}
+
 def process_registry(context, registry):
     """
     registry is a dict

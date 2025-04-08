@@ -39,7 +39,7 @@ pub struct SkeinPlugin {
     /// plugins.
     ///
     /// use `false` if you want to handle setting up BRP yourself
-    handle_brp: bool,
+    pub handle_brp: bool,
 }
 
 impl Default for SkeinPlugin {

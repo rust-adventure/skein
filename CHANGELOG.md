@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 - [Support type_paths > 63 characters long](https://github.com/rust-adventure/skein/issues/1), like `avian3d::dynamics::rigid_body::mass_properties::components::Mass`
+- implement default values for Maps and Lists, which will export as {} and []. This enables some types, like ColliderConstructorHierarcy from Avian, which have HashMaps that aren't used but need to be handled.
+- Many glam types are now explicitly handled in the UI, making them easier to associate with headings and inner properties, like knowing an x,y and z are related.
+-
+
+### Dev changes
+
+- touch all PropertyGroups when inserting new data, as this is required to make data that is uninitialized accessible to the first render. We use introspection on the python types, so the values must be forcibly initialized.
+- rewrite implementation of UI rendering. The implementation is now simpler and uses fewer sources of information.
 
 ## [0.1.3] - 2025-03-24
 

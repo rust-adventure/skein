@@ -113,12 +113,20 @@ def gather_skein_two(source, sink):
             type_path = component["selected_type_path"]
 
             if inspect.isclass(skein_property_groups[type_path]):
-                value = get_data_from_active_editor(
-                    component,
-                    hash_over_64(type_path),
-                )
-                obj[type_path] = value
-                objs.append(obj)
+                try:
+                    match skein_property_groups[type_path].force_default:
+                        case "object":
+                            obj[type_path] = {}
+                        case "list":
+                            obj[type_path] = []
+                    objs.append(obj)
+                except AttributeError:
+                    value = get_data_from_active_editor(
+                        component,
+                        hash_over_64(type_path),
+                    )
+                    obj[type_path] = value
+                    objs.append(obj)
             else:
                 # if the component is a tuple struct, etc
                 # retrieve the value directly instead of

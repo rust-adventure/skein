@@ -58,11 +58,6 @@ class ComponentPropertyTests(unittest.TestCase):
 
                     try:
                         if inspect.isclass(bpy.context.window_manager.skein_property_groups[container.selected_type_path]):
-                            # load-bearing getattrs
-                            # without this, the PointerProperty values
-                            # don't actually get initialized
-                            touch_all_fields(container, maybe_hashed_type_path)
-
                             data = get_data_from_active_editor(
                                 container,
                                 maybe_hashed_type_path
@@ -79,24 +74,6 @@ class ComponentPropertyTests(unittest.TestCase):
                         # context so we have to clean up shared 
                         # resources ourselves
                         bpy.ops.bevy.remove_bevy_component()
-
-# getattr on anything that is a PointerProperty
-#
-# blender requires us to touch all fields 
-# to be able to read the values, otherwise they
-# won't be initialized. This usually happens 
-# when displaying them in the UI with
-# layout.prop/render_props but we need to hack it
-# manually here for tests
-def touch_all_fields(context, key):
-    try:
-        obj = getattr(context, key)
-        annotations = getattr(obj, "__annotations__")
-        for key, value in annotations.items():
-            if "PointerProperty" == value.function.__name__:
-                touch_all_fields(obj, key)
-    except:
-        pass
 
 if __name__ == '__main__':
     import sys

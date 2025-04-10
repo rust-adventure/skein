@@ -2,6 +2,8 @@ import inspect
 import json
 import bpy
 
+from .property_groups import hash_over_64
+
 # --------------------------------- #
 #  Add hardcoded test component     #
 #  to object                        #
@@ -65,6 +67,7 @@ class InsertBevyComponent(bpy.types.Operator):
                 component_two = obj.skein_two.add()
                 component_two.name = data["shortPath"]
                 component_two.selected_type_path = selected_component
+                touch_all_fields(component_two, hash_over_64(component_two.selected_type_path))
                 # If we inserted a new component, update the 
                 # active_component_index to show the right editor
                 # for the newly inserted component
@@ -76,3 +79,13 @@ class InsertBevyComponent(bpy.types.Operator):
 
         # blender uses strings to indicate when operation is done
         return {'FINISHED'}
+    
+def touch_all_fields(context, key):
+    try:
+        obj = getattr(context, key)
+        annotations = getattr(obj, "__annotations__")
+        for key, value in annotations.items():
+            if "PointerProperty" == value.function.__name__:
+                touch_all_fields(obj, key)
+    except:
+        pass

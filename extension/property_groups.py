@@ -60,6 +60,9 @@ def make_property(
     type_path = original_type_path.removeprefix("#/$defs/")
     component = override_component if override_component != None else registry[type_path]
 
+    if debug:
+        print(type_path)
+
     if type_path in skein_property_groups:
         # The type was already constructed and can be 
         # returned from the "cache" instead of being
@@ -76,6 +79,7 @@ def make_property(
         if debug:
             print("kind not in ", type_path, component)
     match component["kind"]:
+        # Array is fixed-size arrays
         case "Array":
             if debug:
                 print("Array is unimplemented in make_property: ", type_path)
@@ -172,13 +176,28 @@ def make_property(
                         print("unknown Enum type: ", component["type"], "\n  ", type_path)
                     return
         case "List":
-            if debug:
-                print("List is unimplemented in make_property: ", type_path)
-            return
+            # Vecs/Lists are not well handled yet
+            skein_property_groups[type_path] = type(hash_type_path(capitalize_path(type_path)), (ComponentData,), {
+                '__annotations__': {},
+                # force_default bypasses recursion and forces
+                # an empty data structure in the output
+                "force_default": "list"
+            })
+            bpy.utils.register_class(
+                skein_property_groups[type_path]
+            )
+            return skein_property_groups[type_path]
         case "Map":
-            if debug:
-                print("Map is unimplemented in make_property: ", type_path)
-            return
+            skein_property_groups[type_path] = type(hash_type_path(capitalize_path(type_path)), (ComponentData,), {
+                '__annotations__': {},
+                # force_default bypasses recursion and forces
+                # an empty data structure in the output
+                "force_default": "object"
+            })
+            bpy.utils.register_class(
+                skein_property_groups[type_path]
+            )
+            return skein_property_groups[type_path]
         case "Set":
             if debug:
                 print("Set is unimplemented in make_property: ", type_path)

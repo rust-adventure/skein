@@ -8,7 +8,7 @@ The [Bevy Remote Protocol](https://docs.rs/bevy/latest/bevy/remote/index.html) (
 
 Skein uses **BRP** over HTTP to fetch the Bevy registry of type information for your Bevy application. This is the information that powers the ability to select Components and insert them onto Objects in the Blender addon.
 
-Skein will set up the remote plugin and an http server for you (or you can do it yourself). The Blender addon will then fetch this information any time you run the `Fetch Bevy Type Registry` Operator.
+Skein will set up the remote plugin and an HTTP server for you (or you can do it yourself). The Blender addon will then fetch this information any time you run the `Fetch Bevy Type Registry` Operator.
 
 ## An Example Response
 

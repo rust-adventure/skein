@@ -20,11 +20,11 @@ Once you choose a Component's type_path, the component must be inserted using th
 
 ![Inserted Component](/images/the-blender-addon/inserted-component.avif)
 
-After inserting Components, Selecting any component in the list allows you to edit the relevant values, if there are any.
+After inserting Components, selecting any component in the list allows you to edit the relevant values, if there are any.
 
 ![Editing Component](/images/the-blender-addon/editing-component.avif)
 
-Unit stucts, such as Marker components, will show a message stating that there isn't any data to modify.
+Unit structs, such as Marker components, will show a message stating that there isn't any data to modify.
 
 ![Marker Components](/images/the-blender-addon/marker-components.avif)
 

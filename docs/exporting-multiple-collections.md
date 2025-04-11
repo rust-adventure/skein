@@ -12,7 +12,7 @@ For this Blender has introduced [Collection Exporters](https://docs.blender.org/
 
 ### Exporting a Collection
 
-Lets say we have a set of Collections that we'd like to place in the world ourselves, programatically, at arbitrary times in our application's lifecycle. Maybe we're using them for procedual generation. Here's a **Gate** and a **TreasureChest**.
+Let's say we have a set of Collections that we'd like to place in the world ourselves, programatically, at arbitrary times in our application's lifecycle. Maybe we're using them for procedual generation. Here's a **Gate** and a **TreasureChest**.
 
 ![two collections](/images/the-blender-addon/two-collections.avif)
 

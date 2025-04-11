@@ -3,16 +3,17 @@ from pathlib import Path
 import bpy # type: ignore
 import json
 import requests # type: ignore
+import os
 from .property_groups import hash_over_64, make_property
 # --------------------------------- #
 #  Fetch and store the bevy type    #
 #  registry, for panel display      #
 # --------------------------------- #
 
-class FetchBevyTypeRegistry(bpy.types.Operator):
-    """Fetch the Bevy type registry via the Bevy Remote Protocol"""
+class FetchRemoteTypeRegistry(bpy.types.Operator):
+    """Fetch a remote type registry from a compatible endpoint"""
     bl_idname = "wm.fetch_type_registry" # unique identifier. not specially named
-    bl_label = "Fetch Bevy Type Registry" # Shows up in the UI
+    bl_label = "Fetch a Remote Type Registry" # Shows up in the UI
     bl_options = {'REGISTER', 'UNDO'} # enable undo (which we might not need)
 
     # execute is called to run the operator
@@ -22,7 +23,7 @@ class FetchBevyTypeRegistry(bpy.types.Operator):
             debug = context.preferences.addons[__package__].preferences.debug
 
         if debug:
-            print("\nexecute: FetchBevyTypeRegistry")
+            print("\nexecute: FetchRemoteTypeRegistry")
 
         brp_response = None
 
@@ -63,20 +64,31 @@ def brp_fetch_registry_schema(host="http://127.0.0.1", port=15702):
     return brp_response
 
 class ReloadSkeinRegistryJson(bpy.types.Operator):
-    """Reload the registry information from skein-registry.json"""
+    """Reload the registry information from skein-registry.json and re-process it"""
     bl_idname = "wm.reload_skein_registry" # unique identifier. not specially named
-    bl_label = "Reload Skein Registry" # Shows up in the UI
+    bl_label = "Reload Local Skein Registry" # Shows up in the UI
     bl_options = {'REGISTER', 'UNDO'} # enable undo (which we might not need)
 
     # execute is called to run the operator
     def execute(self, context):
+        # if a skein-registry.json was already created, use it as the source of truth
         if "skein-registry.json" in bpy.data.texts:
             embedded_registry = json.loads(bpy.data.texts["skein-registry.json"].as_string())
             process_registry(context, embedded_registry)
-
         else:
-            self.report({"ERROR"}, "A skein-registry.json text block with configuration was not found.")
-            return {'CANCELLED'}
+            # if we're trying to reload the registry file, and we haven't created one yet
+            # insert some demo data, which in turn means that the file will be created and
+            # is easier to access and modify by users who wish to do so.
+            dirname = os.path.dirname(__file__)
+            filename = os.path.join(dirname, 'default_registry.json')
+            with open(filename) as default_registry_file:
+                data = json.loads(default_registry_file.read())
+                embedded_registry = bpy.data.texts.new("skein-registry.json")
+                embedded_registry.write(json.dumps(data, indent=4))
+                # read the file we just wrote, so that this code doesn't need to be updated in
+                # the future. If its in the skein-registry.json, then it will be processed
+                embedded_registry = json.loads(bpy.data.texts["skein-registry.json"].as_string())
+                process_registry(context, embedded_registry)
 
         return {'FINISHED'}
 
@@ -100,14 +112,44 @@ def process_registry(context, registry):
     # represents the hypothetical variants that account
     # for every possible component. These annotations
     # gain a field for every component type_path
+    #
+    # this approach is required because Blender's implementation
+    # of Python and Properties *does not* include modern language
+    # features like ADTs (aka: enums that can carry data).
     fake_component_enum_annotations = {
         "name": bpy.props.StringProperty(name="Name", default="Unknown"),
         "selected_type_path": bpy.props.StringProperty(name="Selected Type Path", default="Unknown"),
     }
 
+    # clear the list we use as a component type selector for the UI
+    # because we are about to re-fill it.
     global_skein.components.clear()
+    # unregister all of the PropertyGroups that were created the
+    # last time we processed a registry schema
+    for type_path, property_group in skein_property_groups.items():
+        try:
+            bpy.utils.unregister_class(property_group)
+        except:
+            # unregister_class is recursive and we re-use classes
+            # in many cases. So unregistering one class that uses 
+            # another causes that class to *already* be unregistered
+            # when we go to unregister it directly.
+            pass
+
+    # Clear the list that held the PropertyGroups because we are about
+    # to re-fill it.
     skein_property_groups.clear()
+
+    # for each user-defined type, make a PropertyGroup that represents
+    # that type. These will be used to build out user-accessible forms
+    # allowing users to edit their structured data
     for type_path, value in registry.items():
+        # TODO: for debugging purposes, it can be useful to filter
+        # the schema being processed without modifying the schema 
+        # file. Only types that pass this test will be processed.
+        # This should become an addon preference to allow users
+        # to gain information should they want to
+        #
         # if "avian3d" not in type_path:
         #     continue
         try:
@@ -152,6 +194,11 @@ def process_registry(context, registry):
         '__annotations__': fake_component_enum_annotations,
     })
 
+    # adding the container to the `skein_property_groups` list
+    # means it will get unregistered alongside other data.
+    # We don't rely on this list being "only component types"
+    # so adding to it is fine
+    skein_property_groups["skein_internal_container"] = component_container
     bpy.utils.register_class(component_container)
 
     # new component list data. Must be set to read component data from .blend file

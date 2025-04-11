@@ -31,6 +31,7 @@ serde_json = "1.0"
 tracing = "0.1"
 
 [dev-dependencies]
+# bevy = { version = "0.16.0-rc.3", features = ["jpeg", "experimental_pbr_pcss"] }
 bevy = "0.16.0-rc.3"
 serde = { version = "1.0", features = ["derive"] }
 test-components = { path = "./test-components" }

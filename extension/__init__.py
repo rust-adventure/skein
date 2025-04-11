@@ -2,7 +2,7 @@ import bpy # type: ignore
 import json
 from bpy.app.handlers import persistent # type: ignore
 from .insert_bevy_component import InsertBevyComponent
-from .fetch_bevy_type_registry import FetchBevyTypeRegistry, ReloadSkeinRegistryJson, brp_fetch_registry_schema, process_registry
+from .fetch_bevy_type_registry import FetchRemoteTypeRegistry, ReloadSkeinRegistryJson, process_registry
 from .remove_bevy_component import RemoveBevyComponent
 from .debug_check_object_bevy_components import DebugCheckObjectBevyComponents
 from .property_groups import ComponentData
@@ -67,12 +67,7 @@ def on_select_new_component(self, context):
 @persistent
 def on_post_blend_file_load(blend_file):
     """blend file is empty if its the startup scene"""
-    if "skein-registry.json" in bpy.data.texts:
-        # read the registry file embedded in the .blend file
-        # and try to parse it
-        content = bpy.data.texts["skein-registry.json"].as_string()
-        registry = json.loads(content)
-        process_registry(bpy.context, registry)
+    bpy.ops.wm.reload_skein_registry()
 
 # --------------------------------- #
 #  Registration and unregistration  #
@@ -80,8 +75,8 @@ def on_post_blend_file_load(blend_file):
 
 # add to the Blender menus
 def menu_func(self, context):
-    self.layout.operator(FetchBevyTypeRegistry.bl_idname)
-    self.layout.operator(DebugCheckObjectBevyComponents.bl_idname)
+    self.layout.operator(FetchRemoteTypeRegistry.bl_idname)
+    # self.layout.operator(DebugCheckObjectBevyComponents.bl_idname)
     self.layout.operator(ReloadSkeinRegistryJson.bl_idname)
 
 def register():
@@ -120,7 +115,7 @@ def register():
     bpy.types.WindowManager.skein_property_groups = {}
 
     # operations
-    bpy.utils.register_class(FetchBevyTypeRegistry)
+    bpy.utils.register_class(FetchRemoteTypeRegistry)
     bpy.utils.register_class(ReloadSkeinRegistryJson)
     bpy.utils.register_class(InsertBevyComponent)
     bpy.utils.register_class(DebugCheckObjectBevyComponents)
@@ -144,6 +139,26 @@ def register():
     exporter_extension_layout_draw['Example glTF Extension'] = draw_export # Make sure to use the same name in unregister()
 
 def unregister():
+    global_skein = bpy.context.window_manager.skein
+    skein_property_groups = bpy.context.window_manager.skein_property_groups
+
+    # clear the list we use as a component type selector for the UI
+    global_skein.components.clear()
+    # unregister all of the PropertyGroups that were created the
+    # last time we processed a registry schema
+    for type_path, property_group in skein_property_groups.items():
+        try:
+            bpy.utils.unregister_class(property_group)
+        except:
+            # unregister_class is recursive and we re-use classes
+            # in many cases. So unregistering one class that uses 
+            # another causes that class to *already* be unregistered
+            # when we go to unregister it directly.
+            pass
+
+    # Clear the list that held the PropertyGroups
+    skein_property_groups.clear()
+
     bpy.utils.unregister_class(SkeinAddonPreferences)
     # data types that are stored on the window because blender
     # doesn't seem to have any other good way of storing data
@@ -152,7 +167,7 @@ def unregister():
     bpy.utils.unregister_class(ComponentTypeData)
     bpy.utils.unregister_class(ComponentData)
     # operations
-    bpy.utils.unregister_class(FetchBevyTypeRegistry)
+    bpy.utils.unregister_class(FetchRemoteTypeRegistry)
     bpy.utils.unregister_class(ReloadSkeinRegistryJson)
     bpy.utils.unregister_class(InsertBevyComponent)
     bpy.utils.unregister_class(DebugCheckObjectBevyComponents)

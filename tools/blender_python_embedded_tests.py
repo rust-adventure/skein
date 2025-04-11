@@ -82,8 +82,15 @@ if __name__ == '__main__':
     breg()
 
     content = ""
-    with open("registry.json") as my_file:
-        content = json.loads(my_file.read())
+    try:
+        registry_file = open("registry.json")
+    except OSError:
+        print("registry.json file not found. This is created from the component_tests example.")
+        print("cargo run --example component_tests")
+        print("nu ./tools/fetch-types.nu")
+
+    with registry_file:
+        content = json.loads(registry_file.read())
 
     process_registry(bpy.context, content)
 

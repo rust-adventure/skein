@@ -66,9 +66,20 @@ def draw_generic_panel(context, obj, layout, execute_mode):
         skein_property_groups = context.window_manager.skein_property_groups
 
         if not registry:
-            layout.label(text="Bevy registry data must be loaded to work with component data")
-            # TODO: show load registry
-            layout.operator("wm.fetch_type_registry")
+            import textwrap 
+
+            description = "The skein-registry.json text block does not exist. You can create it by fetching from a remote location or by creating the file locally."
+            wrapper = textwrap.TextWrapper(width=50)
+            text_lines = wrapper.wrap(text=description)
+            
+            for text in text_lines:
+                row = layout.row(align = True)
+                row.alignment = 'EXPAND'
+                row.label(text=text)
+
+            row = layout.row(align=True)
+            row.operator("wm.fetch_type_registry", text="Remote")
+            row.operator("wm.reload_skein_registry", text="Local")
             return
 
         row = layout.row()

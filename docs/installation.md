@@ -14,7 +14,7 @@ There are two pieces to Skein:
 ## The Bevy Crate
 
 ```shell
-cargo install bevy_skein
+cargo add bevy_skein
 ```
 
 Add the plugin to your application. Using `default` sets `handle_brp` to `true` which lets Skein set up the appropriate BRP configuration. If you want more control, set this to `false` and set up the `RemotePlugin` and `RemoteHttpPlugin` yourself. Skein currently only uses the default ports.

@@ -1,18 +1,13 @@
 use app::{
-    pages::{
-        blog_post, doc_post,
-    },
+    pages::{blog_post, doc_post},
     shell, NavItem, NavLink, NavigationItems, SiteName,
 };
 use bevy_ecs::system::EntityCommands;
 use cinnog::{
     default_bundle_from_path,
     generator::Generator,
-    loaders::{
-        markdown::{
-            ConvertMarkdownToHtml, MarkdownDataLayer,
-        },
-        ron::RonDataLayer,
+    loaders::markdown::{
+        ConvertMarkdownToHtml, MarkdownDataLayer,
     },
     Ingest,
 };
@@ -59,7 +54,6 @@ async fn main() -> io::Result<()> {
                     title: "Bevy Remote Protocol",
                     href: "/docs/bevy-remote-protocol",
                 },
-             
                 NavLink {
                     title: "Using Blender Drivers",
                     href: "/docs/using-blender-drivers",
@@ -79,25 +73,42 @@ async fn main() -> io::Result<()> {
             ],
         },
         NavItem {
-            title: "Use Cases (coming soon)",
+            title: "Use Cases",
             links: vec![
                 // NavLink {
-                //     title: "Build a Level",
+                //     title: "Build a Level (coming soon)",
                 //     href: "/docs/build-a-level",
                 // },
+                NavLink {
+                    title: "Mark and Modify Blender Objects",
+                    href: "/docs/mark-and-modify-blender-objects",
+                },
+                NavLink {
+                    title: "Replace a Blender Material",
+                    href: "/docs/replace-a-blender-material",
+                },
                 // NavLink {
-                //     title: "Replace a Blender Material",
-                //     href: "/docs/replace-a-blender-material",
-                // },
-                // NavLink {
-                //     title: "Sync Cube Size to Avian Collider",
+                //     title: "Sync Cube Size to Avian Collider (coming soon)",
                 //     href: "/docs/sync-cube-size-to-avian-collider",
                 // },
-                // NavLink {
-                //     title: "Exporting Materials to Files",
-                //     href: "/docs/exporting-materials-to-files",
-                // },
+                // vleue_navigator pathfinding
+                // networking example server/client
+                // bevy_hanabi integration (Spawners, etc)
+                // light baking examples
             ],
+        },
+        NavItem {
+            title: "Use Cases (Advanced)",
+            links: vec![
+                NavLink {
+                    title: "Using sub-assets",
+                    href: "/docs/using-sub-assets",
+                },
+                NavLink {
+                    title: "Exporting Materials to Files",
+                    href: "/docs/exporting-materials-to-files",
+                },
+            ]
         },
         NavItem {
             title: "Contributing",
@@ -120,6 +131,15 @@ async fn main() -> io::Result<()> {
                 },
             ],
         },
+        NavItem {
+            title: "FAQ",
+            links: vec![
+                NavLink {
+                    title: "Compared to Blenvy",
+                    href: "/docs/compared-to-blenvy",
+                },
+            ]
+        }
     ];
 
     Generator::new()

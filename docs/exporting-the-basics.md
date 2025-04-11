@@ -18,7 +18,7 @@ In the file menu choose `gltf` from the `Export` menu
 
 ![Export glTF](/images/the-blender-addon/export-menu.avif)
 
-If you want to look at the output, the pick `.gltf`. For production you'll want `.glb`.
+If you want to look at the output, then pick `.gltf`. For production you'll want `.glb`.
 
 ![glTF or glb](/images/the-blender-addon/glb-or-gltf.avif)
 

@@ -39,7 +39,7 @@ def get_data_from_active_editor(context, context_key):
             # If the enum variant name doesn't exist in the fields,
             # then we have a "unit variant" and need to return
             # the variant value as a string
-            case value if value not in obj:
+            case value if not hasattr(obj, value):
                 return value
             # return an object where the key is the enum variant name
             # and the value is the recursed value

@@ -11,7 +11,7 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(SCRIPT_DIR))
 
 from extension import register as breg, unregister as bunreg
-from extension.fetch_bevy_type_registry import process_registry
+from extension.op_registry_loading import process_registry
 from extension.form_to_object import get_data_from_active_editor
 from extension.property_groups import hash_over_64
 
@@ -23,7 +23,7 @@ class ComponentPropertyTests(unittest.TestCase):
     def test_linear_velocity(self):
 
         bpy.context.window_manager.selected_component = "test_components::LinearVelocity";
-        bpy.ops.bevy.insert_bevy_component()
+        bpy.ops.object.insert_component()
 
         container = bpy.context.active_object.skein_two[0]
 
@@ -38,7 +38,7 @@ class ComponentPropertyTests(unittest.TestCase):
         )
 
         self.assertEqual(data, [2.0, 0.0, 0.0])
-        bpy.ops.bevy.remove_bevy_component()
+        bpy.ops.object.remove_component()
 
     def test_snapshots(self):
         self.maxDiff = None
@@ -50,7 +50,7 @@ class ComponentPropertyTests(unittest.TestCase):
                 for type_path, value in snapshot.items():
 
                     bpy.context.window_manager.selected_component = type_path;
-                    bpy.ops.bevy.insert_bevy_component()
+                    bpy.ops.object.insert_component()
 
                     maybe_hashed_type_path = hash_over_64(type_path)
 
@@ -73,7 +73,7 @@ class ComponentPropertyTests(unittest.TestCase):
                         # we're working in a headless blender
                         # context so we have to clean up shared 
                         # resources ourselves
-                        bpy.ops.bevy.remove_bevy_component()
+                        bpy.ops.object.remove_component()
 
 if __name__ == '__main__':
     import sys

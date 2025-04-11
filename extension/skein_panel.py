@@ -7,7 +7,7 @@ from .property_groups import hash_over_64
 # ---------------------------------- #
 #  Skein Panel for adding components #
 #  This shows in the Properties      #
-#  object tab.
+#  tabs for the relevant objects     #
 # ---------------------------------- #
 
 class SkeinPanelObject(bpy.types.Panel):
@@ -18,10 +18,13 @@ class SkeinPanelObject(bpy.types.Panel):
     bl_region_type = 'WINDOW'
     bl_context = 'object'
 
+    @classmethod
+    def poll(cls, context):
+        return bpy.ops.object.insert_component.poll()
+
     def draw(self, context):
         obj = context.object
-        layout = self.layout
-        draw_generic_panel(context, obj, layout, "object")
+        draw_generic_panel(context, obj, self.layout, "object")
 
 class SkeinPanelMesh(bpy.types.Panel):
     """Creates a Panel in the Object Properties Panel for a mesh"""
@@ -33,12 +36,11 @@ class SkeinPanelMesh(bpy.types.Panel):
 
     @classmethod
     def poll(cls, context):
-        return context.active_object.type == "MESH"
+        return bpy.ops.mesh.insert_component.poll()
 
     def draw(self, context):
         obj = context.mesh
-        layout = self.layout
-        draw_generic_panel(context, obj, layout, "mesh")
+        draw_generic_panel(context, obj, self.layout, "mesh")
 
 class SkeinPanelMaterial(bpy.types.Panel):
     """Creates a Panel in the Object Properties Panel for a material"""
@@ -50,12 +52,43 @@ class SkeinPanelMaterial(bpy.types.Panel):
 
     @classmethod
     def poll(cls, context):
-        return context.active_object.active_material is not None
+        return bpy.ops.material.insert_component.poll()
 
     def draw(self, context):
         obj = context.material
-        layout = self.layout
-        draw_generic_panel(context, obj, layout, "material")
+        draw_generic_panel(context, obj, self.layout, "material")
+
+class SkeinPanelLight(bpy.types.Panel):
+    """Creates a Panel in the Object Properties Panel for a light"""
+    bl_label = "Skein Bevy Panel"
+    bl_idname = "LIGHT_PT_skein"
+    bl_space_type = 'PROPERTIES'
+    bl_region_type = 'WINDOW'
+    bl_context = 'data'
+
+    @classmethod
+    def poll(cls, context):
+        return bpy.ops.light.insert_component.poll()
+
+    def draw(self, context):
+        obj = context.light
+        draw_generic_panel(context, obj, self.layout, "light")
+
+class SkeinPanelCollection(bpy.types.Panel):
+    """Creates a Panel in the Object Properties Panel for a collection"""
+    bl_label = "Skein Bevy Panel"
+    bl_idname = "COLLECTION_PT_skein"
+    bl_space_type = 'PROPERTIES'
+    bl_region_type = 'WINDOW'
+    bl_context = 'collection'
+
+    @classmethod
+    def poll(cls, context):
+        return bpy.ops.collection.insert_component.poll()
+
+    def draw(self, context):
+        obj = context.collection
+        draw_generic_panel(context, obj, self.layout, "collection")
 
 def draw_generic_panel(context, obj, layout, execute_mode):
         
@@ -97,10 +130,9 @@ def draw_generic_panel(context, obj, layout, execute_mode):
             )
 
             row = box.row()
-            op = row.operator("bevy.insert_bevy_component")
-            op.execute_mode = execute_mode
+            row.operator(execute_mode + ".insert_component")
 
-        layout.label(text="Components on this object:")
+        layout.label(text="Components on this " + execute_mode + ":")
 
         layout.template_list(
             "UI_UL_list",
@@ -117,12 +149,10 @@ def draw_generic_panel(context, obj, layout, execute_mode):
         if registry and obj_skein:
             active_component_data = obj_skein[obj.active_component_index]
             type_path = active_component_data.selected_type_path
-            # print(active_component_data.component_data)
-            # print(inspect.get_annotations(active_component_data.component_data))
+
             row = layout.row()
             row.label(text=active_component_data.selected_type_path, icon='BOIDS')
-            op = row.operator("bevy.remove_bevy_component")
-            op.execute_mode = execute_mode
+            row.operator(execute_mode + ".remove_component")
 
             if inspect.isclass(skein_property_groups[type_path]):
                 if hash_over_64(type_path) not in active_component_data:
@@ -186,7 +216,7 @@ def render_two(layout, context, context_key):
         match variant:
             # If the enum variant name doesn't exist in the fields,
             # then we have a "unit variant" that has no data to edit
-            case value if value not in obj:
+            case value if not hasattr(obj, value):#value not in obj and obj[value] is None:
                 layout.label(text="Unit variants have no data to edit")
             # recurse down into the enum
             case value:

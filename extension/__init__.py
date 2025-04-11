@@ -1,12 +1,12 @@
 import bpy # type: ignore
 import json
 from bpy.app.handlers import persistent # type: ignore
-from .insert_bevy_component import InsertBevyComponent
-from .fetch_bevy_type_registry import FetchRemoteTypeRegistry, ReloadSkeinRegistryJson, process_registry
-from .remove_bevy_component import RemoveBevyComponent
-from .debug_check_object_bevy_components import DebugCheckObjectBevyComponents
+from .op_insert_component import InsertComponentOnCollection, InsertComponentOnLight, InsertComponentOnMaterial, InsertComponentOnMesh, InsertComponentOnObject
+from .op_registry_loading import FetchRemoteTypeRegistry, ReloadSkeinRegistryJson
+from .op_remove_component import RemoveComponentOnCollection, RemoveComponentOnLight, RemoveComponentOnMaterial, RemoveComponentOnMesh, RemoveComponentOnObject
+from .op_debug_check_components import DebugCheckComponents
 from .property_groups import ComponentData
-from .skein_panel import SkeinPanelObject, SkeinPanelMesh, SkeinPanelMaterial
+from .skein_panel import SkeinPanelCollection, SkeinPanelLight, SkeinPanelObject, SkeinPanelMesh, SkeinPanelMaterial
 # these imports appear unused, but are *required* for the export extension to work
 from .gltf_export_extension import glTF_extension_name, extension_is_required, SkeinExtensionProperties, draw_export, glTF2ExportUserExtension, pre_export_hook, glTF2_pre_export_callback
 
@@ -76,7 +76,7 @@ def on_post_blend_file_load(blend_file):
 # add to the Blender menus
 def menu_func(self, context):
     self.layout.operator(FetchRemoteTypeRegistry.bl_idname)
-    # self.layout.operator(DebugCheckObjectBevyComponents.bl_idname)
+    # self.layout.operator(DebugCheckComponents.bl_idname)
     self.layout.operator(ReloadSkeinRegistryJson.bl_idname)
 
 def register():
@@ -102,6 +102,18 @@ def register():
         min=0,
         override={"LIBRARY_OVERRIDABLE"},
     )
+    bpy.types.Camera.active_component_index = bpy.props.IntProperty(
+        min=0,
+        override={"LIBRARY_OVERRIDABLE"},
+    )
+    bpy.types.Light.active_component_index = bpy.props.IntProperty(
+        min=0,
+        override={"LIBRARY_OVERRIDABLE"},
+    )
+    bpy.types.Collection.active_component_index = bpy.props.IntProperty(
+        min=0,
+        override={"LIBRARY_OVERRIDABLE"},
+    )
 
     # TODO: move this to common property group for all object, material, mesh, etc extras
     bpy.types.WindowManager.selected_component = bpy.props.StringProperty(
@@ -117,13 +129,28 @@ def register():
     # operations
     bpy.utils.register_class(FetchRemoteTypeRegistry)
     bpy.utils.register_class(ReloadSkeinRegistryJson)
-    bpy.utils.register_class(InsertBevyComponent)
-    bpy.utils.register_class(DebugCheckObjectBevyComponents)
-    bpy.utils.register_class(RemoveBevyComponent)
+    bpy.utils.register_class(DebugCheckComponents)
+    ## Insertion Operations
+    bpy.utils.register_class(InsertComponentOnObject)
+    bpy.utils.register_class(InsertComponentOnMesh)
+    bpy.utils.register_class(InsertComponentOnMaterial)
+    # bpy.utils.register_class(InsertComponentOnCamera)
+    bpy.utils.register_class(InsertComponentOnLight)
+    bpy.utils.register_class(InsertComponentOnCollection)
+    ## Remove Operations
+    bpy.utils.register_class(RemoveComponentOnObject)
+    bpy.utils.register_class(RemoveComponentOnMesh)
+    bpy.utils.register_class(RemoveComponentOnMaterial)
+    # bpy.utils.register_class(RemoveComponentOnCamera)
+    bpy.utils.register_class(RemoveComponentOnLight)
+    bpy.utils.register_class(RemoveComponentOnCollection)
     # panel
     bpy.utils.register_class(SkeinPanelObject)
     bpy.utils.register_class(SkeinPanelMesh)
     bpy.utils.register_class(SkeinPanelMaterial)
+    # bpy.utils.register_class(SkeinPanelCamera)
+    bpy.utils.register_class(SkeinPanelLight)
+    bpy.utils.register_class(SkeinPanelCollection)
     # adds the menu_func layout to an existing menu
     bpy.types.TOPBAR_MT_edit.append(menu_func)
 
@@ -169,13 +196,28 @@ def unregister():
     # operations
     bpy.utils.unregister_class(FetchRemoteTypeRegistry)
     bpy.utils.unregister_class(ReloadSkeinRegistryJson)
-    bpy.utils.unregister_class(InsertBevyComponent)
-    bpy.utils.unregister_class(DebugCheckObjectBevyComponents)
-    bpy.utils.unregister_class(RemoveBevyComponent)
+    bpy.utils.unregister_class(DebugCheckComponents)
+    ## Insertion Operations
+    bpy.utils.unregister_class(InsertComponentOnObject)
+    bpy.utils.unregister_class(InsertComponentOnMesh)
+    bpy.utils.unregister_class(InsertComponentOnMaterial)
+    # bpy.utils.unregister_class(InsertComponentOnCamera)
+    bpy.utils.unregister_class(InsertComponentOnLight)
+    bpy.utils.unregister_class(InsertComponentOnCollection)
+    ## Remove Operations
+    bpy.utils.unregister_class(RemoveComponentOnObject)
+    bpy.utils.unregister_class(RemoveComponentOnMesh)
+    bpy.utils.unregister_class(RemoveComponentOnMaterial)
+    # bpy.utils.unregister_class(RemoveComponentOnCamera)
+    bpy.utils.unregister_class(RemoveComponentOnLight)
+    bpy.utils.unregister_class(RemoveComponentOnCollection)
     # panel
     bpy.utils.unregister_class(SkeinPanelObject)
     bpy.utils.unregister_class(SkeinPanelMesh)
     bpy.utils.unregister_class(SkeinPanelMaterial)
+    # bpy.utils.unregister_class(SkeinPanelCamera)
+    bpy.utils.unregister_class(SkeinPanelLight)
+    bpy.utils.unregister_class(SkeinPanelCollection)
 
     # gltf extension
     bpy.utils.unregister_class(SkeinExtensionProperties)

@@ -4,13 +4,13 @@ import bpy
 from .property_groups import hash_over_64 # type: ignore
 from .form_to_object import get_data_from_active_editor # type: ignore
 
-class DebugCheckObjectBevyComponents(bpy.types.Operator):
+class DebugCheckComponents(bpy.types.Operator):
     """Iterate over all objects and print the skein component data to console
 
     This can help debug storage and see what data is set for named objects
     """
-    bl_idname = "wm.debug_check_object_bevy_components" # unique identifier. "tag" should be
-    bl_label = "Check the Skein data on all objects" # Shows up in the UI
+    bl_idname = "wm.debug_check_components" # unique identifier. "tag" should be
+    bl_label = "Check the Skein data on all objects and other IDs" # Shows up in the UI
     bl_options = {'REGISTER'}
 
     # execute is called to run the operator

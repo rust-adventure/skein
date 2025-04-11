@@ -9,7 +9,9 @@ All notable changes to this project will be documented in this file.
 - Many glam types are now explicitly handled in the UI, making them easier to associate with headings and inner properties, like knowing an x,y and z are related.
 - opening a project or creating a new one will now _create_ a local skein-registry.json if one doesn't exist
 - The `DebugCheckObjectBevyComponents` operator was removed from the edit menu. It still exists, but if you want it you'll have to call it directly or bind it to a key
--
+- Operators for inserting are now per-object and can be bound to keymaps. Future work will likely introduce a generalized operator for hotkey insertion
+- Add support for Cameras, Lights, and Collections
+- add poll methods to as much as possible
 
 ### Dev changes
 

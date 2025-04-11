@@ -12,6 +12,12 @@ glTF_extension_name = "EXT_skein"
 # is this extension required to view the glTF?
 extension_is_required = False
 
+LIGHTS = {
+    "POINT": "point",
+    "SUN": "directional",
+    "SPOT": "spot"
+}
+
 # gltf exporter extension
 #
 # The extension takes the data from the format we need to use inside of Blender
@@ -76,6 +82,18 @@ class glTF2ExportUserExtension:
         # self.report() doesn't seem available here because we aren't
         # in "Blender" we're in the "gltf2 extension"
         if self.properties.enabled:
+            try:
+                # if this is a node with a light and the KHR_lights_punctual extension is on
+                # then handle the light skein data
+                if blender_object.data.type in LIGHTS and "KHR_lights_punctual" in gltf2_object.extensions:
+                    gather_skein_two(
+                        blender_object.data,
+                        gltf2_object.extensions["KHR_lights_punctual"].extension["light"].extension
+                    )
+            except Exception as e:
+                pass
+
+            # gather the main node skein data
             gather_skein_two(blender_object, gltf2_object)
             
             # if gltf2_object.extensions is None:
@@ -93,7 +111,13 @@ class glTF2ExportUserExtension:
     def gather_material_hook(self, gltf2_material, blender_material, export_settings):
         if self.properties.enabled:
             gather_skein_two(blender_material, gltf2_material)
-    # gather_camera_hook(self, gltf2_camera, blender_camera, export_settings)
+    def gather_camera_hook(self, gltf2_camera, blender_camera, export_settings):
+        if self.properties.enabled:
+            gather_skein_two(blender_camera, gltf2_camera)
+    def gather_gltf_extensions_hook(self, gltf2_plan, export_settings):
+        pass
+    def gather_scene_hook(self, gltf2_scene, blender_scene, export_settings):
+        pass
 
 def glTF2_pre_export_callback(export_settings):
     print("This will be called before exporting the glTF file.")
@@ -134,6 +158,15 @@ def gather_skein_two(source, sink):
                 obj[type_path] = getattr(component, type_path)
                 objs.append(obj)
 
-        if sink.extras is None:
-            sink.extras = {}
-        sink.extras["skein"] = objs
+        # for most items, extras is a `.` access
+        # for gltf KHR lights extension (and likely other extensions?) extras is a `[]` access
+        try:
+            sink.extras
+            if sink.extras is None:
+                sink.extras = {}
+            sink.extras["skein"] = objs
+        except:
+            if sink["extras"] is None:
+                sink["extras"] = {}
+            sink["extras"]["skein"] = objs
+

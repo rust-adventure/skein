@@ -114,7 +114,7 @@ async fn main() -> io::Result<()> {
             title: "Contributing",
             links: vec![
                 NavLink {
-                    title: "Overview",
+                    title: "Overview (coming soon)",
                     href: "/docs/contributing",
                 },
                 NavLink {

@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.1.5] - 2025-04-11
+
 - [Support type_paths > 63 characters long](https://github.com/rust-adventure/skein/issues/1), like `avian3d::dynamics::rigid_body::mass_properties::components::Mass`
 - implement default values for Maps and Lists, which will export as {} and []. This enables some types, like ColliderConstructorHierarcy from Avian, which have HashMaps that aren't used but need to be handled.
 - Many glam types are now explicitly handled in the UI, making them easier to associate with headings and inner properties, like knowing an x,y and z are related.
@@ -11,7 +13,6 @@ All notable changes to this project will be documented in this file.
 - The `DebugCheckObjectBevyComponents` operator was removed from the edit menu. It still exists, but if you want it you'll have to call it directly or bind it to a key
 - Operators for inserting are now per-object and can be bound to keymaps. Future work will likely introduce a generalized operator for hotkey insertion
 - Add support for Cameras, Lights, and Collections
-- add poll methods to as much as possible
 
 ### Dev changes
 
@@ -19,6 +20,7 @@ All notable changes to this project will be documented in this file.
 - rewrite implementation of UI rendering. The implementation is now simpler and uses fewer sources of information.
 - additional unregistration logic was added to .unregister
 - Running headless blender/python tests now report when the registry.json file is missing and what to do about it
+- add poll methods to as much as possible
 
 ## [0.1.3] - 2025-03-24
 
@@ -40,8 +42,9 @@ All notable changes to this project will be documented in this file.
 
 Initial Release of Blender Addon
 
-[unreleased]: https://github.com/rust-adventure/skein/compare/blender-v0.1.3...HEAD
-[0.1.3]: https://github.com/rust-adventure/skein/compare/blender-v0.1.3...blender-v0.1.3
+[unreleased]: https://github.com/rust-adventure/skein/compare/blender-v0.1.5...HEAD
+[0.1.5]: https://github.com/rust-adventure/skein/compare/blender-v0.1.3...blender-v0.1.5
+[0.1.3]: https://github.com/rust-adventure/skein/compare/blender-v0.1.2...blender-v0.1.3
 [0.1.2]: https://github.com/rust-adventure/skein/compare/blender-v0.1.1...blender-v0.1.2
 [0.1.1]: https://github.com/rust-adventure/skein/compare/blender-v0.1.0...blender-v0.1.1
 [0.1.0]: https://github.com/rust-adventure/skein/releases/tag/blender-v0.1.0

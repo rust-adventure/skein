@@ -4,7 +4,7 @@ description: Defining Materials in Blender and replacing them with custom Bevy s
 opengraph_image: /opengraph/opengraph-replace-a-blender-material.jpg
 ---
 
-Its not uncommon to want to define materials in Blender and replace them with custom shaders in Blender. For example, in Blender you could define a "Force Field" material. This material would import into Bevy as a regular `StandardMaterial` and be applied to any objects it was applied to in Blender.
+Its not uncommon to want to define materials in Blender and replace them with custom shaders in Bevy. For example, in Blender you could define a "Force Field" material. This material would import into Bevy as a regular `StandardMaterial` and be applied to any objects it was applied to in Blender.
 
 If you utilize [Hooks and Observers](/docs/mark-and-modify-blender-objects) you can define a marker component that will be inserted alongside this Material, allowing you to replace it with custom shaders utilizing all of Bevy's features.
 

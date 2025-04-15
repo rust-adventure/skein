@@ -4,43 +4,18 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-## [0.1.5] - 2025-04-11
+## [0.2.1-rc.2] - 2025-04-14
 
-- [Support type_paths > 63 characters long](https://github.com/rust-adventure/skein/issues/1), like `avian3d::dynamics::rigid_body::mass_properties::components::Mass`
-- implement default values for Maps and Lists, which will export as {} and []. This enables some types, like ColliderConstructorHierarcy from Avian, which have HashMaps that aren't used but need to be handled.
-- Many glam types are now explicitly handled in the UI, making them easier to associate with headings and inner properties, like knowing an x,y and z are related.
-- opening a project or creating a new one will now _create_ a local skein-registry.json if one doesn't exist
-- The `DebugCheckObjectBevyComponents` operator was removed from the edit menu. It still exists, but if you want it you'll have to call it directly or bind it to a key
-- Operators for inserting are now per-object and can be bound to keymaps. Future work will likely introduce a generalized operator for hotkey insertion
-- Add support for Cameras, Lights, and Collections
+- Disable wasm by default
+- Put bevy_remote behind a `brp` feature, which is enabled by default
 
-### Dev changes
+## [0.2.1-rc.1] - 2025-03-23
 
-- touch all PropertyGroups when inserting new data, as this is required to make data that is uninitialized accessible to the first render. We use introspection on the python types, so the values must be forcibly initialized.
-- rewrite implementation of UI rendering. The implementation is now simpler and uses fewer sources of information.
-- additional unregistration logic was added to .unregister
-- Running headless blender/python tests now report when the registry.json file is missing and what to do about it
-- add poll methods to as much as possible
+Bevy 0.16-rc compatible release
 
-## [0.1.3] - 2025-03-24
+## [0.1.x] - 2025-03-13
 
-- [Implement glam's special serialization](https://github.com/rust-adventure/skein/issues/4) (arrays instead of objects for Vec2/3/4/affine/matrix)
-
-## [0.1.2] - 2025-03-24
-
-- [Correctly serialize nested enum values](https://github.com/rust-adventure/skein/issues/6)
-- [Serialize Vec3 as an array instead of an object](https://github.com/rust-adventure/skein/issues/4)
-  - Vec3's serialization is an array which is different than its type registry data. This is also true for other types, which will be fixed in a future release.
-- [Clear old components when fetching new Bevy registry data](https://github.com/rust-adventure/skein/issues/7)
-  - Allows updating components to add fields without closing Blender
-
-## [0.1.1] - 2025-03-22
-
-- Enable ability to override library assets' component data when instancing from separate blend files
-
-## [0.1.0] - 2025-03-17
-
-Initial Release of Blender Addon
+Initial Release of Rust crate. Compatible with Bevy 0.15
 
 [unreleased]: https://github.com/rust-adventure/skein/compare/blender-v0.1.5...HEAD
 [0.1.5]: https://github.com/rust-adventure/skein/compare/blender-v0.1.3...blender-v0.1.5

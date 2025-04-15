@@ -27,6 +27,7 @@ pub struct SkeinPlugin {
     /// plugins.
     ///
     /// use `false` if you want to handle setting up BRP yourself
+    #[allow(dead_code)]
     handle_brp: bool,
 }
 
@@ -40,9 +41,16 @@ impl Plugin for SkeinPlugin {
     fn build(&self, app: &mut App) {
         app.add_observer(skein_processing);
 
+        #[cfg(all(
+            not(target_family = "wasm"),
+            feature = "brp"
+        ))]
         if self.handle_brp {
+            let remote_plugin =
+                bevy_remote::RemotePlugin::default();
+
             app.add_plugins((
-                bevy_remote::RemotePlugin::default(),
+                remote_plugin,
                 bevy_remote::http::RemoteHttpPlugin::default(),
             ));
         }

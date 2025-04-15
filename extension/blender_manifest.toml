@@ -3,7 +3,7 @@ schema_version = "1.0.0"
 # Example of manifest file for a Blender extension
 # Change the values according to your extension
 id = "bevy_skein"
-version = "0.1.5"
+version = "0.1.6-dev"
 name = "Bevy Skein"
 tagline = "Apply Bevy Components in Blender"
 maintainer = "Chis Biscardi <chris@christopherbiscardi.com>"
@@ -24,8 +24,9 @@ blender_version_min = "4.2.0"
 
 # License conforming to https://spdx.org/licenses/ (use "SPDX: prefix)
 # https://docs.blender.org/manual/en/dev/advanced/extensions/licenses.html
-# GPL Required for Blender Extensions Platform
-license = ["SPDX:GPL-3.0-or-later"]
+# GPL Required for Blender Extensions Platform, but we don't publish there.
+# We use MIT/Apache 2.0 which matches the Bevy ecosystem's usage of licensing
+license = ["SPDX:MIT", "SPDX:Apache-2.0"]
 # # Optional: required by some licenses.
 # copyright = [
 #   "2002-2024 Developer Name",

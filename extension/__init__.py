@@ -1,6 +1,7 @@
 import bpy # type: ignore
 import json
-from bpy.app.handlers import persistent # type: ignore
+from bpy.app.handlers import persistent
+from .cli_dump_component_data import dump_component_data # type: ignore
 from .op_insert_component import InsertComponentOnCollection, InsertComponentOnLight, InsertComponentOnMaterial, InsertComponentOnMesh, InsertComponentOnObject
 from .op_registry_loading import FetchRemoteTypeRegistry, ReloadSkeinRegistryJson
 from .op_remove_component import RemoveComponentOnCollection, RemoveComponentOnLight, RemoveComponentOnMaterial, RemoveComponentOnMesh, RemoveComponentOnObject
@@ -69,6 +70,9 @@ def on_post_blend_file_load(blend_file):
     """blend file is empty if its the startup scene"""
     bpy.ops.wm.reload_skein_registry()
 
+
+cli_commands = []
+
 # --------------------------------- #
 #  Registration and unregistration  #
 # --------------------------------- #
@@ -134,7 +138,6 @@ def register():
     bpy.utils.register_class(InsertComponentOnObject)
     bpy.utils.register_class(InsertComponentOnMesh)
     bpy.utils.register_class(InsertComponentOnMaterial)
-    # bpy.utils.register_class(InsertComponentOnCamera)
     bpy.utils.register_class(InsertComponentOnLight)
     bpy.utils.register_class(InsertComponentOnCollection)
     ## Remove Operations
@@ -160,7 +163,9 @@ def register():
 
     # add handlers to run when .blend file loads
     bpy.app.handlers.load_post.append(on_post_blend_file_load)
-        
+
+    cli_commands.append(bpy.utils.register_cli_command("dump_component_data", dump_component_data))
+
     # Use the following 2 lines to register the UI for the gltf extension hook
     from io_scene_gltf2 import exporter_extension_layout_draw # type: ignore
     exporter_extension_layout_draw['Example glTF Extension'] = draw_export # Make sure to use the same name in unregister()
@@ -222,6 +227,10 @@ def unregister():
     # gltf extension
     bpy.utils.unregister_class(SkeinExtensionProperties)
     del bpy.types.Scene.skein_extension_properties
+
+    for cmd in cli_commands:
+        bpy.utils.unregister_cli_command(cmd)
+    cli_commands.clear()
 
     # Use the following 2 lines to unregister the UI for this hook
     from io_scene_gltf2 import exporter_extension_layout_draw # type: ignore

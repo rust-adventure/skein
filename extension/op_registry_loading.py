@@ -11,7 +11,7 @@ from .property_groups import hash_over_64, make_property
 # --------------------------------- #
 
 class FetchRemoteTypeRegistry(bpy.types.Operator):
-    """Fetch a remote type registry from a compatible endpoint"""
+    """Fetch a Bevy type registry from a compatible endpoint"""
     bl_idname = "wm.fetch_type_registry" # unique identifier. not specially named
     bl_label = "Fetch a Remote Type Registry" # Shows up in the UI
     bl_options = {'REGISTER', 'UNDO'} # enable undo (which we might not need)

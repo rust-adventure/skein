@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+- Introduce the first CLI command, `dump_component_data`, which can be used on the CLI to create a json file of all of the component usage in a blend file
+
+```
+blender --background -b replace_material.blend -c dump_component_data -o test.json
+```
+
 ## [0.1.5] - 2025-04-11
 
 - [Support type_paths > 63 characters long](https://github.com/rust-adventure/skein/issues/1), like `avian3d::dynamics::rigid_body::mass_properties::components::Mass`

@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.1.6]
+
 ### The First CLI Command
 
 Introduces the first CLI command, `dump_component_data`, which can be used on the CLI to create a json file of all of the component usage in a blend file. All CLI commands are considered experimental as we research and build workflows, but this one doesn't mutate anything so is generally safe to run.
@@ -56,7 +58,8 @@ These presets are one-off. There is no special storage for them once they are ap
 
 Initial Release of Blender Addon
 
-[unreleased]: https://github.com/rust-adventure/skein/compare/blender-v0.1.5...HEAD
+[unreleased]: https://github.com/rust-adventure/skein/compare/blender-v0.1.6...HEAD
+[0.1.6]: https://github.com/rust-adventure/skein/compare/blender-v0.1.5...blender-v0.1.6
 [0.1.5]: https://github.com/rust-adventure/skein/compare/blender-v0.1.3...blender-v0.1.5
 [0.1.3]: https://github.com/rust-adventure/skein/compare/blender-v0.1.2...blender-v0.1.3
 [0.1.2]: https://github.com/rust-adventure/skein/compare/blender-v0.1.1...blender-v0.1.2

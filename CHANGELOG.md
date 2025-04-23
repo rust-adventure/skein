@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.2.0-rc.3]
+
 ### Presets
 
 Many Components have Default implementations but those aren't the only "pre-configured values" a user might want to apply. This release introduces a new BRP endpoint that is enabled by default and queried by the Blender addon. The BRP endpoint `skein/presets` builds all `Default` values for all applicable Components, as well as user-provided presets.
@@ -26,12 +28,12 @@ fn main() {
 }
 ```
 
-## [0.2.1-rc.2] - 2025-04-14
+## [0.2.0-rc.2] - 2025-04-14
 
 - Disable wasm by default
 - Put bevy_remote behind a `brp` feature, which is enabled by default
 
-## [0.2.1-rc.1] - 2025-03-23
+## [0.2.0-rc.1] - 2025-03-23
 
 Bevy 0.16-rc compatible release
 
@@ -39,9 +41,6 @@ Bevy 0.16-rc compatible release
 
 Initial Release of Rust crate. Compatible with Bevy 0.15
 
-[unreleased]: https://github.com/rust-adventure/skein/compare/blender-v0.1.5...HEAD
-[0.1.5]: https://github.com/rust-adventure/skein/compare/blender-v0.1.3...blender-v0.1.5
-[0.1.3]: https://github.com/rust-adventure/skein/compare/blender-v0.1.2...blender-v0.1.3
-[0.1.2]: https://github.com/rust-adventure/skein/compare/blender-v0.1.1...blender-v0.1.2
-[0.1.1]: https://github.com/rust-adventure/skein/compare/blender-v0.1.0...blender-v0.1.1
-[0.1.0]: https://github.com/rust-adventure/skein/releases/tag/blender-v0.1.0
+[unreleased]: https://github.com/rust-adventure/skein/compare/v0.1.5...HEAD
+[0.2.0-rc.3]: https://github.com/rust-adventure/skein/compare/v0.2.0-rc.2...v0.2.0-rc.3
+[0.1.x]: https://github.com/rust-adventure/skein/releases/tag/v0.1.0

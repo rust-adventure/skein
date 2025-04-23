@@ -19,8 +19,11 @@ class FetchRemoteTypeRegistry(bpy.types.Operator):
     # execute is called to run the operator
     def execute(self, context):
         debug = False
+        presets = False
         if __package__ in context.preferences.addons:
-            debug = context.preferences.addons[__package__].preferences.debug
+            preferences = context.preferences.addons[__package__].preferences
+            debug = preferences.debug
+            presets = preferences.presets
 
         if debug:
             print("\nexecute: FetchRemoteTypeRegistry")
@@ -50,6 +53,29 @@ class FetchRemoteTypeRegistry(bpy.types.Operator):
             embedded_registry.write(json.dumps(brp_response["result"], indent=4))
 
         process_registry(context, brp_response["result"])
+        
+        if presets:
+            try:
+                brp_response = brp_fetch_skein_presets()
+            except:
+                self.report({"ERROR"}, "Could not connect to bevy application to fetch presets data from the Bevy Remote Protocol")
+                return {'CANCELLED'}
+            
+            # If the bevy remote protocol returns an error, report it to the user
+            if brp_response is not None and "error" in brp_response:
+                if debug:
+                    print("bevy request errored out", brp_response["error"])
+                self.report({"ERROR"}, "request for Bevy registry data returned an error, is the Bevy Remote Protocol Plugin added and is the Bevy app running? :: " + brp_response["error"]["message"])
+                return {'CANCELLED'}
+
+            # write presets response to a file in .blend file
+            if "skein-presets.json" in bpy.data.texts:
+                embedded_presets = bpy.data.texts["skein-presets.json"]
+                embedded_presets.clear()
+                embedded_presets.write(json.dumps(brp_response["result"], indent=4))
+            else:
+                embedded_presets = bpy.data.texts.new("skein-presets.json")
+                embedded_presets.write(json.dumps(brp_response["result"], indent=4))
 
         return {'FINISHED'}
 
@@ -59,6 +85,16 @@ def brp_fetch_registry_schema(host="http://127.0.0.1", port=15702):
     """Fetch the registry schema from a running Bevy application"""
 
     data = {"jsonrpc": "2.0", "method": "bevy/registry/schema", "params": {}}
+    r = requests.post(host + ":" + str(port), json=data)
+    brp_response = r.json()
+    return brp_response
+
+# TODO: allow configuration of url via addon settings or
+# custom fetch operator?
+def brp_fetch_skein_presets(host="http://127.0.0.1", port=15702):
+    """Fetch the presets (and Default values) from a running Bevy application"""
+
+    data = {"jsonrpc": "2.0", "method": "skein/presets", "params": {}}
     r = requests.post(host + ":" + str(port), json=data)
     brp_response = r.json()
     return brp_response

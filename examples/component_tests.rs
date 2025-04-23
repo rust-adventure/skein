@@ -8,7 +8,7 @@
 //! this example provides and is the minimal set of types required
 //! to reflect and construct values of the components registered here.
 use bevy::prelude::*;
-use bevy_skein::SkeinPlugin;
+use bevy_skein::{SkeinAppExt, SkeinPlugin};
 use test_components::*;
 
 fn main() {
@@ -28,6 +28,10 @@ fn main() {
         .register_type::<RichAndUnitEnum>()
         .register_type::<LinearVelocity>()
         .register_type::<SuperGlam>()
+        .insert_skein_preset("Luigi", TeamMember{
+            player: Player { name: "Luigi Mario".to_string(), power: 100., test: 5 },
+            team: Team::Green,
+        })
         // below this line are types that aren't expected to work
         .register_type::<BucketOfTypes>()
         // add plugins

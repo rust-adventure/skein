@@ -116,7 +116,7 @@ def draw_generic_panel(context, obj, layout, execute_mode):
             return
 
         row = layout.row()
-        
+
         if registry:
             layout.label(text="Insert a new Component")
             box = layout.box()
@@ -151,8 +151,21 @@ def draw_generic_panel(context, obj, layout, execute_mode):
             type_path = active_component_data.selected_type_path
 
             row = layout.row()
-            row.label(text=active_component_data.selected_type_path, icon='BOIDS')
+            col = row.column()
+            col.label(text=active_component_data.selected_type_path, icon='BOIDS')
+
+            col = row.column()
+            col.popover(
+                panel="OBJECT_PT_skein_preset_panel",
+                icon='PRESET',
+                text="",
+            )
+
+            row = layout.row()
             row.operator(execute_mode + ".remove_component")
+
+            row = layout.row()
+            row.separator()
 
             if inspect.isclass(skein_property_groups[type_path]):
                 if hash_over_64(type_path) not in active_component_data:
@@ -387,3 +400,77 @@ def render_two(layout, context, context_key):
             layout.prop(obj, key)
     return
 
+# from bpy.types import Menu
+
+
+# Panel mix-in class (don't register).
+# class PresetPanel:
+    # bl_space_type = 'PROPERTIES'
+    # bl_region_type = 'HEADER'
+    # bl_label = "Presets"
+    # path_menu = Menu.path_menu
+
+    # @classmethod
+    # def draw_panel_header(cls, layout):
+    #     layout.emboss = 'NONE'
+    #     layout.popover(
+    #         panel=cls.__name__,
+    #         icon='PRESET',
+    #         text="",
+    #     )
+
+    # @classmethod
+    # def draw_menu(cls, layout, text=None):
+    #     if text is None:
+    #         text = cls.bl_label
+
+    #     layout.popover(
+    #         panel=cls.__name__,
+    #         icon='PRESET',
+    #         text=text,
+    #     )
+
+    # def draw(self, context):
+    #     layout = self.layout
+    #     layout.emboss = 'PULLDOWN_MENU'
+    #     layout.operator_context = 'EXEC_DEFAULT'
+
+    #     Menu.draw_preset(self, context)
+
+
+class SkeinPresetMenu(bpy.types.Panel):
+    bl_label = "Skein Component Preset Panel"
+    bl_idname = "OBJECT_PT_skein_preset_panel"
+    bl_space_type = 'VIEW_3D' # 'PROPERTIES'
+    bl_region_type = 'WINDOW'
+    # bl_options = {'INSTANCED'}
+
+    @classmethod
+    def poll(cls, context):
+        return bpy.ops.object.insert_component.poll() and "skein-presets.json" in bpy.data.texts
+
+    def draw(self, context):
+        layout = self.layout
+        obj = context.object
+        global_skein = context.window_manager.skein
+        # TODO: the registry can likely be loaded into a dict in a less
+        # common place. This function runs every draw
+        registry = json.loads(global_skein.registry)
+        obj_skein = obj.skein_two
+
+        presets = json.loads(bpy.data.texts["skein-presets.json"].as_string())
+        if registry and obj_skein:
+            active_component_data = obj_skein[obj.active_component_index]
+            type_path = active_component_data.selected_type_path
+            if type_path in presets:
+                
+                layout.emboss = 'PULLDOWN_MENU'
+                layout.operator_context = 'EXEC_DEFAULT'
+
+                for key in presets[type_path].keys():
+                    op = layout.operator("object.apply_preset", text=key)
+                    op.preset_id = key
+
+                layout.operator_context = 'INVOKE_DEFAULT'
+                layout.emboss = 'NORMAL'
+        

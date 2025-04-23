@@ -4,11 +4,19 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-- Introduce the first CLI command, `dump_component_data`, which can be used on the CLI to create a json file of all of the component usage in a blend file
+### The First CLI Command
+
+Introduces the first CLI command, `dump_component_data`, which can be used on the CLI to create a json file of all of the component usage in a blend file. All CLI commands are considered experimental as we research and build workflows, but this one doesn't mutate anything so is generally safe to run.
 
 ```
 blender --background -b replace_material.blend -c dump_component_data -o test.json
 ```
+
+### Presets
+
+In addition to the support in the Rust crate, The Blender addon now supports reading Default implementation values and user-provided presets from Bevy applications. This means users can apply "default" or custom "preset" values inside of Blender.
+
+These presets are one-off. There is no special storage for them once they are applied, they simply set the values that can be set, which is the same behavior you'd see if you set the values manually.
 
 ## [0.1.5] - 2025-04-11
 

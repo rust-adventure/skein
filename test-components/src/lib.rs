@@ -12,17 +12,27 @@ pub struct ThisIsOverThePythonKeyLengthLimitForBlenderProperties
 
 /// A Component with fields
 #[derive(Component, Reflect, Debug)]
-#[reflect(Component)]
+#[reflect(Component, Default)]
 pub struct Player {
     pub name: String,
     pub power: f32,
     pub test: i32,
 }
 
+impl Default for Player {
+    fn default() -> Self {
+        Self {
+            name: "Chris".to_string(),
+            power: 85.23,
+            test: 20,
+        }
+    }
+}
+
 /// A Component that includes other "non-scalar"
 /// types in the values
-#[derive(Component, Reflect, Debug)]
-#[reflect(Component)]
+#[derive(Component, Reflect, Debug, Default)]
+#[reflect(Component, Default)]
 pub struct TeamMember {
     pub player: Player,
     pub team: Team,
@@ -76,10 +86,16 @@ pub enum TaskPriority {
 /// a "rich" enum with a struct variant and
 /// a tuple struct variant
 #[derive(Component, Reflect, Debug)]
-#[reflect(Component)]
+#[reflect(Component, Default)]
 pub enum SomeThings {
     OneThing { name: String },
     Low(i32),
+}
+
+impl Default for SomeThings {
+    fn default() -> Self {
+        SomeThings::Low(2)
+    }
 }
 
 /// No support for `Timer` yet
@@ -92,9 +108,17 @@ pub struct TimerContainer(pub Timer);
 /// results in just the `value` and `None`
 /// results in `null`
 #[derive(Component, Reflect, Debug)]
-#[reflect(Component)]
+#[reflect(Component, Default)]
 pub struct AnOptionalName {
     pub name: Option<String>,
+}
+
+impl Default for AnOptionalName {
+    fn default() -> Self {
+        Self {
+            name: Some("Chris".to_string()),
+        }
+    }
 }
 
 /// A type containing a few NonZero types.
@@ -128,10 +152,16 @@ pub struct BucketOfTypes {
 /// An enum that has a rich struct variant
 /// and a unit variant
 #[derive(Component, Reflect, Debug)]
-#[reflect(Component)]
+#[reflect(Component, Default)]
 pub enum RichAndUnitEnum {
     Player(Player),
     NotAPlayer,
+}
+
+impl Default for RichAndUnitEnum {
+    fn default() -> Self {
+        RichAndUnitEnum::NotAPlayer
+    }
 }
 
 /// People use Color quite a bit,

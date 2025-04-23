@@ -1,6 +1,7 @@
 import json
 import bpy
 
+from .object_to_form import object_to_form
 from .property_groups import hash_over_64
 
 class InsertComponentOnObject(bpy.types.Operator):
@@ -79,8 +80,11 @@ def insert_component_data(context, obj):
     This is basically the same concept as Custom Properties which don't care what object they're on.
     """
     debug = False
+    presets = False
     if __package__ in bpy.context.preferences.addons:
-        debug = bpy.context.preferences.addons[__package__].preferences.debug
+        preferences = bpy.context.preferences.addons[__package__].preferences
+        debug = preferences.debug
+        presets = preferences.presets
 
     if debug:
         print("\ninsert_component_data:")
@@ -109,6 +113,20 @@ def insert_component_data(context, obj):
             # active_component_index to show the right editor
             # for the newly inserted component
             obj.active_component_index = len(obj.skein_two) - 1
+
+            if presets:
+                try:
+                    if "skein-presets.json" in bpy.data.texts:
+                        text = bpy.data.texts["skein-presets.json"].as_string()
+                        embedded_presets = json.loads(text)
+                        object_to_form(
+                            new_component,
+                            hash_over_64(new_component.selected_type_path),
+                            embedded_presets[selected_component]["default"]
+                        )
+                except Exception as e:
+                    print(e)
+                    pass
         else:
             print("no data in registry")
     else:

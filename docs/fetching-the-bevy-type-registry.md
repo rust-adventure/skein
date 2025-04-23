@@ -6,7 +6,7 @@ opengraph_image: /opengraph/opengraph-fetching-the-bevy-type-registry.jpg
 
 ## Prerequisites
 
-To work with any Bevy Components in Blender, you have to run the `FetchBevyTypeRegistry` operator. This requires:
+To work with any Bevy Components in Blender, you have to run the `FetchRemoteTypeRegistry` operator. This requires:
 
 1. Having the **SkeinPlugin** installed in your Bevy App
    - Alternatively, you can set up the [`RemotePlugin`](https://docs.rs/bevy/latest/bevy/remote/struct.RemotePlugin.html) yourself

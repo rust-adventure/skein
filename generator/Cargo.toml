@@ -14,6 +14,9 @@ gray_matter = "0.2.8"
 cinnog_mod_markdown = { path = "../crates/cinnog_mod_markdown", features = [
     "generator",
 ] }
+cinnog_mod_blender_addon = { path = "../crates/cinnog_mod_blender_addon", features = [
+    "generator",
+] }
 serde.workspace = true
 
 tokio = { version = "1.33.0", features = ["full"] }

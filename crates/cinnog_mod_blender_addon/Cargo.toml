@@ -1,0 +1,18 @@
+[package]
+name = "cinnog_mod_blender_addon"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+cinnog.workspace = true
+bevy_ecs.workspace = true
+bevy_app.workspace = true
+serde.workspace = true
+toml = { version = "0.8.20", optional = true }
+semver = { workspace = true, features = ["serde"] }
+zip = { version = "2.6.1", optional = true }
+walkdir = { version = "2", optional = true }
+
+[features]
+development = ["cinnog/development"]
+generator = ["cinnog/generator", "dep:zip", "dep:walkdir", "dep:toml"]

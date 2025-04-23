@@ -8,7 +8,7 @@ use bevy_ecs::{
     component::Component,
     system::{In, Query},
 };
-use cinnog::run_system_with_input;
+use cinnog::{run_system, run_system_with_input};
 use cinnog_mod_markdown::TableOfContents;
 use leptos::{component, prelude::*, IntoView};
 use leptos_meta::{Link, Meta, Title};
@@ -28,6 +28,7 @@ pub fn HomePage() -> impl IntoView {
         get_doc,
         "overview".to_string(),
     );
+
     let title = "Bevy + Blender <3".to_string();
     view! {
 

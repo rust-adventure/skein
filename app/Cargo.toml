@@ -12,9 +12,11 @@ tracing.workspace = true
 bevy_ecs.workspace = true
 serde.workspace = true
 leptos-use = "0.15.7"
+semver.workspace = true
 
 leptos_router = { workspace = true, features = ["nightly"] }
 cinnog_mod_markdown = { path = "../crates/cinnog_mod_markdown" }
+cinnog_mod_blender_addon = { path = "../crates/cinnog_mod_blender_addon" }
 
 [features]
 default = []

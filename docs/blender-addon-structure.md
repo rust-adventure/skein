@@ -6,19 +6,21 @@ opengraph_image: /opengraph/opengraph-blender-addon-structure.jpg
 
 The Blender addon is a series of Python files in the `extension` directory.
 
-- `__init__.py` is the entrypoint to the entire addons
+- `__init__.py` is the entrypoint to the entire addon
 - `blender_manifest.toml` contains the packaing information for the addon
-- The `operators` directory contains a number of Blender Operators, one per file.
+- Any file that starts with `op_` contains a Blender Operators.
 - `skein_panel.py` is the Panel UI for Objects, Meshes, and Materials
 - `gltf_export_extension` is the [glTF export extension](https://github.com/KhronosGroup/glTF-Blender-IO) code that handles setting the glTF extras
 - `property_groups.py` is the core of the Component's data.
 - `form_to_object.py` is basically `PropertyGroup.to_json()` (this "to_json" doesn't exist afaik)
+- `object_to_form.py` is the opposite of `form_to_object.py`. It takes JSON data and inserts it into a Component.
+- CLI extensions are prefixed with `cli_`
 
 ## The Workflow
 
-Workflow-wise, `FetchBevyTypeRegistry` must be run to fetch the Bevy registry data, which means it must be the first action before being able to insert and modify Component data on objects.
+Workflow-wise, the `FetchRemoteTypeRegistry` operator must be run to fetch the Bevy registry data, which means it must be the first action before being able to insert and modify Component data on objects.
 
-`FetchBevyTypeRegistry` will store the result of a Bevy Remote Protocol request in a `skein-registry.json` text file. Future opens of the `.blend` file will load the registry data from `skein-registry.json` instead of needing to make a BRP request.
+`FetchRemoteTypeRegistry` will store the result of a Bevy Remote Protocol request in a `skein-registry.json` text file. Future opens of the `.blend` file will load the registry data from `skein-registry.json` instead of needing to make a BRP request.
 
 ## Processing the Registry
 

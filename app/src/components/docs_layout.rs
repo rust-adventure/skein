@@ -1,4 +1,5 @@
-use cinnog::expect_resource;
+use bevy_ecs::system::Query;
+use cinnog::{expect_resource, run_system};
 use leptos::{either::EitherOf4, prelude::*};
 use table_of_contents::TableOfContents;
 mod prev_next_links;

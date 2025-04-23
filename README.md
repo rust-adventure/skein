@@ -1,8 +1,6 @@
-# Cinnog example
+# Skein Docs
 
-**This [Cinnog] App is deployed on Netlify: https://cinnog.netlify.app/**
-
-Cinnog is a static site generator using [Leptos] with Bevy ECS as a data layer.
+The Skein site is a [Cinnog] App. Cinnog is a static site generator using [Leptos] with Bevy ECS as a data layer.
 
 - `cargo make serve` serves the App with watch mode and hot-reload enabled.
 - `cargo make build` builds the project in release. The output will be in the `dist` directory and the command will not serve it, but quit instead.

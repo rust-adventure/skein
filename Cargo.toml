@@ -21,7 +21,7 @@ tracing = "0.1.40"
 bevy_ecs = { version = "0.15" }
 bevy_app = { version = "0.15" }
 
-
+semver = { version = "1", features = ["serde"] }
 serde = { version = "1", features = ["derive"] }
 
 # Defines a size-optimized profile for the WASM bundle in release mode

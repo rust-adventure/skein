@@ -11,6 +11,7 @@ use cinnog::{
     },
     Ingest,
 };
+use cinnog_mod_blender_addon::BlenderAddonZipDataLayer;
 use cinnog_mod_markdown::MarkdownDataLayer as _;
 use leptos::serde;
 use std::{io, path::Path};
@@ -44,7 +45,7 @@ async fn main() -> io::Result<()> {
                 NavLink {
                     title: "Inserting Components",
                     href: "/docs/inserting-components",
-                },
+                }
             ],
         },
         NavItem {
@@ -53,6 +54,10 @@ async fn main() -> io::Result<()> {
                 NavLink {
                     title: "Bevy Remote Protocol",
                     href: "/docs/bevy-remote-protocol",
+                },
+                NavLink {
+                    title: "Defaults and Presets",
+                    href: "/docs/defaults-and-presets",
                 },
                 NavLink {
                     title: "Using Blender Drivers",
@@ -71,6 +76,15 @@ async fn main() -> io::Result<()> {
                     href: "/docs/exporting-multiple-collections"
                 },
             ],
+        },
+        NavItem {
+            title: "Concepts",
+            links: vec![
+                NavLink {
+                    title: "Components as APIs",
+                    href: "/docs/components-as-apis"
+                }
+            ]
         },
         NavItem {
             title: "Use Cases",
@@ -108,6 +122,15 @@ async fn main() -> io::Result<()> {
                     title: "Exporting Materials to Files",
                     href: "/docs/exporting-materials-to-files",
                 },
+            ]
+        },
+        NavItem {
+            title: "Experimental",
+            links: vec![
+                NavLink {
+                    title: "Migration Tools",
+                    href: "/docs/migration-tools",
+                }
             ]
         },
         NavItem {
@@ -151,10 +174,12 @@ async fn main() -> io::Result<()> {
             "docs",
         )
         .add_markdown_directory::<PostFrontMatter>("blog")
+        .add_blender_addon_zips_directory("assets/releases")
         .add_plugins(ConvertMarkdownToHtml)
         .add_plugins(
             cinnog_mod_markdown::ConvertMarkdownToHtml,
         )
+        // .add_plugins
         .build(shell)
         .await
 }

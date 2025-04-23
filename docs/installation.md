@@ -53,10 +53,32 @@ commands.spawn(SceneRoot(asset_server.load(
 The "auto-update" installation will use the "Static Registry" hosted on this website to check for extension updates when Blender starts up. This makes it easy to stay up to date.
 
 1. Drag [this link](/releases/bevy_skein-0.1.6-dev.zip?repository=.%2Findex.json) onto Blender to add the registry
-1. Accept the dialog that pops up (TODO)
-1. Navigate to extensions and search for "bevy skein" which will now appear with an install button
 
-Using this method, the registry will be checked for updates and allow you to update through Blender without downloading additional zip files.
+   ![pre-drag](/images/introduction/pre-drag-installation.avif)
+
+   ![post-drag](/images/introduction/post-drag-installation.avif)
+
+1. A dialogue will pop up indicating an unknown repository.
+
+   bevy_skein is distributed via a repository on this site, so you will need to add the json file that lists the skein addon by clicking "Add Repository".
+
+   ![unknown repository](/images/introduction/add-extension.avif)
+
+   This will lead to another popup that allows clicking "Check for Updates on Startup", which will enable checking for Skein updates when starting Blender.
+
+   ![add new repository](/images/introduction/add-new-repository.avif)
+
+1. After adding the repository, go to `Preferences`
+
+   ![preferences](/images/introduction/preferences.avif)
+
+1. Under `Get Extensions` you can search for `skein` and click `Install`
+
+   ![get extensions](/images/introduction/get-extensions.avif)
+
+1. After clicking `Install`, you can view metadata about the extension, including the version and the repository it was installed from.
+
+   ![installed](/images/introduction/installed.avif)
 
 ### Manual Installation
 

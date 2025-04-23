@@ -26,12 +26,14 @@ class ApplyPresetToMesh(bpy.types.Operator):
     bl_label = "Apply Preset (Mesh)" # Shows up in the UI
     bl_options = {'REGISTER', 'UNDO'} # enable undo (which we might not need)
 
+    preset_id: bpy.props.StringProperty() # type: ignore
+
     @classmethod
     def poll(cls, context):
         return context.mesh is not None
 
     def execute(self, context):
-        apply_preset_data(context, context.mesh)
+        apply_preset_data(context, context.mesh, self.preset_id)
         return {'FINISHED'}
 
 class ApplyPresetToMaterial(bpy.types.Operator):
@@ -40,12 +42,14 @@ class ApplyPresetToMaterial(bpy.types.Operator):
     bl_label = "Apply Preset (Material)" # Shows up in the UI
     bl_options = {'REGISTER', 'UNDO'} # enable undo (which we might not need)
 
+    preset_id: bpy.props.StringProperty() # type: ignore
+
     @classmethod
     def poll(cls, context):
         return context.material is not None
 
     def execute(self, context):
-        apply_preset_data(context, context.material)
+        apply_preset_data(context, context.material, self.preset_id)
         return {'FINISHED'}
     
 class ApplyPresetToLight(bpy.types.Operator):
@@ -54,12 +58,14 @@ class ApplyPresetToLight(bpy.types.Operator):
     bl_label = "Apply Preset (Light)" # Shows up in the UI
     bl_options = {'REGISTER', 'UNDO'} # enable undo (which we might not need)
 
+    preset_id: bpy.props.StringProperty() # type: ignore
+
     @classmethod
     def poll(cls, context):
         return context.light is not None
 
     def execute(self, context):
-        apply_preset_data(context, context.light)
+        apply_preset_data(context, context.light, self.preset_id)
         return {'FINISHED'}
 
 class ApplyPresetToCollection(bpy.types.Operator):
@@ -68,12 +74,14 @@ class ApplyPresetToCollection(bpy.types.Operator):
     bl_label = "Apply Preset (Collection)" # Shows up in the UI
     bl_options = {'REGISTER', 'UNDO'} # enable undo (which we might not need)
 
+    preset_id: bpy.props.StringProperty() # type: ignore
+
     @classmethod
     def poll(cls, context):
         return context.collection is not None
 
     def execute(self, context):
-        apply_preset_data(context, context.collection)
+        apply_preset_data(context, context.collection, self.preset_id)
         return {'FINISHED'}
 
 def apply_preset_data(context, obj, preset_id):

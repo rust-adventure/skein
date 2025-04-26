@@ -1,10 +1,10 @@
 [package]
 name = "bevy_skein"
 description = "Process glTF extras when spawning Scenes to insert Components using Reflection, such as when using Blender as an editor"
-version = "0.2.0-rc.3"
+version = "0.2.0"
 authors = ["Chris Biscardi"]
 repository = "https://github.com/rust-adventure/skein"
-homepage = "https://rustadventure.dev/"
+homepage = "https://bevyskein.dev/"
 license = "MIT OR Apache-2.0"
 edition = "2024"
 categories = ["games", "game-development"]
@@ -19,21 +19,21 @@ exclude = [
 ]
 
 [dependencies]
-bevy_app = "0.16.0-rc.5"
-bevy_log = "0.16.0-rc.5"
-bevy_ecs = "0.16.0-rc.5"
-bevy_gltf = "0.16.0-rc.5"
-bevy_reflect = "0.16.0-rc.5"
-bevy_scene = "0.16.0-rc.5"
-bevy_remote = { version = "0.16.0-rc.5", optional = true }
-bevy_platform = "0.16.0-rc.5"
+bevy_app = "0.16.0"
+bevy_log = "0.16.0"
+bevy_ecs = "0.16.0"
+bevy_gltf = "0.16.0"
+bevy_reflect = "0.16.0"
+bevy_scene = "0.16.0"
+bevy_remote = { version = "0.16.0", optional = true }
+bevy_platform = "0.16.0"
 serde = "1.0"
 serde_json = "1.0"
 tracing = "0.1"
 
 [dev-dependencies]
-bevy = { version = "0.16.0-rc.5", features = ["jpeg", "experimental_pbr_pcss"] }
-# bevy = "0.16.0-rc.5"
+# bevy = { version = "0.16.0", features = ["jpeg", "experimental_pbr_pcss"] }
+bevy = "0.16.0"
 serde = { version = "1.0", features = ["derive"] }
 test-components = { path = "./test-components" }
 

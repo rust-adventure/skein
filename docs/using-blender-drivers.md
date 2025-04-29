@@ -44,13 +44,13 @@ Then we'll set the `Path` for our property
 We'll use `dimensions` to get the x, y, and z length (aka: width, height, and depth).
 
 > [!IMPORTANT]
-> Blenders dimensions are Y-up, so dimensions[0] is x, dimensions[1] is y, and dimensions[2] is z.
+> Blenders coordinate system is "right handed Z-up" and dimensions[0] is x, dimensions[1] is y, and dimensions[2] is z.
 >
-> In Bevy, Z is up, so we need to map Blender's coordinates to the values our components expect in Bevy:
+> Bevy is "right handed Y-up", so we need to map Blender's coordinates to the values our components expect in Bevy:
 >
-> - x -> x_length
-> - y -> z_length
-> - z -> y_length
+> - Blender x -> x_length
+> - Blender y -> z_length
+> - Blender z -> y_length
 
 ![driver path usinge dimensions](/images/the-blender-addon/driver-path-dimensions.avif)
 

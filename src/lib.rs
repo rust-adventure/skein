@@ -8,10 +8,7 @@ use bevy_ecs::{
     system::{Commands, Query, Res},
     world::OnAdd,
 };
-use bevy_gltf::{
-    GltfExtras, GltfMaterialExtras, GltfMeshExtras,
-    GltfSceneExtras,
-};
+use bevy_gltf::{GltfExtras, GltfMaterialExtras, GltfMeshExtras, GltfSceneExtras};
 use bevy_log::{error, trace};
 use bevy_platform::collections::HashMap;
 use bevy_reflect::{Reflect, serde::ReflectDeserializer};
@@ -38,7 +35,7 @@ pub struct SkeinPlugin {
     ///
     /// use `false` if you want to handle setting up BRP yourself
     #[allow(dead_code)]
-    handle_brp: bool,
+    pub handle_brp: bool,
 }
 
 impl Default for SkeinPlugin {
@@ -52,21 +49,15 @@ impl Plugin for SkeinPlugin {
         app.init_resource::<SkeinPresetRegistry>()
             .add_observer(skein_processing);
 
-        #[cfg(all(
-            not(target_family = "wasm"),
-            feature = "brp"
-        ))]
+        #[cfg(all(not(target_family = "wasm"), feature = "brp"))]
         if self.handle_brp {
             #[allow(unused_mut)]
-            let mut remote_plugin =
-                bevy_remote::RemotePlugin::default();
+            let mut remote_plugin = bevy_remote::RemotePlugin::default();
 
             #[cfg(feature = "presets")]
             {
-                remote_plugin = remote_plugin.with_method(
-                    presets::BRP_SKEIN_PRESETS_METHOD,
-                    presets::export_presets,
-                );
+                remote_plugin = remote_plugin
+                    .with_method(presets::BRP_SKEIN_PRESETS_METHOD, presets::export_presets);
             }
 
             app.add_plugins((
@@ -83,11 +74,7 @@ pub trait SkeinAppExt<V: Reflect> {
     /// Insert a pre-configured Component value into the Resource
     /// that will be used to serve preset data from the Bevy Remote
     /// Procotol.
-    fn insert_skein_preset(
-        &mut self,
-        preset_name: &str,
-        value: V,
-    ) -> &mut Self;
+    fn insert_skein_preset(&mut self, preset_name: &str, value: V) -> &mut Self;
 }
 
 impl<V: Reflect> SkeinAppExt<V> for App {
@@ -99,10 +86,9 @@ impl<V: Reflect> SkeinAppExt<V> for App {
         #[cfg(feature = "presets")]
         {
             let mut presets = self
-            .main_mut()
-            .world_mut()
-            .get_resource_or_init::<SkeinPresetRegistry>(
-        );
+                .main_mut()
+                .world_mut()
+                .get_resource_or_init::<SkeinPresetRegistry>();
 
             let component_presets = presets
                 .0
@@ -110,11 +96,15 @@ impl<V: Reflect> SkeinAppExt<V> for App {
                 .or_default();
 
             component_presets
-            .entry(preset_name.to_string())
-            .and_modify(|_|{
-                warn!(type_path=value.reflect_type_path().to_owned(), ?preset_name, "preset already exists, avoiding overwriting it");
-            })
-            .or_insert(Box::new(value));
+                .entry(preset_name.to_string())
+                .and_modify(|_| {
+                    warn!(
+                        type_path = value.reflect_type_path().to_owned(),
+                        ?preset_name,
+                        "preset already exists, avoiding overwriting it"
+                    );
+                })
+                .or_insert(Box::new(value));
         }
 
         self
@@ -166,14 +156,10 @@ fn skein_processing(
     );
 
     // Each of the possible extras.
-    let gltf_extra =
-        gltf_extras.get(entity).map(|v| &v.value);
-    let gltf_material_extra =
-        gltf_material_extras.get(entity).map(|v| &v.value);
-    let gltf_mesh_extra =
-        gltf_mesh_extras.get(entity).map(|v| &v.value);
-    let gltf_scene_extra =
-        gltf_scene_extras.get(entity).map(|v| &v.value);
+    let gltf_extra = gltf_extras.get(entity).map(|v| &v.value);
+    let gltf_material_extra = gltf_material_extras.get(entity).map(|v| &v.value);
+    let gltf_mesh_extra = gltf_mesh_extras.get(entity).map(|v| &v.value);
+    let gltf_scene_extra = gltf_scene_extras.get(entity).map(|v| &v.value);
 
     for extras in [
         gltf_extra,
@@ -238,11 +224,8 @@ fn skein_processing(
             let type_registry = type_registry.read();
 
             // deserialize
-            let reflect_deserializer =
-                ReflectDeserializer::new(&type_registry);
-            let reflect_value = match reflect_deserializer
-                .deserialize(json_component)
-            {
+            let reflect_deserializer = ReflectDeserializer::new(&type_registry);
+            let reflect_value = match reflect_deserializer.deserialize(json_component) {
                 Ok(value) => value,
                 Err(err) => {
                     error!(
@@ -257,9 +240,7 @@ fn skein_processing(
             trace!(?reflect_value);
             // TODO: can we do this insert without panic
             // if the intended component
-            commands
-                .entity(entity)
-                .insert_reflect(reflect_value);
+            commands.entity(entity).insert_reflect(reflect_value);
         }
     }
 }

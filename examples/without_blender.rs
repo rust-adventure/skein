@@ -1,16 +1,19 @@
-//! This example is called "without_blender" because
-//! it demonstrates all of the Rust-side API without
-//! requiring a glTF file, blender usage, or anything
-//! else outside of this file.
+//! This example is called "without_blender"
+//! because it demonstrates all of the Rust-side
+//! API without requiring a glTF file, blender
+//! usage, or anything else outside of this file.
 //!
-//! The `Character` component is reflected and registered
-//! as usual, which allows the GltfExtras component with
-//! the skein data to instantiate a component.
+//! The `Character` component is reflected and
+//! registered as usual, which allows the
+//! GltfExtras component with the skein data to
+//! instantiate a component.
 //!
-//! This is basically what is happening when you load a .gltf
-//! file and spawn a scene but if you're just adding components
-//! in your regular Bevy application then you don't need the
-//! extra indirection here and should add the components directly
+//! This is basically what is happening when you
+//! load a .gltf file and spawn a scene but if
+//! you're just adding components in your regular
+//! Bevy application then you don't need the extra
+//! indirection here and should add the components
+//! directly
 use bevy::{
     color::palettes::tailwind::SKY_400, prelude::*,
 };

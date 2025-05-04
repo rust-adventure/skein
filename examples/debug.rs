@@ -1,6 +1,6 @@
-//! An example that mirrors bevy's gltf extras example
-//! showing how gltf extras get translated to components
-//!
+//! An example that mirrors bevy's gltf extras
+//! example showing how gltf extras get translated
+//! to components
 use bevy::{
     gltf::{
         GltfExtras, GltfMaterialExtras, GltfMeshExtras,

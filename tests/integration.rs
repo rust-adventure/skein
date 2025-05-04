@@ -1,5 +1,6 @@
-//! make sure SkeinPlugin options are all publically setable
-//! if they should be, and that the plugin constructs without issue
+//! make sure SkeinPlugin options are all
+//! publically setable if they should be, and that
+//! the plugin constructs without issue
 #[test]
 fn test_skein_options() {
     use bevy::prelude::*;

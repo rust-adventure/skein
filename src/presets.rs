@@ -20,17 +20,17 @@ use crate::SkeinPresetRegistry;
 /// The method path for a `skein/presets` request.
 pub const BRP_SKEIN_PRESETS_METHOD: &str = "skein/presets";
 
-/// Handles a `skein/presets` request coming from a client.
+/// Handles a `skein/presets` request coming from
+/// a client.
 pub fn export_presets(
     In(_): In<Option<Value>>,
     world: &World,
 ) -> BrpResult {
     let types = world.resource::<AppTypeRegistry>().read();
 
-    let presets =
-        world.resource::<SkeinPresetRegistry>();
+    let presets = world.resource::<SkeinPresetRegistry>();
 
-   let mut all_serialized_presets = presets.0.iter().map(|(type_path, component_presets)| {
+    let mut all_serialized_presets = presets.0.iter().map(|(type_path, component_presets)| {
         let serialized_presets = component_presets.iter().filter_map(|(preset_name, reflected)| {
             let reflect_serializer = ReflectSerializer::new(
                 reflected.as_reflect(),
@@ -54,7 +54,6 @@ pub fn export_presets(
         .collect::<HashMap<String, Value>>();
         (type_path.clone(), serialized_presets)
     }).collect::<HashMap<String, HashMap<String, Value>>>();
-
 
     for (type_path, default_value) in types
         .iter()
@@ -93,8 +92,9 @@ fn export_default_preset(
 
     let type_path = binding.path();
 
-    // we're only interested in Components that implement Default,
-    // so we test for ReflectComponent and ReflectDefault and return
+    // we're only interested in Components that
+    // implement Default, so we test for
+    // ReflectComponent and ReflectDefault and return
     // None to filter this value out
     if !(reg
         .data_by_id(TypeId::of::<ReflectComponent>())

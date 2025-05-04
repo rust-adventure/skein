@@ -1,5 +1,5 @@
-//! An example that shows that components are added
-//! before a SceneInstanceReady is handled
+//! An example that shows that components are
+//! added before a SceneInstanceReady is handled
 use bevy::prelude::*;
 use bevy_log::tracing::instrument;
 use bevy_scene::SceneInstanceReady;

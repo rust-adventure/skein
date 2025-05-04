@@ -1,12 +1,15 @@
-//! An example that is only used to serve up Component
-//! registry information in various ways that can be
-//! tested in Blender
+//! An example that is only used to serve up
+//! Component registry information in various ways
+//! that can be tested in Blender
 //!
-//! it renders nothing, and only exists to serve BRP requests
+//! it renders nothing, and only exists to serve
+//! BRP requests
 //!
-//! The file `./component_tests.json` is built from the BRP schema
-//! this example provides and is the minimal set of types required
-//! to reflect and construct values of the components registered here.
+//! The file `./component_tests.json` is built
+//! from the BRP schema this example provides and
+//! is the minimal set of types required
+//! to reflect and construct values of the
+//! components registered here.
 use bevy::prelude::*;
 use bevy_skein::{SkeinAppExt, SkeinPlugin};
 use test_components::*;

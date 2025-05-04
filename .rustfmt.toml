@@ -1,0 +1,5 @@
+max_width = 60
+wrap_comments = true
+comment_width = 50
+fn_call_width = 40
+imports_granularity = "Crate"

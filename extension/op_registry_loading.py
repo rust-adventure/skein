@@ -54,19 +54,24 @@ class FetchRemoteTypeRegistry(bpy.types.Operator):
 
         process_registry(context, brp_response["result"])
         
+        # even if presets is enabled, the request failing should be handled gracefully
+        # *any* error reporting makes users think skein is totally broken and doesn't work.
+        # which is not true; if this request fails, we've already done the critical work
+        # of fetching the registry above. The only downside to hiding this error is that its
+        # harder to debug if something is wrong (you have to launch Blender from the console
+        # and view the output)
         if presets:
             try:
                 brp_response = brp_fetch_skein_presets()
             except:
-                self.report({"ERROR"}, "Could not connect to bevy application to fetch presets data from the Bevy Remote Protocol")
-                return {'CANCELLED'}
+                print("Could not connect to bevy application to fetch presets data from the Bevy Remote Protocol")
+                return {'FINISHED'}
             
             # If the bevy remote protocol returns an error, report it to the user
             if brp_response is not None and "error" in brp_response:
-                if debug:
-                    print("bevy request errored out", brp_response["error"])
-                self.report({"ERROR"}, "request for Bevy registry data returned an error, is the Bevy Remote Protocol Plugin added and is the Bevy app running? :: " + brp_response["error"]["message"])
-                return {'CANCELLED'}
+                print("request for Bevy registry data returned an error, is the Bevy Remote Protocol Plugin added and is the Bevy app running? :: " + brp_response["error"]["message"])
+                # self.report({"ERROR"}, "request for Bevy registry data returned an error, is the Bevy Remote Protocol Plugin added and is the Bevy app running? :: " + brp_response["error"]["message"])
+                return {'FINISHED'}
 
             # write presets response to a file in .blend file
             if "skein-presets.json" in bpy.data.texts:

@@ -9,42 +9,29 @@ The Rust crate is a Bevy plugin. Nothing special, just a Cargo.toml. `cargo test
 
 ## Blender Addon
 
-The Blender addon is written in Python and comes with the usual python requirements.
-
-`__init__.py` is written in such a way that you can copy/paste the file into the a new scripting text file in the Blender Scripting tab, then run it. You don't have to install anything if you do this, but you won't be able to run tests.
+The Blender addon is written in Python and is only set up to run inside of a Blender instance. This can be headless.
 
 ## Testing
 
-For more automated testing, I happen to be using [pipx](https://github.com/pypa/pipx) and [virtualenv](https://virtualenv.pypa.io), and [pyenv]()
+While I used to used python virtual environments to work on this plugin, I've found that its far more effective and reliable to run python tests headlessly inside of a blender instance.
 
-```
-brew install pipx pyenv
-pipx ensurepath
-pipx install virtualenv
-pyenv install 3.10
-# pyenv shims will show you the path to a python 3.10, which is
-# required for bpy to install
-pyenv shims
-virtualenv skein-dev -p /Users/chris/.pyenv/shims/python3.10
-source skein-dev/bin/activate
-pip install bpy requests
-pip install -U pytest
-```
+As such, the `Justfile` contains tasks that will execute blender headlessly using `tools/run-python-tests.nu`.
 
 ## The Python Dataflow
 
 1. Registry data is fetched from a running bevy application via BRP
-   - this data is cached in a file that lives inside the .blend file
+   - this data is cached in a text block that lives inside the .blend file
      - this cache is used if it exists instead of making a fetch when opening a blend file, which allows editing Blender scenes without running a Bevy app.
+   - The preset data is also fetched at this time, although if it fails we let it fail silently. It can fail for any number of reasons, including intentionally being disabled by the end-user of the Rust crate.
 2. the registry json data is converted into Blender PropertyGroup classes and a collection of component type_paths are stored for later use
 3. the user selects an object, navigates to the Properties.object/.mesh/.material tab
 4. the user uses a search field to pick a component
-5. the user clicks a button that fires the InsertBevyComponent operator
+5. the user clicks a button that fires the `InsertComponent*` operators
    - the operator inserts the component onto the relevant object/mesh/materials's components collection
 6. the component that is selected is shown as a form in the Properties.object panel using the PropertyGroup
-7. once components are inserted and filled out with data, the user exports gltf however they want to
+7. once components are inserted and filled out with data, the user exports gltf however they want to, including Collection Exporters.
 8. the skein export extension cleans up the data that was stored on objects and formats it so that Bevy can use the reflection data directly without modification
-9. The user spawns a gltf scene in Bevy, which now hold the `GltfExtras`/`GltfMeshExtras`/`GltfMaterialExtras` we stored on the nodes when exporting
+9. The user spawns a gltf scene in Bevy, which now hold the `GltfExtras`/`GltfMeshExtras`/`GltfMaterialExtras` Components which contain the data we stored on the nodes when exporting
 10. An observer reflects the component data from `GltfExtras`/`GltfMeshExtras`/`GltfMaterialExtras` onto the relevant nodes, instantiating all components applied in Blender
 
 #### WindowManager
@@ -114,7 +101,6 @@ There are "primitive" types in the Bevy reflection data that have a `kind` of `V
 
 ## Interesting Future Work
 
-- Can we add any reflected `Default` data to the registry information and use that in Blender for default values?
 - Relationships: How can we support a good Blender UI for assigning custom Bevy Relationships
 - If a variant of a complex enum is not constructible, what happens? can we just drop the non-constructible one? or render a note in the UI
 - Blender custom properties have [subtypes](https://docs.blender.org/manual/en/latest/files/custom_properties.html) which could be useful for editing different kinds of data

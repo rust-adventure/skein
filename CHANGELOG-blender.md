@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.1.7]
+
+Fail gracefully if the skein/presets endpoint fails for any reason.
+
 ## [0.1.6]
 
 ### The First CLI Command

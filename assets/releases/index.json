@@ -26,6 +26,31 @@
       "archive_url": "./bevy_skein-0.1.6.zip",
       "archive_size": 64975,
       "archive_hash": "sha256:3cc47546adca412f1498edc4c90af813945876f2cac6c6d71f8fa9198913775b"
+    },
+    {
+      "schema_version": "1.0.0",
+      "id": "bevy_skein",
+      "name": "Bevy Skein",
+      "tagline": "Apply Bevy Components in Blender",
+      "version": "0.1.7",
+      "type": "add-on",
+      "maintainer": "Chis Biscardi <chris@christopherbiscardi.com>",
+      "license": [
+        "SPDX:MIT",
+        "SPDX:Apache-2.0"
+      ],
+      "blender_version_min": "4.2.0",
+      "permissions": {
+        "files": "Export GLTF to disk/import Bevy type registry"
+      },
+      "tags": [
+        "Game Engine",
+        "Import-Export",
+        "User Interface"
+      ],
+      "archive_url": "./bevy_skein-0.1.7.zip",
+      "archive_size": 65195,
+      "archive_hash": "sha256:bad20e2da6890effbe22d44652a27f4976fa4f8ccf94094a6280825c3e4ae1b2"
     }
   ]
 }

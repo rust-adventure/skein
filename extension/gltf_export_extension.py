@@ -155,7 +155,7 @@ def gather_skein_two(source, sink):
                 # if the component is a tuple struct, etc
                 # retrieve the value directly instead of
                 # recursing
-                obj[type_path] = getattr(component, type_path)
+                obj[type_path] = getattr(component, hash_over_64(type_path))
                 objs.append(obj)
 
         # for most items, extras is a `.` access

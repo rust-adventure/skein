@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.1.8]
+
+bugfix: #38. Scalar components with type_paths over length 63 failed to export. This affected components like `avian3d::dynamics::rigid_body::mass_properties::components::Mass`.
+
 ## [0.1.7]
 
 Fail gracefully if the skein/presets endpoint fails for any reason.

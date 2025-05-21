@@ -1,5 +1,5 @@
 #![doc = include_str!("../README.md")]
-use bevy_app::{App, Plugin};
+use bevy_app::{App, Plugin, Startup};
 use bevy_ecs::{
     name::Name,
     observer::Trigger,
@@ -15,7 +15,7 @@ use bevy_gltf::{
 use bevy_log::{error, trace};
 use bevy_platform::collections::HashMap;
 use bevy_reflect::{Reflect, serde::ReflectDeserializer};
-use serde::de::DeserializeSeed;
+use serde::{Deserialize, Serialize, de::DeserializeSeed};
 use serde_json::Value;
 use tracing::{instrument, warn};
 
@@ -28,6 +28,18 @@ use tracing::{instrument, warn};
 /// preset values.
 #[cfg(feature = "presets")]
 pub mod presets;
+
+/// Safelists are used for providing a well-defined
+/// Component API to artists using Blender. By
+/// enabling this feature, you can limit the available
+/// components Blender users will see.
+///
+/// Doing this in combination with putting all Blender
+/// Components in one (or a few) crates, allows users
+/// to have a high degree of control over the Blender
+/// user experience.
+#[cfg(feature = "safelist")]
+pub mod safelist;
 
 /// [`SkeinPlugin`] is the main plugin.
 ///
@@ -43,11 +55,35 @@ pub struct SkeinPlugin {
     /// up BRP yourself
     #[allow(dead_code)]
     pub handle_brp: bool,
+    /// When the `write_manifest_and_exit` feature is enabled,
+    /// This value controls whether the currently running
+    /// application should actually write the skein
+    /// manifest file and exit.
+    ///
+    /// By default this value is true. Which means when the
+    /// `write_manifest_and_exit` feature is enabled, the program
+    /// will write the file and exit by default.
+    ///
+    /// If you want to be able to write the manifest from a
+    /// previously compiled build, such as when distributing a
+    /// test game binary, set this value to `false` and choose
+    /// your own adventure for how to configure it when you want
+    /// to. (one potential option is to do your own CLI argument
+    /// parsing)
+    pub write_manifest_and_exit: bool,
 }
 
 impl Default for SkeinPlugin {
     fn default() -> Self {
-        Self { handle_brp: true }
+        Self {
+            handle_brp: true,
+            // default is true, because the feature is off by default,
+            // so turning the feature on should cause this to execute.
+            //
+            // use false if you want to be able to toggle this in a dev
+            // build that is being distributed as a binary.
+            write_manifest_and_exit: true,
+        }
     }
 }
 
@@ -55,6 +91,9 @@ impl Plugin for SkeinPlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<SkeinPresetRegistry>()
             .add_observer(skein_processing);
+
+        #[cfg(feature = "write_manifest_and_exit")]
+        app.add_systems(Startup, write_manifest_and_exit);
 
         #[cfg(all(
             not(target_family = "wasm"),
@@ -72,6 +111,11 @@ impl Plugin for SkeinPlugin {
                     presets::export_presets,
                 );
             }
+
+            remote_plugin = remote_plugin.with_method(
+                safelist::BRP_REGISTRY_SCHEMA_METHOD,
+                safelist::export_registry_types,
+            );
 
             app.add_plugins((
                 remote_plugin,
@@ -274,4 +318,72 @@ fn skein_processing(
                 .insert_reflect(reflect_value);
         }
     }
+}
+
+/// The format written to disk when using an "offline" registry
+#[derive(Serialize, Deserialize)]
+struct SkeinManifest {
+    /// manifest version. Only bumped if there's a breaking change in the data that we need to communicate to blender
+    version: usize,
+    /// the safelisted crates whose components will be shown in Blender; empty Vec is no filter.
+    crate_safelist: Vec<String>,
+    /// what version of bevy_skein was used to create this data?
+    created_using_bevy_skein_version: &'static str,
+    /// available presets/default values for components
+    presets: Option<serde_json::Value>,
+    /// type_reflection data
+    registry: serde_json::Value,
+}
+
+impl Default for SkeinManifest {
+    fn default() -> Self {
+        Self {
+            version: 1,
+            crate_safelist: Default::default(),
+            created_using_bevy_skein_version: env!(
+                "CARGO_PKG_VERSION"
+            ),
+            presets: Default::default(),
+            registry: Default::default(),
+        }
+    }
+}
+
+#[cfg(feature = "write_manifest_and_exit")]
+fn write_manifest_and_exit(
+    mut world: &mut bevy_ecs::world::World,
+) -> bevy_ecs::error::Result {
+    use crate::safelist::export_registry_types;
+    use bevy_app::AppExit;
+    use bevy_ecs::{
+        event::EventWriter, system::SystemState,
+    };
+    let types_schema = world
+        .run_system_cached_with(
+            export_registry_types,
+            None,
+        )?
+        .map_err(|brp_error| format!("{:?}", brp_error))?;
+    let registry_save_path = std::path::Path::new(
+        "skein.manifest.registry.json",
+    );
+
+    let manifest = SkeinManifest {
+        crate_safelist: vec![],
+        presets: None,
+        registry: types_schema,
+        ..Default::default()
+    };
+
+    let writer = std::fs::File::create(registry_save_path)?;
+    serde_json::to_writer_pretty(writer, &manifest)?;
+
+    let mut system_state: SystemState<
+        EventWriter<AppExit>,
+    > = SystemState::new(&mut world);
+
+    let mut exit_event = system_state.get_mut(&mut world);
+
+    exit_event.write(AppExit::Success);
+    Ok(())
 }

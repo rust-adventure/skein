@@ -9,7 +9,10 @@ fn test_skein_options() {
     App::new()
         .add_plugins((
             MinimalPlugins,
-            SkeinPlugin { handle_brp: false },
+            SkeinPlugin {
+                handle_brp: false,
+                ..default()
+            },
         ))
         // immediately exit
         .add_systems(

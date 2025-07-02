@@ -267,3 +267,7 @@ def process_registry(context, registry):
         type=component_container,
         override={"LIBRARY_OVERRIDABLE"},
     )
+    bpy.types.Bone.skein_two = bpy.props.CollectionProperty(
+        type=component_container,
+        override={"LIBRARY_OVERRIDABLE"},
+    )

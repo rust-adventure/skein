@@ -90,6 +90,24 @@ class SkeinPanelCollection(bpy.types.Panel):
         obj = context.collection
         draw_generic_panel(context, obj, self.layout, "collection")
 
+class SkeinPanelBone(bpy.types.Panel):
+    """Creates a Panel in the Object Properties Panel for a bone"""
+    bl_label = "Skein Bevy Panel"
+    bl_idname = "BONE_PT_skein"
+    bl_space_type = 'PROPERTIES'
+    bl_region_type = 'WINDOW'
+    bl_context = 'bone'
+
+    @classmethod
+    def poll(cls, context):
+        return bpy.ops.bone.insert_component.poll()
+
+    def draw(self, context):
+        # we use context.bone because context.active_bone will return 
+        # an EditBone *or* a Bone and we want a Bone
+        obj = context.bone
+        draw_generic_panel(context, obj, self.layout, "bone")
+
 def draw_generic_panel(context, obj, layout, execute_mode):
         
         global_skein = context.window_manager.skein

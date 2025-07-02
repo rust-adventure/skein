@@ -114,10 +114,139 @@ class glTF2ExportUserExtension:
     def gather_camera_hook(self, gltf2_camera, blender_camera, export_settings):
         if self.properties.enabled:
             gather_skein_two(blender_camera, gltf2_camera)
+    def gather_joint_hook(self, gltf2_node, blender_bone, export_settings):
+        # blender_bone seems to be a PoseBone
+        if self.properties.enabled:
+            # blender_bone.bone is the way the gltf extension grabs the extras
+            # https://github.com/KhronosGroup/glTF-Blender-IO/blob/d97e93200cff331b7d58bb8347237740fd7ccd89/addons/io_scene_gltf2/blender/exp/joints.py#L119
+            gather_skein_two(blender_bone.bone, gltf2_node)
+        pass
     def gather_gltf_extensions_hook(self, gltf2_plan, export_settings):
         pass
     def gather_scene_hook(self, gltf2_scene, blender_scene, export_settings):
         pass
+    # 
+    # this commented code is some code meant to aid in debugging any
+    # arbitrary feature through the export process
+    # 
+    # # def pre_export_hook(self, export_settings):
+    # #     print("debug: ")
+    # # def post_export_hook(self, export_settings):
+    # #     print("debug: ")
+    # def gather_animation_channel_hook(self, gltf2_animation_channel, channel, blender_object, bone, action_name, node_channel_is_animated, export_settings):
+    #     print("debug: gather_animation_channel_hook")
+    # def gather_animation_channel_target_hook(self, gltf2_animation_channel_target, channels, blender_object, bake_bone, bake_channel, export_settings):
+    #     print("debug: gather_animation_channel_target_hook")
+    # def gather_animation_sampler_hook(self, gltf2_sampler, blender_object, bone, action_name, node_channel_is_animated, export_settings):
+    #     print("debug: gather_animation_sampler_hook")
+    # def gather_asset_hook(self, gltf2_asset, export_settings):
+    #     print("debug: gather_asset_hook")
+    # # def gather_camera_hook(self, gltf2_camera, blender_camera, export_settings):
+    # #     print("debug: ")
+    # # def gather_gltf_extensions_hook(self, gltf2_plan, export_settings):
+    # #     print("debug: ")
+    # def gather_image_hook(self, gltf2_image, mapping, blender_shader_sockets, export_settings):
+    #     print("debug: gather_image_hook")
+    # # def gather_joint_hook(self, gltf2_node, blender_bone, export_settings):
+    # #     print("debug: gather_joint_hook")
+    # # def gather_material_hook(self, gltf2_material, blender_material, export_settings):
+    # #     print("debug: ")
+    # # def gather_material_pbr_metallic_roughness_hook(self, gltf2_material, blender_material, orm_texture, export_settings):
+    # #     print("debug: ")
+    # # def gather_material_unlit_hook(self, gltf2_material, blender_material, export_settings):
+    # #     print("debug: ")
+    # # def gather_mesh_hook(self, gltf2_mesh, blender_mesh, blender_object, vertex_groups, modifiers, materials, export_settings):
+    # #     print("debug: ")
+    # # def gather_node_hook(self, gltf2_node, blender_object, export_settings):
+    # #     print("debug: ")
+    # def gather_node_name_hook(self, gltf_name, blender_object, export_settings):
+    #     print("debug: gather_node_name_hook")
+    # def gather_sampler_hook(self, gltf2_sampler, blender_shader_node, export_settings):
+    #     print("debug: gather_sampler_hook")
+    # # def gather_scene_hook(self, gltf2_scene, blender_scene, export_settings):
+    # #     print("debug: ")
+    # # def gather_skin_hook(self, gltf2_skin, blender_object, export_settings):
+    # #     print("debug: ")
+    # def gather_texture_hook(self, gltf2_texture, blender_shader_sockets, export_settings):
+    #     print("debug: gather_texture_hook")
+    # def gather_texture_info_hook(self, gltf2_texture_info, blender_shader_sockets, export_settings):
+    #     print("debug: gather_texture_info_hook")
+    # def merge_animation_extensions_hook(self, gltf2_animation_source, gltf2_animation_destination, export_settings):
+    #     print("debug: merge_animation_extensions_hook")
+    # def vtree_before_filter_hook(self, vtree, export_settings):
+    #     print("debug: vtree_before_filter_hook")
+    # def vtree_after_filter_hook(self, vtree, export_settings):
+    #     print("debug: vtree_after_filter_hook")
+    # def pre_gather_animation_hook(self, gltf2_channels, blender_action, slot_identifier, blender_object, export_settings):
+    #     print("debug: pre_gather_animation_hook")
+    # def gather_actions_hook(self, blender_object, actions, export_settings): # params = ActionsData
+    #     print("debug: gather_actions_hook")
+    # def gather_tracks_hook(self, blender_object, tracks, export_settings): # params = TracksData, blender_tracks_names, track_on_type:
+    #     print("debug: gather_tracks_hook")
+    # def pre_gather_actions_hook(self, blender_object, export_settings): # For action mode
+    #     print("debug: pre_gather_actions_hook")
+    # def pre_gather_tracks_hook(self, blender_object, export_settings): # For track mode
+    #     print("debug: pre_gather_tracks_hook")
+    # def pre_animation_switch_hook(self, blender_object, blender_action, slot, track_name, on_type, export_settings): # For action mode:
+    #     print("debug: pre_animation_switch_hook")
+    # def post_animation_switch_hook(self, blender_object, blender_action, slot, track_name, on_type, export_settings):  # For action mode:
+    #     print("debug: post_animation_switch_hook")
+    # def pre_animation_track_switch_hook(self, blender_object, tracks, track_name, on_type, export_settings): # For track mode:
+    #     print("debug: pre_animation_track_switch_hook")
+    # def post_animation_track_switch_hook(self, blender_object, tracks, track_name, on_type, export_settings):  # For track mode:
+    #     print("debug: post_animation_track_switch_hook")
+    # def animation_switch_loop_hook(self, blender_object, post, export_settings): # post = False before loop, True after loop # for action mode:
+    #     print("debug: animation_switch_loop_hook")
+    # def animation_track_switch_loop_hook(self, blender_object, post, export_settings): # post = False before loop, True after loop # for track mode:
+    #     print("debug: animation_track_switch_loop_hook")
+    # def animation_gather_fcurve(self, blender_object, blender_action, export_settings):
+    #     print("debug: animation_gather_fcurve")
+    # def animation_channels_object_sampled(self, gltf2_channels, blender_object, blender_action, slot_identifier, cache_key, export_settings):
+    #     print("debug: animation_channels_object_sampled")
+    # def animation_gather_object_channel(self, blender_object, blender_action_name, export_settings):
+    #     print("debug: animation_gather_object_channel")
+    # def animation_gather_object_sampler(self, blender_object, action_name, export_settings):
+    #     print("debug: animation_gather_object_sampler")
+    # def animation_channels_sk_sampled(self, gltf2_channels, blender_object, blender_action, slot_identifier, cache_key, export_settings):
+    #     print("debug: animation_channels_sk_sampled")
+    # def animation_action_sk_sampled_target(self, blender_object, export_settings):
+    #     print("debug: animation_action_sk_sampled_target")
+    # def animation_gather_sk_channels(self, blender_object, blender_action_name, export_settings):
+    #     print("debug: animation_gather_sk_channels")
+    # def animation_gather_sk_channel(self, blender_object, blender_action_name, export_settings):
+    #     print("debug: animation_gather_sk_channel")
+    # def animation_gather_fcurve_channel_target(self, blender_object, bone_name, export_settings):
+    #     print("debug: animation_gather_fcurve_channel_target")
+    # def animation_gather_fcurve_channel_sampler(self, blender_object, bone_name, export_settings):
+    #     print("debug: animation_gather_fcurve_channel_sampler")
+    # def animation_gather_fcurve_channel(self, blender_object, bone_name, channel_group, export_settings):
+    #     print("debug: animation_gather_fcurve_channel")
+    # def gather_gltf_hook(self, active_scene_idx, scenes, animations, export_settings):
+    #     print("debug: gather_gltf_hook")
+    # def gather_gltf_encoded_hook(self, gltf_format, sort_order, export_settings):
+    #     print("debug: gather_gltf_encoded_hook")
+    # def gather_tree_filter_tag_hook(self, tree, export_settings):
+    #     print("debug: gather_tree_filter_tag_hook")
+    # def animation_channels_armature_sampled(self, gltf2_channels, blender_object, blender_action, slot_identifier, cache_key, export_settings):
+    #     print("debug: animation_channels_armature_sampled")
+    # def gather_animation_bone_sampled_channel_target_hook(self, blender_object, bone, channel, export_settings):
+    #     print("debug: gather_animation_bone_sampled_channel_target_hook")
+    # def gather_animation_object_sampled_channel_target_hook(self, blender_object, channel):
+    #     print("debug: gather_animation_object_sampled_channel_target_hook")
+    # def gather_attribute_keep(self, keep_attribute, export_settings):
+    #     print("debug: gather_attribute_keep")
+    # def gather_attribute_change(self, attribute, data, is_normalized_byte_color, export_settings):
+    #     print("debug: gather_attribute_change")
+    # def gather_attributes_change(self, attributes, export_settings):
+    #     print("debug: gather_attributes_change")
+    # def gather_gltf_additional_textures_hook(self, json, additioan_json_textures, export_settings):
+    #     print("debug: gather_gltf_additional_textures_hook")
+    # def gather_node_mesh_hook(self, option, blender_object, export_settings):
+    #     print("debug: gather_node_mesh_hook")
+    # def extra_animation_manage(self, extra_samplers, obj_uuid, blender_object, blender_action, gltf_channels, export_settings):
+    #     print("debug: extra_animation_manage")
+    # def animation_action_hook(self, gltf2_animation, blender_object, blender_action_data, export_settings):
+    #     print("debug: animation_action_hook")
 
 def glTF2_pre_export_callback(export_settings):
     print("This will be called before exporting the glTF file.")
@@ -130,6 +259,7 @@ def pre_export_hook(export_settings):
 
 def gather_skein_two(source, sink):
     if "skein_two" in source:
+        print("skein_two exists")
         objs = []
         skein_property_groups = bpy.context.window_manager.skein_property_groups
         for component in source.skein_two:

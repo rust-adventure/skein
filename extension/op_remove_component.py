@@ -70,6 +70,20 @@ class RemoveComponentOnCollection(bpy.types.Operator):
         remove_component_data(context, context.collection)
         return {'FINISHED'}
 
+class RemoveComponentOnBone(bpy.types.Operator):
+    """Remove a component on the selected bone"""
+    bl_idname = "bone.remove_component" # unique identifier. first word is required by extensions review team to be from a specific set of words
+    bl_label = "Remove Component Data (Bone)" # Shows up in the UI
+    bl_options = {'REGISTER', 'UNDO'} # enable undo (which we might not need)
+
+    @classmethod
+    def poll(cls, context):
+        return context.bone is not None
+
+    def execute(self, context):
+        remove_component_data(context, context.bone)
+        return {'FINISHED'}
+    
 ###
 def remove_component_data(context, obj):
     """

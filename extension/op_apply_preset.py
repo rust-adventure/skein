@@ -84,6 +84,23 @@ class ApplyPresetToCollection(bpy.types.Operator):
         apply_preset_data(context, context.collection, self.preset_id)
         return {'FINISHED'}
 
+
+class ApplyPresetToBone(bpy.types.Operator):
+    """Apply a preset (like Default) to the selected bone"""
+    bl_idname = "bone.apply_preset" # unique identifier. first word is required by extensions review team to be from a specific set of words
+    bl_label = "Apply Preset (Bone)" # Shows up in the UI
+    bl_options = {'REGISTER', 'UNDO'} # enable undo (which we might not need)
+
+    preset_id: bpy.props.StringProperty() # type: ignore
+
+    @classmethod
+    def poll(cls, context):
+        return context.bone is not None
+
+    def execute(self, context):
+        apply_preset_data(context, context.collection, self.preset_id)
+        return {'FINISHED'}
+
 def apply_preset_data(context, obj, preset_id):
     """
     Inserting data is super generic, the only difference is where we're inserting it.

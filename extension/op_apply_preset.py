@@ -51,7 +51,24 @@ class ApplyPresetToMaterial(bpy.types.Operator):
     def execute(self, context):
         apply_preset_data(context, context.material, self.preset_id)
         return {'FINISHED'}
+
+class ApplyPresetToScene(bpy.types.Operator):
+    """Apply a preset (like Default) to the selected scene"""
+    bl_idname = "scene.apply_preset" # unique identifier. first word is required by extensions review team to be from a specific set of words
+    bl_label = "Apply Preset (Scene)" # Shows up in the UI
+    bl_options = {'REGISTER', 'UNDO'} # enable undo (which we might not need)
+
+    preset_id: bpy.props.StringProperty() # type: ignore
+
+    @classmethod
+    def poll(cls, context):
+        return context.scene is not None
+
+    def execute(self, context):
+        apply_preset_data(context, context.scene, self.preset_id)
+        return {'FINISHED'}
     
+
 class ApplyPresetToLight(bpy.types.Operator):
     """Apply a preset (like Default) to the selected light"""
     bl_idname = "light.apply_preset" # unique identifier. first word is required by extensions review team to be from a specific set of words

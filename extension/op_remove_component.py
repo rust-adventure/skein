@@ -42,6 +42,20 @@ class RemoveComponentOnMaterial(bpy.types.Operator):
         remove_component_data(context, context.material)
         return {'FINISHED'}
 
+class RemoveComponentOnScene(bpy.types.Operator):
+    """Remove a component on the selected scene"""
+    bl_idname = "scene.remove_component" # unique identifier. first word is required by extensions review team to be from a specific set of words
+    bl_label = "Remove Component Data (Scene)" # Shows up in the UI
+    bl_options = {'REGISTER', 'UNDO'} # enable undo (which we might not need)
+
+    @classmethod
+    def poll(cls, context):
+        return context.scene is not None
+
+    def execute(self, context):
+        remove_component_data(context, context.scene)
+        return {'FINISHED'}
+
 class RemoveComponentOnLight(bpy.types.Operator):
     """Remove a component on the selected light"""
     bl_idname = "light.remove_component" # unique identifier. first word is required by extensions review team to be from a specific set of words

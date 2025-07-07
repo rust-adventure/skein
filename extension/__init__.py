@@ -1,14 +1,14 @@
 import bpy # type: ignore
 import json
 from bpy.app.handlers import persistent # type: ignore
-from .op_apply_preset import ApplyPresetToBone, ApplyPresetToCollection, ApplyPresetToLight, ApplyPresetToMaterial, ApplyPresetToMesh, ApplyPresetToObject
+from .op_apply_preset import ApplyPresetToBone, ApplyPresetToCollection, ApplyPresetToLight, ApplyPresetToMaterial, ApplyPresetToMesh, ApplyPresetToObject, ApplyPresetToScene
 from .cli_dump_component_data import dump_component_data # type: ignore
-from .op_insert_component import InsertComponentOnBone, InsertComponentOnCollection, InsertComponentOnLight, InsertComponentOnMaterial, InsertComponentOnMesh, InsertComponentOnObject
+from .op_insert_component import InsertComponentOnBone, InsertComponentOnCollection, InsertComponentOnLight, InsertComponentOnMaterial, InsertComponentOnMesh, InsertComponentOnObject, InsertComponentOnScene
 from .op_registry_loading import FetchRemoteTypeRegistry, ReloadSkeinRegistryJson
-from .op_remove_component import RemoveComponentOnBone, RemoveComponentOnCollection, RemoveComponentOnLight, RemoveComponentOnMaterial, RemoveComponentOnMesh, RemoveComponentOnObject
+from .op_remove_component import RemoveComponentOnBone, RemoveComponentOnCollection, RemoveComponentOnLight, RemoveComponentOnMaterial, RemoveComponentOnMesh, RemoveComponentOnObject, RemoveComponentOnScene
 from .op_debug_check_components import DebugCheckComponents
 from .property_groups import ComponentData
-from .skein_panel import SkeinPanelBone, SkeinPanelCollection, SkeinPanelLight, SkeinPanelObject, SkeinPanelMesh, SkeinPanelMaterial, SkeinPresetMenu
+from .skein_panel import SkeinPanelBone, SkeinPanelCollection, SkeinPanelLight, SkeinPanelObject, SkeinPanelMesh, SkeinPanelMaterial, SkeinPanelScene, SkeinPresetMenu
 # these imports appear unused, but are *required* for the export extension to work
 from .gltf_export_extension import glTF_extension_name, extension_is_required, SkeinExtensionProperties, draw_export, glTF2ExportUserExtension, pre_export_hook, glTF2_pre_export_callback
 
@@ -113,6 +113,10 @@ def register():
         min=0,
         override={"LIBRARY_OVERRIDABLE"},
     )
+    bpy.types.Scene.active_component_index = bpy.props.IntProperty(
+        min=0,
+        override={"LIBRARY_OVERRIDABLE"},
+    )
     bpy.types.Camera.active_component_index = bpy.props.IntProperty(
         min=0,
         override={"LIBRARY_OVERRIDABLE"},
@@ -149,6 +153,7 @@ def register():
     bpy.utils.register_class(InsertComponentOnObject)
     bpy.utils.register_class(InsertComponentOnMesh)
     bpy.utils.register_class(InsertComponentOnMaterial)
+    bpy.utils.register_class(InsertComponentOnScene)
     bpy.utils.register_class(InsertComponentOnLight)
     bpy.utils.register_class(InsertComponentOnCollection)
     bpy.utils.register_class(InsertComponentOnBone)
@@ -156,6 +161,7 @@ def register():
     bpy.utils.register_class(RemoveComponentOnObject)
     bpy.utils.register_class(RemoveComponentOnMesh)
     bpy.utils.register_class(RemoveComponentOnMaterial)
+    bpy.utils.register_class(RemoveComponentOnScene)
     bpy.utils.register_class(RemoveComponentOnLight)
     bpy.utils.register_class(RemoveComponentOnCollection)
     bpy.utils.register_class(RemoveComponentOnBone)
@@ -163,6 +169,7 @@ def register():
     bpy.utils.register_class(ApplyPresetToObject)
     bpy.utils.register_class(ApplyPresetToMesh)
     bpy.utils.register_class(ApplyPresetToMaterial)
+    bpy.utils.register_class(ApplyPresetToScene)
     bpy.utils.register_class(ApplyPresetToLight)
     bpy.utils.register_class(ApplyPresetToCollection)
     bpy.utils.register_class(ApplyPresetToBone)
@@ -170,6 +177,7 @@ def register():
     bpy.utils.register_class(SkeinPanelObject)
     bpy.utils.register_class(SkeinPanelMesh)
     bpy.utils.register_class(SkeinPanelMaterial)
+    bpy.utils.register_class(SkeinPanelScene)
     bpy.utils.register_class(SkeinPanelLight)
     bpy.utils.register_class(SkeinPanelCollection)
     bpy.utils.register_class(SkeinPanelBone)

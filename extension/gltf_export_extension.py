@@ -124,6 +124,8 @@ class glTF2ExportUserExtension:
     def gather_gltf_extensions_hook(self, gltf2_plan, export_settings):
         pass
     def gather_scene_hook(self, gltf2_scene, blender_scene, export_settings):
+        if self.properties.enabled:
+            gather_skein_two(blender_scene, gltf2_scene)
         pass
     # 
     # this commented code is some code meant to aid in debugging any

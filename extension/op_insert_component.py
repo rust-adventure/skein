@@ -45,6 +45,20 @@ class InsertComponentOnMaterial(bpy.types.Operator):
     def execute(self, context):
         insert_component_data(context, context.material)
         return {'FINISHED'}
+
+class InsertComponentOnScene(bpy.types.Operator):
+    """Insert a component on the selected scene"""
+    bl_idname = "scene.insert_component" # unique identifier. first word is required by extensions review team to be from a specific set of words
+    bl_label = "Insert Component Data (Scene)" # Shows up in the UI
+    bl_options = {'REGISTER', 'UNDO'} # enable undo (which we might not need)
+
+    @classmethod
+    def poll(cls, context):
+        return context.scene is not None
+
+    def execute(self, context):
+        insert_component_data(context, context.scene)
+        return {'FINISHED'}
     
 class InsertComponentOnLight(bpy.types.Operator):
     """Insert a component on the selected light"""

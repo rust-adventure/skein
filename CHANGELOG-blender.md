@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+Enable placing components on Blender Scene objects
+
+## [0.1.9]
+
+Enable placing components on individual bones
+
 ## [0.1.8]
 
 bugfix: #38. Scalar components with type_paths over length 63 failed to export. This affected components like `avian3d::dynamics::rigid_body::mass_properties::components::Mass`.
@@ -66,7 +72,10 @@ These presets are one-off. There is no special storage for them once they are ap
 
 Initial Release of Blender Addon
 
-[unreleased]: https://github.com/rust-adventure/skein/compare/blender-v0.1.6...HEAD
+[unreleased]: https://github.com/rust-adventure/skein/compare/blender-v0.1.9...HEAD
+[0.1.9]: https://github.com/rust-adventure/skein/compare/blender-v0.1.8...blender-v0.1.9
+[0.1.8]: https://github.com/rust-adventure/skein/compare/blender-v0.1.7...blender-v0.1.8
+[0.1.7]: https://github.com/rust-adventure/skein/compare/blender-v0.1.6...blender-v0.1.7
 [0.1.6]: https://github.com/rust-adventure/skein/compare/blender-v0.1.5...blender-v0.1.6
 [0.1.5]: https://github.com/rust-adventure/skein/compare/blender-v0.1.3...blender-v0.1.5
 [0.1.3]: https://github.com/rust-adventure/skein/compare/blender-v0.1.2...blender-v0.1.3

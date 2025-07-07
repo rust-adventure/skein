@@ -58,6 +58,22 @@ class SkeinPanelMaterial(bpy.types.Panel):
         obj = context.material
         draw_generic_panel(context, obj, self.layout, "material")
 
+class SkeinPanelScene(bpy.types.Panel):
+    """Creates a Panel in the Object Properties Panel for a scene"""
+    bl_label = "Skein Bevy Panel"
+    bl_idname = "SCENE_PT_skein"
+    bl_space_type = 'PROPERTIES'
+    bl_region_type = 'WINDOW'
+    bl_context = 'scene'
+
+    @classmethod
+    def poll(cls, context):
+        return bpy.ops.scene.insert_component.poll()
+
+    def draw(self, context):
+        obj = context.scene
+        draw_generic_panel(context, obj, self.layout, "scene")
+
 class SkeinPanelLight(bpy.types.Panel):
     """Creates a Panel in the Object Properties Panel for a light"""
     bl_label = "Skein Bevy Panel"

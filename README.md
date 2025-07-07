@@ -62,7 +62,8 @@ All versions of `bevy_skein` are currently compatible with all versions of the `
 
 | Bevy version | `bevy_skein` version |
 | :----------- | :------------------- |
-| `0.16`       | branch `main`        |
+| `0.16`       | `main`               |
+| `0.16`       | `0.2`                |
 | `0.15`       | `0.1`                |
 
 | Blender version | `skein` addon version |

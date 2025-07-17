@@ -2,11 +2,11 @@
 use bevy_app::{App, Plugin};
 use bevy_ecs::{
     name::Name,
-    observer::Trigger,
+    observer::On,
+    prelude::Add,
     reflect::{AppTypeRegistry, ReflectCommandExt},
     resource::Resource,
     system::{Commands, Query, Res},
-    world::OnAdd,
 };
 use bevy_gltf::{
     GltfExtras, GltfMaterialExtras, GltfMeshExtras,
@@ -152,8 +152,8 @@ struct SkeinPresetRegistry(
     commands,
 ))]
 fn skein_processing(
-    trigger: Trigger<
-        OnAdd,
+    trigger: On<
+        Add,
         (
             GltfExtras,
             GltfMaterialExtras,

@@ -36,7 +36,9 @@ struct Player {
 }
 ```
 
-- Install the Blender Addon (todo)
+- Install the Blender Addon\Extension
+  * drag and drop the [zip](https://github.com/rust-adventure/skein/releases) file onto Blender's viewport
+  * click `install from disk`
 - Fetch the Bevy registry using the Blender Operator
 - Select and apply a component
 - Export to glTF

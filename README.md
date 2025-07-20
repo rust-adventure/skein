@@ -36,7 +36,8 @@ struct Player {
 }
 ```
 
-- Install the Blender Addon (todo)
+- Install the Blender Extension
+  * Drag and drop the installation link from the website, as detailed in the [installation](https://bevyskein.dev/docs/installation) docs.
 - Fetch the Bevy registry using the Blender Operator
 - Select and apply a component
 - Export to glTF

@@ -265,6 +265,9 @@ def unregister():
         bpy.utils.unregister_cli_command(cmd)
     cli_commands.clear()
 
+    # Remove menu
+    bpy.types.TOPBAR_MT_edit.remove(menu_func)
+
     # Use the following 2 lines to unregister the UI for this hook
     from io_scene_gltf2 import exporter_extension_layout_draw # type: ignore
     del exporter_extension_layout_draw['Example glTF Extension'] # Make sure to use the same name in register()

@@ -7,7 +7,7 @@
       "id": "bevy_skein",
       "name": "Bevy Skein",
       "tagline": "Apply Bevy Components in Blender",
-      "version": "0.1.9",
+      "version": "0.1.10",
       "type": "add-on",
       "maintainer": "Chis Biscardi <chris@christopherbiscardi.com>",
       "license": [
@@ -23,9 +23,9 @@
         "Import-Export",
         "User Interface"
       ],
-      "archive_url": "./bevy_skein-0.1.9.zip",
-      "archive_size": 66708,
-      "archive_hash": "sha256:234addbf4a69632647109bdd34defbd2710204c88d90d6d9cdbc648c47aace63"
+      "archive_url": "./bevy_skein-0.1.10.zip",
+      "archive_size": 66885,
+      "archive_hash": "sha256:aff10a5dcf72438717de4fdb9db318098a5d890ff952535f83329a5b2c37cb3e"
     }
   ]
 }

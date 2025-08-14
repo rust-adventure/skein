@@ -4,7 +4,7 @@ description: How to insert Bevy components in Blender using the Skein addon
 opengraph_image: /opengraph/opengraph-inserting-components.jpg
 ---
 
-_After_ fetching the **Bevy Type Registry** information; **Components** can be inserted on Blender **Objects**, **Meshes**, and **Materials**.
+_After_ [fetching the **Bevy Type Registry**](/docs/fetching-the-bevy-type-registry) information; **Components** can be inserted on Blender **Objects**, **Meshes**, **Materials**, **Scenes**, **Lights**, **Collections**, and **Bones**.
 
 After selecting an **Object**, the UI for this exists in the **Properties** area in the **Object** tab. You may need to scroll down to see the **Skein Bevy Panel**.
 
@@ -12,11 +12,11 @@ In the **Skein Bevy Panel**, there's an empty field labelled `type:`.
 
 ![Object Panel](/images/the-blender-addon/object-panel.avif)
 
-This field will autocomplete on the full type_path for all applicable Components.
+This field will autocomplete on the full `type_path` for all applicable Components.
 
 ![Inserting Component](/images/the-blender-addon/inserting-component.avif)
 
-Once you choose a Component's type_path, the component must be inserted using the Button below labelled **Insert Bevy Component**.
+Once you choose a Component's `type_path`, the component must be inserted using the Button below labelled **Insert Component Data**.
 
 ![Inserted Component](/images/the-blender-addon/inserted-component.avif)
 
@@ -32,7 +32,7 @@ Unit structs, such as Marker components, will show a message stating that there 
 
 ## Objects, Meshes, and Materials
 
-Objects, Meshes, and Materials are all located in slightly different places in the Blender UI and all of them can receive components.
+Objects, Meshes, etc are all located in slightly different places in the Blender UI and all of them can receive components.
 
 ### Objects
 
@@ -58,3 +58,32 @@ Components can be inserted on Meshes under the <span class="text-red-500 dark:te
 ![Material Panel](/images/the-blender-addon/material-panel.avif)
 
 ![UseGoalMaterial](/images/the-blender-addon/use-goal-material.avif)
+
+### Scenes
+
+Components can be inserted on Scenes under the <span class="text-gray-500 dark:text-gray-400">gray</span> scene items icon.
+
+![Scene Panel](/images/introduction/panel-scene.avif)
+
+### Lights
+
+Components can be inserted on Lights under the <span class="text-green-500 dark:text-green-400">green light</span> icon.
+
+![Light Panel](/images/introduction/panel-light.avif)
+
+### Bones
+
+Components can be inserted on Bones under the <span class="text-green-500 dark:text-green-400">green bone</span> icon.
+
+This is slightly different from the other panels, in that if you select the bone in the outliner, it will change which bone you're adding Components to, so pay attention to which bone is selected!
+
+![Bone Panel](/images/introduction/panel-bone.avif)
+
+### Collections
+
+Components can be inserted on Collections under the <span class="text-gray-500 dark:text-gray-400">gray box</span> collection icon.
+
+> [!NOTE]
+> Collections are eliminated in Blender's default export configuration! You _probably_ don't want to enable the additional hierarchy nodes, but it is supported if you do.
+
+![Collection Panel](/images/introduction/panel-collection.avif)

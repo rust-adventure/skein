@@ -1,3 +1,4 @@
+#![recursion_limit = "256"]
 #![allow(clippy::type_complexity)]
 mod components;
 pub mod pages;

@@ -8,7 +8,7 @@ The [Bevy Remote Protocol](https://docs.rs/bevy/latest/bevy/remote/index.html) (
 
 Skein uses **BRP** over HTTP to fetch the Bevy registry of type information for your Bevy application. This is the information that powers the ability to select Components and insert them onto Objects in the Blender addon.
 
-Skein will set up the remote plugin and an HTTP server for you (or you can do it yourself). The Blender addon will then fetch this information any time you run the `Fetch Bevy Type Registry` Operator.
+Skein will set up the remote plugin and an HTTP server for you (or you can do it yourself). The Blender addon will then fetch this information any time you run the **Fetch a Remote Type Registry** Operator.
 
 ## An Example Response
 
@@ -74,6 +74,6 @@ The relevant subset of the API response looks like this. This is the data we use
 
 Once fetched, the Blender addon will store the registry information in a `Text` block named `skein-registry.json`.
 
-You can navigate to the `Scripting` tab and view the `Blender File` in the `Outliner`. In this list _after you've fetched the Bevy Registry information_ you will see a `Texts` item with a `skein-registry.json` field that contains the registry information. This file is used to rebuild the Component types, enabling the .blend file to be distributed without worrying about whether a Bevy application is running or not.
+You can navigate to the `Scripting` tab and view the `Blender File` in the `Outliner`. In this list, _after you've fetched the Bevy Registry information_, you will see a `Texts` item with a `skein-registry.json` field that contains the registry information. This file is used to rebuild the Component types, enabling the .blend file to be distributed without worrying about whether a Bevy application is running or not.
 
 ![skein-registry.json](/images/the-blender-addon/skein-registry-json.avif)

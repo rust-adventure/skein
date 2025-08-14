@@ -4,7 +4,7 @@ description: You can use Blender as a way to visually prepare StandardMaterials.
 opengraph_image: /opengraph/opengraph-exporting-material-libraries.jpg
 ---
 
-Blender is useful for creating a library of Materials inside of Blender. For the most part these materials will be used in the levels and scenes in Blender and exported with their usage when exporting to glTF, which requires no additional steps.
+A library of Materials can be created inside of Blender. For the most part these materials will be used in the levels and scenes in Blender and exported with their usage when exporting to glTF, which requires no additional steps.
 
 However, you _can_ access materials as sub-assets from glTF files and apply them dynamically to procedural objects in Bevy.
 

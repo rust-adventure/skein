@@ -45,20 +45,16 @@ async fn main() -> io::Result<()> {
                 NavLink {
                     title: "Inserting Components",
                     href: "/docs/inserting-components",
-                }
-            ],
-        },
-        NavItem {
-            title: "The Blender Addon",
-            links: vec![
-                NavLink {
-                    title: "Bevy Remote Protocol",
-                    href: "/docs/bevy-remote-protocol",
                 },
                 NavLink {
                     title: "Defaults and Presets",
                     href: "/docs/defaults-and-presets",
                 },
+            ],
+        },
+        NavItem {
+            title: "The Blender Addon",
+            links: vec![
                 NavLink {
                     title: "Using Blender Drivers",
                     href: "/docs/using-blender-drivers",
@@ -67,15 +63,20 @@ async fn main() -> io::Result<()> {
                     title: "Collection Instances and Library Overrides",
                     href: "/docs/collections-instances-and-library-overrides",
                 },
+            ],
+        },
+        NavItem {
+            title: "Exporting",
+            links: vec![
                 NavLink {
-                    title: "Exporting: The Basics",
+                    title: "The Basics",
                     href: "/docs/exporting-the-basics"
                 },
                 NavLink {
-                    title: "Exporting: Multiple Collections",
+                    title: "Multiple Collections",
                     href: "/docs/exporting-multiple-collections"
                 },
-            ],
+            ]
         },
         NavItem {
             title: "Concepts",
@@ -134,10 +135,10 @@ async fn main() -> io::Result<()> {
             ]
         },
         NavItem {
-            title: "Contributing",
+            title: "Contributing and Internals",
             links: vec![
                 NavLink {
-                    title: "Overview (coming soon)",
+                    title: "Overview",
                     href: "/docs/contributing",
                 },
                 NavLink {
@@ -151,6 +152,14 @@ async fn main() -> io::Result<()> {
                 NavLink {
                     title: "Testing",
                     href: "/docs/testing",
+                },
+                NavLink {
+                    title: "Bevy Remote Protocol",
+                    href: "/docs/bevy-remote-protocol",
+                },
+                NavLink {
+                    title: "Reflection",
+                    href: "/docs/reflection",
                 },
             ],
         },

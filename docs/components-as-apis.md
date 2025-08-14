@@ -143,3 +143,31 @@ If you want to keep that data and move it into the new Component, then it become
 3. Once the data has been migrated, remove the `team` field.
 
 This allows you full access to the existing data while migrating to the new usage, and lets you remove the old field in the end.
+
+## Controlling the type_path
+
+If you find yourself moving Components around, or want a more explicit set of Components to use in Blender, you can control two important aspects of the Reflection implementation:
+
+- `type_path`
+- `type_name`
+
+The `type_path` is the module path.
+Using the `type_path` attribute, you can define the way this module path will show up when using it inside of Blender, no matter where it is in your source code.
+Similarly, `type_name` is the name Reflection will use.
+
+Here's an example.
+Normally in Blender and other Reflection use cases you'd use this component as `path::to::module::Character`.
+With our changes, this Component will show up as `api::Something` in Blender regardless of where it is in our source code.
+
+```rust
+#[derive(Component, Reflect, Debug)]
+#[reflect(Component)]
+#[type_path = "api"]
+#[type_name = "Something"]
+struct Character {
+    name: String,
+}
+```
+
+You'll be able to use it in source code as `Character` while using it in Blender as `Something`.
+This allows you to rename and move the Component around at-will without making changes in Blender.

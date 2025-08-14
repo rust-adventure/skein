@@ -13,6 +13,7 @@ opengraph_image: /opengraph/opengraph-index.jpg
 ## tldr;
 
 1. Register **Components** in Bevy using [`App::register_type`](https://docs.rs/bevy/latest/bevy/prelude/struct.App.html#method.register_type)
+   - In Bevy 0.17 this registration is automatic
 1. Fetch the registry information from your Bevy app and store it in Blender
 1. Insert Bevy Components into objects, meshes, materials, and more in Blender
 1. Export to one big glTF or many small glTF files

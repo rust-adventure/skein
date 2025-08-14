@@ -17,9 +17,11 @@ There are two pieces to Skein:
 cargo add bevy_skein
 ```
 
-Add the plugin to your application. Using `default` sets `handle_brp` to `true` which lets Skein set up the appropriate BRP configuration.
+Add the plugin to your application. Using `default` sets `handle_brp` to `true` which lets **Skein** set up the appropriate **BRP** configuration.
 If you want more control, set this to `false` (or disable `default-features`) and set up the `RemotePlugin` and `RemoteHttpPlugin` yourself.
-Skein currently only uses the default ports and disables BRP on wasm.
+
+> [!NOTE]  
+> Skein currently only uses the default ports and disables BRP on wasm.
 
 ```rust
 use bevy::prelude::*;
@@ -36,13 +38,16 @@ fn main() {
 ```
 
 The only thing you need to do is set up the plugin.
-Skein operates on the `GltfExtras` that the Blender addon sets up in the .gltf/.glb file, so spawning a scene from a `.gltf` exported with the addon data will "just work".
+**Skein** operates on the `GltfExtras` that the Blender addon sets up in the .gltf/.glb file, so spawning a scene from a `.gltf` exported with the addon data will "just work".
 
 ```rust
 commands.spawn(SceneRoot(asset_server.load(
     GltfAssetLabel::Scene(0).from_asset("my_export.gltf"),
 )));
 ```
+
+> [!NOTE]  
+> Using `GltfAssetLabel` with `SceneRoot` is a quick way to spawn a scene, but you may want to load and access the `Gltf` asset or use `SceneSpawner` for more control.
 
 ---
 

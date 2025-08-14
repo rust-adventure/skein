@@ -4,7 +4,7 @@ description: Using and providing presets for Component values
 opengraph_image: /opengraph/opengraph-migration-tools.jpg
 ---
 
-Components can have `Default` implementations. For example a `PointLight` could have a `Default` implementation as such:
+Components can have `Default` implementations. For example a `PointLight` could have a `Default` implementation that created this value:
 
 ```rust
 PointLight {
@@ -20,7 +20,17 @@ PointLight {
 }
 ```
 
-But `Default` is not the only way to gain pre-set values. Any instantiated value could be treated as a "preset".
+If you want to use the `Default` implementations in Blender, you must also `reflect` that information in your Components:
+
+```rust
+#[derive(Component, Default)]
+#[reflect(Component, Default)]
+struct Player {
+    name: String
+}
+```
+
+But `Default` implementations are not the only way to gain pre-set values. Any instantiated value could be treated as a "preset".
 
 ## Enabling Presets
 

@@ -17,6 +17,7 @@ exclude = [
     "Justfile",
     "DESIGN.md",
 ]
+rust-version = "1.88.0"
 
 [dependencies]
 bevy_app = "0.17.0-dev"

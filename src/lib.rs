@@ -39,15 +39,17 @@ pub struct SkeinPlugin {
     /// Whether Skein should handle adding the
     /// Bevy Remote Protocol plugins.
     ///
-    /// use `false` if you want to handle setting
-    /// up BRP yourself
+    /// Use `false` if you want to handle setting
+    /// up BRP yourself. The default constructor will
+    /// only enable BRP in dev builds.
     #[allow(dead_code)]
     pub handle_brp: bool,
 }
 
 impl Default for SkeinPlugin {
     fn default() -> Self {
-        Self { handle_brp: true }
+        let dev = cfg!(debug_assertions);
+        Self { handle_brp: dev }
     }
 }
 

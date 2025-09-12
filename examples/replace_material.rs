@@ -15,12 +15,12 @@
 //! allowing us to re-use the handle as many times
 //! as needed. You could use a HashMap instead to
 //! handle many handles like this.
+use bevy::render::render_resource::SpecializedMeshPipelineError;
 use bevy::{
     asset::RenderAssetUsages,
     color::palettes::tailwind::SLATE_950,
     core_pipeline::prepass::{DepthPrepass, NormalPrepass},
     ecs::{lifecycle::HookContext, world::DeferredWorld},
-    input::common_conditions::input_just_pressed,
     mesh::MeshVertexBufferLayoutRef,
     pbr::{MaterialPipeline, MaterialPipelineKey},
     post_process::bloom::Bloom,
@@ -35,19 +35,11 @@ use bevy::{
     },
     shader::ShaderRef,
 };
-use bevy::{
-    light::{NotShadowCaster, NotShadowReceiver},
-    render::render_resource::SpecializedMeshPipelineError,
-};
 use bevy_skein::SkeinPlugin;
 
 fn main() {
     App::new()
         .insert_resource(ClearColor(SLATE_950.into()))
-        .register_type::<UseDebugMaterial>()
-        .register_type::<UseForceFieldMaterial>()
-        .register_type::<NotShadowCaster>()
-        .register_type::<NotShadowReceiver>()
         .add_plugins((
             DefaultPlugins
                 .set(ImagePlugin::default_nearest()),

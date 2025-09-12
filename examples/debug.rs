@@ -14,7 +14,6 @@ use serde::{Deserialize, Serialize};
 
 fn main() {
     App::new()
-        .register_type::<PowerLevel>()
         .add_plugins((
             DefaultPlugins,
             SkeinPlugin::default(),

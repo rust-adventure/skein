@@ -4,14 +4,14 @@ A Bevy Plugin and a Blender extension for improving the efficiency of Bevy/Blend
 
 tldr:
 
-1. Register components in Bevy
+1. Reflect component data in Bevy
 2. Apply Bevy Components to objects, meshes, or materials in Blender
 3. Export to glTF
 4. Components are instantiated when spawning in Bevy
 
 ## Quickstart
 
-Add the plugin and register components (`reflect(Component)` is important!)
+Add the plugin and reflect component data (`reflect(Component)` is important!)
 
 ```rust no_run
 use bevy::prelude::*;
@@ -19,7 +19,6 @@ use bevy_skein::SkeinPlugin;
 
 fn main() {
     App::new()
-        .register_type::<Player>()
         .add_plugins((
             DefaultPlugins,
             SkeinPlugin::default(),
@@ -37,7 +36,7 @@ struct Player {
 ```
 
 - Install the Blender Extension
-  * Drag and drop the installation link from the website, as detailed in the [installation](https://bevyskein.dev/docs/installation) docs.
+  - Drag and drop the installation link from the website, as detailed in the [installation](https://bevyskein.dev/docs/installation) docs.
 - Fetch the Bevy registry using the Blender Operator
 - Select and apply a component
 - Export to glTF
@@ -63,7 +62,7 @@ All versions of `bevy_skein` are currently compatible with all versions of the `
 
 | Bevy version | `bevy_skein` version |
 | :----------- | :------------------- |
-| `0.16`       | `main`               |
+| `0.17`       | `0.3`                |
 | `0.16`       | `0.2`                |
 | `0.15`       | `0.1`                |
 

@@ -26,12 +26,12 @@ fn main() {
 }
 
 fn check_insertions(
-    trigger: Trigger<SceneInstanceReady>,
+    scene_instance_ready: On<SceneInstanceReady>,
     children: Query<&Children>,
     levels: Query<&PowerLevel>,
 ) {
-    for entity in
-        children.iter_descendants(trigger.target())
+    for entity in children
+        .iter_descendants(scene_instance_ready.entity)
     {
         let Ok(level) = levels.get(entity) else {
             continue;

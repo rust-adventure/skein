@@ -142,7 +142,7 @@ struct SkeinPresetRegistry(
 );
 
 #[instrument(skip(
-    trigger,
+    on_add,
     type_registry,
     gltf_extras,
     gltf_material_extras,
@@ -152,7 +152,7 @@ struct SkeinPresetRegistry(
     commands,
 ))]
 fn skein_processing(
-    trigger: On<
+    on_add: On<
         Add,
         (
             GltfExtras,
@@ -169,7 +169,7 @@ fn skein_processing(
     names: Query<&Name>,
     mut commands: Commands,
 ) {
-    let entity = trigger.target();
+    let entity = on_add.entity;
 
     trace!(
         ?entity,

@@ -6,7 +6,7 @@ authors = ["Chris Biscardi"]
 edition = "2024"
 
 [dependencies]
-bevy = "0.16.0-rc.5"
+bevy = "0.17.0-rc.1"
 serde_json = "1.0"
 
 [dev-dependencies]

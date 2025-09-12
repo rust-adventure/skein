@@ -13,8 +13,8 @@ fn main() {
             |ready: On<SceneInstanceReady>,
              children: Query<&Children>,
              characters: Query<&Character>| {
-                for entity in children
-                    .iter_descendants(ready.entity())
+                for entity in
+                    children.iter_descendants(ready.entity)
                 {
                     let Ok(character) =
                         characters.get(entity)

@@ -122,7 +122,7 @@
 					"bevy_light::NotShadowCaster": {}
 					},
 					{
-					"bevy::light::NotShadowReceiver": {}
+					"bevy_light::NotShadowReceiver": {}
 					}
 				]
 			},

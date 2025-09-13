@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.3.0-rc.1]
+
+- Bevy 0.17 support
+- [#61](https://github.com/rust-adventure/skein/pull/61): Only enable BRP in dev builds by default using `cfg!(debug_assertions)` for `handle_brp` in the `Default` implementation of `SkeinPlugin`.
+
 ## [0.2.0-rc.3]
 
 ### Presets

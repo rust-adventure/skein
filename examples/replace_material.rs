@@ -15,30 +15,31 @@
 //! allowing us to re-use the handle as many times
 //! as needed. You could use a HashMap instead to
 //! handle many handles like this.
+use bevy::render::render_resource::SpecializedMeshPipelineError;
 use bevy::{
     asset::RenderAssetUsages,
     color::palettes::tailwind::SLATE_950,
-    core_pipeline::{
-        bloom::Bloom,
-        prepass::{DepthPrepass, NormalPrepass},
-    },
-    input::common_conditions::input_just_pressed,
+    core_pipeline::prepass::{DepthPrepass, NormalPrepass},
+    ecs::{lifecycle::HookContext, world::DeferredWorld},
+    mesh::MeshVertexBufferLayoutRef,
+    pbr::{MaterialPipeline, MaterialPipelineKey},
+    post_process::bloom::Bloom,
     prelude::*,
-    render::render_resource::{
-        AsBindGroup, Extent3d, ShaderRef, TextureDimension,
-        TextureFormat,
+    render::{
+        render_resource::{
+            AsBindGroup, Extent3d,
+            RenderPipelineDescriptor, TextureDimension,
+            TextureFormat,
+        },
+        view::Hdr,
     },
-};
-use bevy_ecs::{
-    component::HookContext, world::DeferredWorld,
+    shader::ShaderRef,
 };
 use bevy_skein::SkeinPlugin;
 
 fn main() {
     App::new()
         .insert_resource(ClearColor(SLATE_950.into()))
-        .register_type::<UseDebugMaterial>()
-        .register_type::<UseForceFieldMaterial>()
         .add_plugins((
             DefaultPlugins
                 .set(ImagePlugin::default_nearest()),
@@ -77,10 +78,8 @@ fn setup(
     // settings
     commands.spawn((
         Camera3d::default(),
-        Camera {
-            hdr: true,
-            ..default()
-        },
+        Hdr,
+        Camera { ..default() },
         Transform::from_xyz(12.0, 7., 12.0)
             .looking_at(Vec3::new(0., 1., 0.), Vec3::Y),
         DepthPrepass,
@@ -203,11 +202,11 @@ impl Material for ForceFieldMaterial {
     }
 
     fn specialize(
-        _pipeline: &bevy::pbr::MaterialPipeline<Self>,
-        descriptor: &mut bevy::render::render_resource::RenderPipelineDescriptor,
-        _layout: &bevy::render::mesh::MeshVertexBufferLayoutRef,
-        _key: bevy::pbr::MaterialPipelineKey<Self>,
-    ) -> Result<(), bevy::render::render_resource::SpecializedMeshPipelineError>{
+        _pipeline: &MaterialPipeline,
+        descriptor: &mut RenderPipelineDescriptor,
+        _layout: &MeshVertexBufferLayoutRef,
+        _key: MaterialPipelineKey<Self>,
+    ) -> Result<(), SpecializedMeshPipelineError> {
         descriptor.primitive.cull_mode = None;
         Ok(())
     }

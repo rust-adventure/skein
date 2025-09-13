@@ -21,7 +21,6 @@ use bevy_skein::SkeinPlugin;
 
 fn main() {
     App::new()
-        .register_type::<Character>()
         .add_plugins((
             DefaultPlugins
                 .set(ImagePlugin::default_nearest()),

@@ -8,7 +8,6 @@ use serde::{Deserialize, Serialize};
 
 fn main() {
     App::new()
-        .register_type::<Character>()
         .add_plugins((
             DefaultPlugins,
             SkeinPlugin::default(),
@@ -17,14 +16,18 @@ fn main() {
         .run();
 }
 
-#[instrument(skip(trigger, children, levels))]
+#[instrument(skip(
+    on_scene_instance_ready,
+    children,
+    levels
+))]
 fn on_scene_instance_ready(
-    trigger: Trigger<SceneInstanceReady>,
+    on_scene_instance_ready: On<SceneInstanceReady>,
     children: Query<&Children>,
     levels: Query<&Character>,
 ) {
-    for entity in
-        children.iter_descendants(trigger.target())
+    for entity in children
+        .iter_descendants(on_scene_instance_ready.entity)
     {
         let Ok(level) = levels.get(entity) else {
             continue;

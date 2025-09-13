@@ -119,10 +119,10 @@
 						"replace_material::UseForceFieldMaterial":{}
 					},
 					{
-						"bevy_pbr::light::NotShadowCaster":{}
+					"bevy_light::NotShadowCaster": {}
 					},
 					{
-						"bevy_pbr::light::NotShadowReceiver":{}
+					"bevy_light::NotShadowReceiver": {}
 					}
 				]
 			},

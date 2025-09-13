@@ -10,7 +10,6 @@ use bevy_skein::SkeinPlugin;
 fn main() {
     App::new()
         .insert_resource(ClearColor(SLATE_950.into()))
-        .register_type::<ControlBone>()
         .add_plugins((
             DefaultPlugins
                 .set(ImagePlugin::default_nearest()),

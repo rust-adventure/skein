@@ -16,27 +16,17 @@ use test_components::*;
 
 fn main() {
     App::new()
-        .register_type::<ThisIsOverThePythonKeyLengthLimitForBlenderProperties>()
-        .register_type::<Player>()
-        .register_type::<TeamMember>()
-        .register_type::<ATupleStruct>()
-        .register_type::<Marker>()
-        .register_type::<TaskPriority>()
-        .register_type::<SomeThings>()
-        .register_type::<MultiElementTupleStruct>()
-        .register_type::<AnOptionalName>()
-        .register_type::<NonZeroNumbers>()
-        .register_type::<AStructWithColor>()
-        .register_type::<TimerContainer>()
-        .register_type::<RichAndUnitEnum>()
-        .register_type::<LinearVelocity>()
-        .register_type::<SuperGlam>()
-        .insert_skein_preset("Luigi", TeamMember{
-            player: Player { name: "Luigi Mario".to_string(), power: 100., test: 5 },
-            team: Team::Green,
-        })
-        // below this line are types that aren't expected to work
-        .register_type::<BucketOfTypes>()
+        .insert_skein_preset(
+            "Luigi",
+            TeamMember {
+                player: Player {
+                    name: "Luigi Mario".to_string(),
+                    power: 100.,
+                    test: 5,
+                },
+                team: Team::Green,
+            },
+        )
         // add plugins
         .add_plugins((
             DefaultPlugins,

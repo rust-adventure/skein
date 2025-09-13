@@ -12,7 +12,9 @@ fn main() {
         .run();
 }
 
-fn startup(type_registry: Res<AppTypeRegistry>,        mut app_exit_events: EventWriter<AppExit>,
+fn startup(
+    type_registry: Res<AppTypeRegistry>,
+    mut app_exit_events: EventWriter<AppExit>,
 ) -> Result {
     let types = type_registry.read();
     let mut component_types: Vec<_> = vec![];
@@ -24,7 +26,8 @@ fn startup(type_registry: Res<AppTypeRegistry>,        mut app_exit_events: Even
         //    (TypeId::of::<ReflectDeserialize>(), "Deserialize")
         let id = TypeId::of::<ReflectComponent>();
         if registration.data_by_id(id).is_some() {
-            let binding = registration.type_info().type_path_table();
+            let binding =
+                registration.type_info().type_path_table();
 
             let short_path = binding.short_path();
             let type_path = binding.path();
@@ -32,14 +35,15 @@ fn startup(type_registry: Res<AppTypeRegistry>,        mut app_exit_events: Even
         }
     }
     component_types.sort();
-   
+
     let mut f = File::create_new("types.json")?;
-    f.write_all(serde_json::to_string_pretty(&component_types).unwrap().as_bytes())?;
-    
+    f.write_all(
+        serde_json::to_string_pretty(&component_types)
+            .unwrap()
+            .as_bytes(),
+    )?;
+
     info!("file");
     app_exit_events.write(AppExit::Success);
     Ok(())
 }
-
-
-

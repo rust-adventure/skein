@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.1.11]
+
+- The extension will now work with Bevy 0.16 and 0.17 applications.
+  Note that some type paths for core bevy types or third party crates might have changed between these two versions so be aware of that if you're upgrading.
+
+- Remove the default registry, which would now be incorrect depending on which Bevy version you were using.
+
+## [0.1.10]
+
 Enable placing components on Blender Scene objects
 
 ## [0.1.9]

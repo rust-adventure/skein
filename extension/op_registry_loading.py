@@ -31,7 +31,22 @@ class FetchRemoteTypeRegistry(bpy.types.Operator):
         brp_response = None
 
         try:
-            brp_response = brp_fetch_registry_schema()
+            print("\nexecute: TODO: a")
+            rpc_response = brp_simple_request("rpc.discover")
+            print("\nexecute: TODO: b")
+            print(rpc_response)
+            if rpc_response is not None and "error" in rpc_response:
+                if debug:
+                    print("bevy request errored out", rpc_response["error"])
+                self.report({"ERROR"}, "request for Bevy registry data returned an error, is the Bevy Remote Protocol Plugin added and is the Bevy app running? :: " + brp_response["error"]["message"])
+                return {'CANCELLED'}
+            print("\nexecute: TODO: c")
+            bevy_version = rpc_response["result"]["info"]["version"]
+            print(bevy_version)
+            if bevy_version.startswith("0.16"):
+                brp_response = brp_simple_request("bevy/registry/schema")
+            elif bevy_version.startswith("0.17"):
+                brp_response = brp_simple_request("registry.schema")
         except:
             self.report({"ERROR"}, "Could not connect to bevy application to fetch registry data from the Bevy Remote Protocol")
             return {'CANCELLED'}
@@ -86,10 +101,10 @@ class FetchRemoteTypeRegistry(bpy.types.Operator):
 
 # TODO: allow configuration of url via addon settings or
 # custom fetch operator?
-def brp_fetch_registry_schema(host="http://127.0.0.1", port=15702):
+def brp_simple_request(rpc_endpoint, host="http://127.0.0.1", port=15702):
     """Fetch the registry schema from a running Bevy application"""
-
-    data = {"jsonrpc": "2.0", "method": "bevy/registry/schema", "params": {}}
+    # 0.16 payload
+    data = {"jsonrpc": "2.0", "method": rpc_endpoint, "params": {}}
     r = requests.post(host + ":" + str(port), json=data)
     brp_response = r.json()
     return brp_response
@@ -118,18 +133,15 @@ class ReloadSkeinRegistryJson(bpy.types.Operator):
             process_registry(context, embedded_registry)
         else:
             # if we're trying to reload the registry file, and we haven't created one yet
-            # insert some demo data, which in turn means that the file will be created and
+            # insert an empty object, which in turn means that the file will be created and
             # is easier to access and modify by users who wish to do so.
-            dirname = os.path.dirname(__file__)
-            filename = os.path.join(dirname, 'default_registry.json')
-            with open(filename) as default_registry_file:
-                data = json.loads(default_registry_file.read())
-                embedded_registry = bpy.data.texts.new("skein-registry.json")
-                embedded_registry.write(json.dumps(data, indent=4))
-                # read the file we just wrote, so that this code doesn't need to be updated in
-                # the future. If its in the skein-registry.json, then it will be processed
-                embedded_registry = json.loads(bpy.data.texts["skein-registry.json"].as_string())
-                process_registry(context, embedded_registry)
+            data = json.loads("{}")
+            embedded_registry = bpy.data.texts.new("skein-registry.json")
+            embedded_registry.write(json.dumps(data, indent=4))
+            # read the file we just wrote, so that this code doesn't need to be updated in
+            # the future. If its in the skein-registry.json, then it will be processed
+            embedded_registry = json.loads(bpy.data.texts["skein-registry.json"].as_string())
+            process_registry(context, embedded_registry)
 
         return {'FINISHED'}
 

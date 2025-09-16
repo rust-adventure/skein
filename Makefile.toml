@@ -9,10 +9,7 @@ command = "leptosfmt"
 args = ["app"]
 
 [tasks.format]
-dependencies = [
-    "cargo-format",
-    "leptos-format"
-]
+dependencies = ["cargo-format", "leptos-format"]
 workspace = false
 
 [tasks.fmt]
@@ -21,7 +18,7 @@ alias = "format"
 [tasks.build]
 install_crate = "cargo-leptos"
 # Pin to keep usign the same version of wasm-bindgen
-install_crate_args = ["--version", "0.2.29"]
+install_crate_args = ["--version", "0.2.43"]
 command = "cargo"
 args = ["leptos", "serve", "-r"]
 workspace = false
@@ -29,7 +26,7 @@ workspace = false
 [tasks.serve]
 install_crate = "cargo-leptos"
 # Pin to keep usign the same version of wasm-bindgen
-install_crate_args = ["--version", "0.2.29"]
+install_crate_args = ["--version", "0.2.43"]
 command = "cargo"
 args = ["leptos", "watch", "--features", "development", "--hot-reload"]
 workspace = false
@@ -37,7 +34,7 @@ workspace = false
 [tasks.e2e]
 install_crate = "cargo-leptos"
 # Pin to keep usign the same version of wasm-bindgen
-install_crate_args = ["--version", "0.2.29"]
+install_crate_args = ["--version", "0.2.43"]
 command = "cargo"
 args = ["leptos", "end-to-end", "--features", "development"]
 workspace = false

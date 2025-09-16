@@ -170,10 +170,10 @@ async fn main() -> io::Result<()> {
                     title: "Compared to Blenvy",
                     href: "/docs/compared-to-blenvy",
                 },
-                NavLink {
-                    title: "Compared to Blenvy",
-                    href: "/docs/blender",
-                },
+                // NavLink {
+                //     title: "Blender",
+                //     href: "/docs/blender",
+                // },
             ]
         }
     ];

@@ -24,7 +24,7 @@ class SkeinPanelObject(bpy.types.Panel):
 
     def draw(self, context):
         obj = context.object
-        draw_generic_panel(context, obj, self.layout, "object")
+        draw_generic_panel(context, obj, self.layout, "object", "OBJECT_PT_skein_preset_panel")
 
 class SkeinPanelMesh(bpy.types.Panel):
     """Creates a Panel in the Object Properties Panel for a mesh"""
@@ -40,7 +40,7 @@ class SkeinPanelMesh(bpy.types.Panel):
 
     def draw(self, context):
         obj = context.mesh
-        draw_generic_panel(context, obj, self.layout, "mesh")
+        draw_generic_panel(context, obj, self.layout, "mesh", "MESH_PT_skein_preset_panel")
 
 class SkeinPanelMaterial(bpy.types.Panel):
     """Creates a Panel in the Object Properties Panel for a material"""
@@ -56,7 +56,7 @@ class SkeinPanelMaterial(bpy.types.Panel):
 
     def draw(self, context):
         obj = context.material
-        draw_generic_panel(context, obj, self.layout, "material")
+        draw_generic_panel(context, obj, self.layout, "material", "MATERIAL_PT_skein_preset_panel")
 
 class SkeinPanelScene(bpy.types.Panel):
     """Creates a Panel in the Object Properties Panel for a scene"""
@@ -72,7 +72,7 @@ class SkeinPanelScene(bpy.types.Panel):
 
     def draw(self, context):
         obj = context.scene
-        draw_generic_panel(context, obj, self.layout, "scene")
+        draw_generic_panel(context, obj, self.layout, "scene", "SCENE_PT_skein_preset_panel")
 
 class SkeinPanelLight(bpy.types.Panel):
     """Creates a Panel in the Object Properties Panel for a light"""
@@ -88,7 +88,7 @@ class SkeinPanelLight(bpy.types.Panel):
 
     def draw(self, context):
         obj = context.light
-        draw_generic_panel(context, obj, self.layout, "light")
+        draw_generic_panel(context, obj, self.layout, "light", "LIGHT_PT_skein_preset_panel")
 
 class SkeinPanelCollection(bpy.types.Panel):
     """Creates a Panel in the Object Properties Panel for a collection"""
@@ -104,7 +104,7 @@ class SkeinPanelCollection(bpy.types.Panel):
 
     def draw(self, context):
         obj = context.collection
-        draw_generic_panel(context, obj, self.layout, "collection")
+        draw_generic_panel(context, obj, self.layout, "collection", "COLLECTION_PT_skein_preset_panel")
 
 class SkeinPanelBone(bpy.types.Panel):
     """Creates a Panel in the Object Properties Panel for a bone"""
@@ -122,9 +122,9 @@ class SkeinPanelBone(bpy.types.Panel):
         # we use context.bone because context.active_bone will return 
         # an EditBone *or* a Bone and we want a Bone
         obj = context.bone
-        draw_generic_panel(context, obj, self.layout, "bone")
+        draw_generic_panel(context, obj, self.layout, "bone", "BONE_PT_skein_preset_panel")
 
-def draw_generic_panel(context, obj, layout, execute_mode):
+def draw_generic_panel(context, obj, layout, execute_mode, skein_preset_panel_id):
         
         global_skein = context.window_manager.skein
         # TODO: the registry can likely be loaded into a dict in a less
@@ -190,7 +190,7 @@ def draw_generic_panel(context, obj, layout, execute_mode):
 
             col = row.column()
             col.popover(
-                panel="OBJECT_PT_skein_preset_panel",
+                panel=skein_preset_panel_id,
                 icon='PRESET',
                 text="",
             )
@@ -434,77 +434,3 @@ def render_two(layout, context, context_key):
             layout.prop(obj, key)
     return
 
-# from bpy.types import Menu
-
-
-# Panel mix-in class (don't register).
-# class PresetPanel:
-    # bl_space_type = 'PROPERTIES'
-    # bl_region_type = 'HEADER'
-    # bl_label = "Presets"
-    # path_menu = Menu.path_menu
-
-    # @classmethod
-    # def draw_panel_header(cls, layout):
-    #     layout.emboss = 'NONE'
-    #     layout.popover(
-    #         panel=cls.__name__,
-    #         icon='PRESET',
-    #         text="",
-    #     )
-
-    # @classmethod
-    # def draw_menu(cls, layout, text=None):
-    #     if text is None:
-    #         text = cls.bl_label
-
-    #     layout.popover(
-    #         panel=cls.__name__,
-    #         icon='PRESET',
-    #         text=text,
-    #     )
-
-    # def draw(self, context):
-    #     layout = self.layout
-    #     layout.emboss = 'PULLDOWN_MENU'
-    #     layout.operator_context = 'EXEC_DEFAULT'
-
-    #     Menu.draw_preset(self, context)
-
-
-class SkeinPresetMenu(bpy.types.Panel):
-    bl_label = "Skein Component Preset Panel"
-    bl_idname = "OBJECT_PT_skein_preset_panel"
-    bl_space_type = 'VIEW_3D' # 'PROPERTIES'
-    bl_region_type = 'WINDOW'
-    # bl_options = {'INSTANCED'}
-
-    @classmethod
-    def poll(cls, context):
-        return bpy.ops.object.insert_component.poll() and "skein-presets.json" in bpy.data.texts
-
-    def draw(self, context):
-        layout = self.layout
-        obj = context.object
-        global_skein = context.window_manager.skein
-        # TODO: the registry can likely be loaded into a dict in a less
-        # common place. This function runs every draw
-        registry = json.loads(global_skein.registry)
-        obj_skein = obj.skein_two
-
-        presets = json.loads(bpy.data.texts["skein-presets.json"].as_string())
-        if registry and obj_skein:
-            active_component_data = obj_skein[obj.active_component_index]
-            type_path = active_component_data.selected_type_path
-            if type_path in presets:
-                
-                layout.emboss = 'PULLDOWN_MENU'
-                layout.operator_context = 'EXEC_DEFAULT'
-
-                for key in presets[type_path].keys():
-                    op = layout.operator("object.apply_preset", text=key)
-                    op.preset_id = key
-
-                layout.operator_context = 'INVOKE_DEFAULT'
-                layout.emboss = 'NORMAL'
-        

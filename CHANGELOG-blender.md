@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.1.12]
+
+- Fix the application of Presets such that they apply correctly to types that are not objects.
+
 ## [0.1.11]
 
 - The extension will now work with Bevy 0.16 and 0.17 applications.

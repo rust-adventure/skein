@@ -1,6 +1,6 @@
 import bpy # type: ignore
 import json
-from bpy.app.handlers import persistent # type: ignore
+from bpy.app.handlers import persistent
 from .op_apply_preset import ApplyPresetToBone, ApplyPresetToCollection, ApplyPresetToLight, ApplyPresetToMaterial, ApplyPresetToMesh, ApplyPresetToObject, ApplyPresetToScene
 from .cli_dump_component_data import dump_component_data # type: ignore
 from .op_insert_component import InsertComponentOnBone, InsertComponentOnCollection, InsertComponentOnLight, InsertComponentOnMaterial, InsertComponentOnMesh, InsertComponentOnObject, InsertComponentOnScene
@@ -8,7 +8,8 @@ from .op_registry_loading import FetchRemoteTypeRegistry, ReloadSkeinRegistryJso
 from .op_remove_component import RemoveComponentOnBone, RemoveComponentOnCollection, RemoveComponentOnLight, RemoveComponentOnMaterial, RemoveComponentOnMesh, RemoveComponentOnObject, RemoveComponentOnScene
 from .op_debug_check_components import DebugCheckComponents
 from .property_groups import ComponentData
-from .skein_panel import SkeinPanelBone, SkeinPanelCollection, SkeinPanelLight, SkeinPanelObject, SkeinPanelMesh, SkeinPanelMaterial, SkeinPanelScene, SkeinPresetMenu
+from .skein_panel import SkeinPanelBone, SkeinPanelCollection, SkeinPanelLight, SkeinPanelObject, SkeinPanelMesh, SkeinPanelMaterial, SkeinPanelScene
+from .skein_panel_presets import SkeinPanelPresetsBone, SkeinPanelPresetsCollection, SkeinPanelPresetsLight, SkeinPanelPresetsMaterial, SkeinPanelPresetsMesh, SkeinPanelPresetsObject, SkeinPanelPresetsScene # type: ignore
 # these imports appear unused, but are *required* for the export extension to work
 from .gltf_export_extension import glTF_extension_name, extension_is_required, SkeinExtensionProperties, draw_export, glTF2ExportUserExtension, pre_export_hook, glTF2_pre_export_callback
 
@@ -181,8 +182,14 @@ def register():
     bpy.utils.register_class(SkeinPanelLight)
     bpy.utils.register_class(SkeinPanelCollection)
     bpy.utils.register_class(SkeinPanelBone)
-    # Skein Preset Menu
-    bpy.utils.register_class(SkeinPresetMenu)
+    # Skein Preset Menus
+    bpy.utils.register_class(SkeinPanelPresetsObject)
+    bpy.utils.register_class(SkeinPanelPresetsMesh)
+    bpy.utils.register_class(SkeinPanelPresetsMaterial)
+    bpy.utils.register_class(SkeinPanelPresetsScene)
+    bpy.utils.register_class(SkeinPanelPresetsLight)
+    bpy.utils.register_class(SkeinPanelPresetsCollection)
+    bpy.utils.register_class(SkeinPanelPresetsBone)
     # adds the menu_func layout to an existing menu
     bpy.types.TOPBAR_MT_edit.append(menu_func)
 
@@ -256,7 +263,13 @@ def unregister():
     bpy.utils.unregister_class(SkeinPanelLight)
     bpy.utils.unregister_class(SkeinPanelCollection)
     # Skein Preset Menu
-    bpy.utils.unregister_class(SkeinPresetMenu)
+    bpy.utils.unregister_class(SkeinPanelPresetsObject)
+    bpy.utils.unregister_class(SkeinPanelPresetsMesh)
+    bpy.utils.unregister_class(SkeinPanelPresetsMaterial)
+    bpy.utils.unregister_class(SkeinPanelPresetsScene)
+    bpy.utils.unregister_class(SkeinPanelPresetsLight)
+    bpy.utils.unregister_class(SkeinPanelPresetsCollection)
+    bpy.utils.unregister_class(SkeinPanelPresetsBone)
     # gltf extension
     bpy.utils.unregister_class(SkeinExtensionProperties)
     del bpy.types.Scene.skein_extension_properties

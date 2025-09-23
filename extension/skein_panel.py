@@ -207,9 +207,18 @@ def draw_generic_panel(context, obj, layout, execute_mode, skein_preset_panel_id
                 else:
                     render_two(layout, active_component_data, hash_over_64(type_path))
             else:
+                print("maybe entity?", type_path, active_component_data)
                 layout.prop(active_component_data, hash_over_64(type_path))
+                # layout.prop_search(
+                #     context.scene,
+                #     "target",
+                #     context.scene,
+                #     "objects",
+                #     text="Select Object"
+                # )
 
 def render_two(layout, context, context_key):
+    print("render_two", context, context_key);
     if context_key not in context:
         layout.label(text=context_key + " not in context")
         return
@@ -412,6 +421,7 @@ def render_two(layout, context, context_key):
     # No more special handling, just take the keys and values that are
     # in the annotations, and plug them into the object
     for key, value in annotations.items():
+        print(key, value)
         if "PointerProperty" == value.function.__name__:
             try:
                 next_type = getattr(obj, key)

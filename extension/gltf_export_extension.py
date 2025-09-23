@@ -260,6 +260,7 @@ def pre_export_hook(export_settings):
     pass
 
 def gather_skein_two(source, sink):
+    print("gather_skein_two", source, sink)
     if "skein_two" in source:
         objs = []
         skein_property_groups = bpy.context.window_manager.skein_property_groups
@@ -283,6 +284,7 @@ def gather_skein_two(source, sink):
                     obj[type_path] = value
                     objs.append(obj)
             else:
+                print(type_path, component, getattr(component, hash_over_64(type_path)))
                 # if the component is a tuple struct, etc
                 # retrieve the value directly instead of
                 # recursing

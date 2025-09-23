@@ -31,18 +31,15 @@ class FetchRemoteTypeRegistry(bpy.types.Operator):
         brp_response = None
 
         try:
-            print("\nexecute: TODO: a")
             rpc_response = brp_simple_request("rpc.discover")
-            print("\nexecute: TODO: b")
-            print(rpc_response)
             if rpc_response is not None and "error" in rpc_response:
                 if debug:
                     print("bevy request errored out", rpc_response["error"])
                 self.report({"ERROR"}, "request for Bevy registry data returned an error, is the Bevy Remote Protocol Plugin added and is the Bevy app running? :: " + brp_response["error"]["message"])
                 return {'CANCELLED'}
-            print("\nexecute: TODO: c")
             bevy_version = rpc_response["result"]["info"]["version"]
-            print(bevy_version)
+            if debug:
+                print("found bevy_version", bevy_version)
             if bevy_version.startswith("0.16"):
                 brp_response = brp_simple_request("bevy/registry/schema")
             elif bevy_version.startswith("0.17"):

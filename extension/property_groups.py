@@ -495,6 +495,13 @@ def make_property(
 
                             # return the type we just constructed
                             return skein_property_groups[type_path]
+                        case "bevy_ecs::entity::Entity":
+                            print("Entity support is experimental");
+                            return bpy.props.PointerProperty(
+                                # type=bpy.types.ID,
+                                type=bpy.types.Object,
+                                override={"LIBRARY_OVERRIDABLE"},
+                            )
                         case _:
                             if debug:
                                 print("unhandled `Value` of `object` type: ", component["typePath"], "\n  ", type_path)

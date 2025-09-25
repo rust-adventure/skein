@@ -97,6 +97,20 @@ class RemoveComponentOnBone(bpy.types.Operator):
     def execute(self, context):
         remove_component_data(context, context.bone)
         return {'FINISHED'}
+
+class RemoveComponentOnWindowManager(bpy.types.Operator):
+    """Remove a component"""
+    bl_idname = "wm.remove_component" # unique identifier. first word is required by extensions review team to be from a specific set of words
+    bl_label = "Remove Component" # Shows up in the UI
+    bl_options = {'REGISTER', 'UNDO'} # enable undo (which we might not need)
+
+    # @classmethod
+    # def poll(cls, context):
+    #     return context.bone is not None
+
+    def execute(self, context):
+        remove_component_data(context, context.window_manager)
+        return {'FINISHED'}
     
 ###
 def remove_component_data(context, obj):

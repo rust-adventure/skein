@@ -4,6 +4,8 @@ import bpy # type: ignore
 import json
 import requests # type: ignore
 import os
+
+# from .op_insert_component_modal import build_insert_component_operator
 from .property_groups import hash_over_64, make_property
 # --------------------------------- #
 #  Fetch and store the bevy type    #
@@ -31,16 +33,12 @@ class FetchRemoteTypeRegistry(bpy.types.Operator):
         brp_response = None
 
         try:
-            print("\nexecute: TODO: a")
             rpc_response = brp_simple_request("rpc.discover")
-            print("\nexecute: TODO: b")
-            print(rpc_response)
             if rpc_response is not None and "error" in rpc_response:
                 if debug:
                     print("bevy request errored out", rpc_response["error"])
                 self.report({"ERROR"}, "request for Bevy registry data returned an error, is the Bevy Remote Protocol Plugin added and is the Bevy app running? :: " + brp_response["error"]["message"])
                 return {'CANCELLED'}
-            print("\nexecute: TODO: c")
             bevy_version = rpc_response["result"]["info"]["version"]
             print(bevy_version)
             if bevy_version.startswith("0.16"):
@@ -253,6 +251,13 @@ def process_registry(context, registry):
     # so adding to it is fine
     skein_property_groups["skein_internal_container"] = component_container
     bpy.utils.register_class(component_container)
+    # try:
+    #     bpy.utils.unregister_class(skein_property_groups["skein_internal_insert_operator"])
+    # except:
+    #     # it doesn't matter why this failed, because sometimes it won't exist anyway
+    #     pass
+
+    # skein_property_groups["skein_internal_insert_operator"] = build_insert_component_operator(component_container)
 
     # new component list data. Must be set to read component data from .blend file
     bpy.types.Object.skein_two = bpy.props.CollectionProperty(
@@ -284,6 +289,17 @@ def process_registry(context, registry):
         override={"LIBRARY_OVERRIDABLE"},
     )
     bpy.types.Bone.skein_two = bpy.props.CollectionProperty(
+        type=component_container,
+        override={"LIBRARY_OVERRIDABLE"},
+    )
+
+    ## This is where we store temporary skein_two data.
+    ## for example, passing skein_two access back and forth in
+    ## the generic "insert_component" operator
+    ##
+    ## WindowManager gets cleared when reloading .blend/closing app
+    ## /etc so is fine for temporary data
+    bpy.types.WindowManager.skein_two = bpy.props.CollectionProperty(
         type=component_container,
         override={"LIBRARY_OVERRIDABLE"},
     )

@@ -102,10 +102,28 @@ class InsertComponentOnBone(bpy.types.Operator):
         insert_component_data(context, context.bone)
         return {'FINISHED'}
 
-def insert_component_data(context, obj):
+class InsertComponentOnWindowManager(bpy.types.Operator):
+    """Insert a component on the window manager"""
+    bl_idname = "wm.insert_component" # unique identifier. first word is required by extensions review team to be from a specific set of words
+    bl_label = "Add Component" # Shows up in the UI
+    bl_options = {'REGISTER', 'UNDO'} # enable undo (which we might not need)
+
+    # @classmethod
+    # def poll(cls, context):
+        # return context.bone is not None
+
+    def execute(self, context):
+        insert_component_data(context, context.window_manager)
+        return {'FINISHED'}
+
+def insert_component_data(context, obj, type_path_override=None):
     """
     Inserting data is super generic, the only difference is where we're inserting it.
     This is basically the same concept as Custom Properties which don't care what object they're on.
+
+    Inserts using context.window_manager.selected_component if a type_path_override isn't set
+
+    expects a full, raw type_path in type_path_override
     """
     debug = False
     presets = False
@@ -118,7 +136,7 @@ def insert_component_data(context, obj):
         print("\ninsert_component_data:")
     
     global_skein = context.window_manager.skein
-    selected_component = context.window_manager.selected_component
+    selected_component = type_path_override or context.window_manager.selected_component
 
     if global_skein.registry:
         registry = json.loads(global_skein.registry)

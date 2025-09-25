@@ -1,11 +1,13 @@
 import bpy # type: ignore
 import json
 from bpy.app.handlers import persistent
+from .op_insert_component_modal import InsertComponent, SelectedObjectOptions
 from .op_apply_preset import ApplyPresetToBone, ApplyPresetToCollection, ApplyPresetToLight, ApplyPresetToMaterial, ApplyPresetToMesh, ApplyPresetToObject, ApplyPresetToScene
 from .cli_dump_component_data import dump_component_data # type: ignore
-from .op_insert_component import InsertComponentOnBone, InsertComponentOnCollection, InsertComponentOnLight, InsertComponentOnMaterial, InsertComponentOnMesh, InsertComponentOnObject, InsertComponentOnScene
+from .op_insert_component import InsertComponentOnBone, InsertComponentOnCollection, InsertComponentOnLight, InsertComponentOnMaterial, InsertComponentOnMesh, InsertComponentOnObject, InsertComponentOnWindowManager, InsertComponentOnScene
+# from .op_insert_component_modal import InsertComponent
 from .op_registry_loading import FetchRemoteTypeRegistry, ReloadSkeinRegistryJson
-from .op_remove_component import RemoveComponentOnBone, RemoveComponentOnCollection, RemoveComponentOnLight, RemoveComponentOnMaterial, RemoveComponentOnMesh, RemoveComponentOnObject, RemoveComponentOnScene
+from .op_remove_component import RemoveComponentOnBone, RemoveComponentOnCollection, RemoveComponentOnLight, RemoveComponentOnMaterial, RemoveComponentOnMesh, RemoveComponentOnObject, RemoveComponentOnScene, RemoveComponentOnWindowManager
 from .op_debug_check_components import DebugCheckComponents
 from .property_groups import ComponentData
 from .skein_panel import SkeinPanelBone, SkeinPanelCollection, SkeinPanelLight, SkeinPanelObject, SkeinPanelMesh, SkeinPanelMaterial, SkeinPanelScene
@@ -92,6 +94,10 @@ def menu_func(self, context):
     self.layout.operator(ReloadSkeinRegistryJson.bl_idname)
 
 def register():
+    # TODO: move this
+    bpy.utils.register_class(SelectedObjectOptions)
+
+
     bpy.utils.register_class(SkeinAddonPreferences)
     # data types that are stored on the window because blender
     # doesn't seem to have any other good way of storing data
@@ -135,6 +141,11 @@ def register():
         override={"LIBRARY_OVERRIDABLE"},
     )
 
+    ## Used for temporary data, like operators
+    bpy.types.WindowManager.active_component_index = bpy.props.IntProperty(
+        min=0
+    )
+
     # TODO: move this to common property group for all object, material, mesh, etc extras
     bpy.types.WindowManager.selected_component = bpy.props.StringProperty(
         name="component type path",
@@ -150,6 +161,7 @@ def register():
     bpy.utils.register_class(FetchRemoteTypeRegistry)
     bpy.utils.register_class(ReloadSkeinRegistryJson)
     bpy.utils.register_class(DebugCheckComponents)
+    # bpy.utils.register_class(InsertComponent)
     ## Insertion Operations
     bpy.utils.register_class(InsertComponentOnObject)
     bpy.utils.register_class(InsertComponentOnMesh)
@@ -158,6 +170,8 @@ def register():
     bpy.utils.register_class(InsertComponentOnLight)
     bpy.utils.register_class(InsertComponentOnCollection)
     bpy.utils.register_class(InsertComponentOnBone)
+    bpy.utils.register_class(InsertComponentOnWindowManager)
+    bpy.utils.register_class(InsertComponent)
     ## Remove Operations
     bpy.utils.register_class(RemoveComponentOnObject)
     bpy.utils.register_class(RemoveComponentOnMesh)
@@ -166,6 +180,7 @@ def register():
     bpy.utils.register_class(RemoveComponentOnLight)
     bpy.utils.register_class(RemoveComponentOnCollection)
     bpy.utils.register_class(RemoveComponentOnBone)
+    bpy.utils.register_class(RemoveComponentOnWindowManager)
     ## Preset Operations
     bpy.utils.register_class(ApplyPresetToObject)
     bpy.utils.register_class(ApplyPresetToMesh)
@@ -207,6 +222,9 @@ def register():
     exporter_extension_layout_draw['Example glTF Extension'] = draw_export # Make sure to use the same name in unregister()
 
 def unregister():
+    # TODO: move this
+    bpy.utils.unregister_class(SelectedObjectOptions)
+
     global_skein = bpy.context.window_manager.skein
     skein_property_groups = bpy.context.window_manager.skein_property_groups
 
@@ -234,6 +252,7 @@ def unregister():
     bpy.utils.unregister_class(PGSkeinWindowProps)
     bpy.utils.unregister_class(ComponentTypeData)
     bpy.utils.unregister_class(ComponentData)
+    # bpy.utils.unregister_class(InsertComponent)
     # operations
     bpy.utils.unregister_class(FetchRemoteTypeRegistry)
     bpy.utils.unregister_class(ReloadSkeinRegistryJson)
@@ -244,12 +263,17 @@ def unregister():
     bpy.utils.unregister_class(InsertComponentOnMaterial)
     bpy.utils.unregister_class(InsertComponentOnLight)
     bpy.utils.unregister_class(InsertComponentOnCollection)
+    bpy.utils.unregister_class(InsertComponentOnWindowManager)
+    bpy.utils.unregister_class(InsertComponent)
     ## Remove Operations
     bpy.utils.unregister_class(RemoveComponentOnObject)
     bpy.utils.unregister_class(RemoveComponentOnMesh)
     bpy.utils.unregister_class(RemoveComponentOnMaterial)
+    bpy.utils.unregister_class(RemoveComponentOnScene)
     bpy.utils.unregister_class(RemoveComponentOnLight)
     bpy.utils.unregister_class(RemoveComponentOnCollection)
+    bpy.utils.unregister_class(RemoveComponentOnBone)
+    bpy.utils.unregister_class(RemoveComponentOnWindowManager)
     ## Preset Operations
     bpy.utils.unregister_class(ApplyPresetToObject)
     bpy.utils.unregister_class(ApplyPresetToMesh)

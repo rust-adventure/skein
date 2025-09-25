@@ -7,7 +7,7 @@ def object_to_form(context, context_key, data):
     data is the component data
     """
     if context_key not in context:
-        return
+         return
     
     # The current PropertyGroup we're working with
     obj = getattr(context, context_key)

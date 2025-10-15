@@ -14,7 +14,7 @@ fn main() {
 
 fn startup(
     type_registry: Res<AppTypeRegistry>,
-    mut app_exit_events: EventWriter<AppExit>,
+    mut app_exit_events: MessageWriter<AppExit>,
 ) -> Result {
     let types = type_registry.read();
     let mut component_types: Vec<_> = vec![];

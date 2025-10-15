@@ -4,13 +4,9 @@ expression: serializer
 snapshot_kind: text
 ---
 {
-  "bevy_pbr::light_probe::irradiance_volume::IrradianceVolume": {
+  "bevy_light::probe::IrradianceVolume": {
     "voxels": {
-      "Weak": {
-        "Uuid": {
-          "uuid": "97128bb1-2588-480b-bdc6-87b4adbec477"
-        }
-      }
+      "Uuid": "97128bb1-2588-480b-bdc6-87b4adbec477"
     },
     "intensity": 0.0,
     "affects_lightmapped_meshes": true

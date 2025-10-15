@@ -4,7 +4,7 @@ expression: serializer
 snapshot_kind: text
 ---
 {
-  "bevy_core_pipeline::smaa::Smaa": {
+  "bevy_anti_alias::smaa::Smaa": {
     "preset": "High"
   }
 }

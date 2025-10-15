@@ -4,7 +4,7 @@ expression: serializer
 snapshot_kind: text
 ---
 {
-  "bevy_pbr::cluster::ClusterConfig": {
+  "bevy_light::cluster::ClusterConfig": {
     "FixedZ": {
       "total": 4096,
       "z_slices": 24,

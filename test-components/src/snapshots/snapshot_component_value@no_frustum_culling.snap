@@ -4,5 +4,5 @@ expression: serializer
 snapshot_kind: text
 ---
 {
-  "bevy_render::view::visibility::NoFrustumCulling": {}
+  "bevy_camera::visibility::NoFrustumCulling": {}
 }

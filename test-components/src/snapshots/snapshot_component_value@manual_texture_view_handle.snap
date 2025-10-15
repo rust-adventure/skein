@@ -4,5 +4,5 @@ expression: serializer
 snapshot_kind: text
 ---
 {
-  "bevy_render::camera::manual_texture_view::ManualTextureViewHandle": 0
+  "bevy_camera::camera::ManualTextureViewHandle": 0
 }

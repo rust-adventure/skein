@@ -5,10 +5,6 @@ snapshot_kind: text
 ---
 {
   "bevy_animation::graph::AnimationGraphHandle": {
-    "Weak": {
-      "Uuid": {
-        "uuid": "97128bb1-2588-480b-bdc6-87b4adbec477"
-      }
-    }
+    "Uuid": "97128bb1-2588-480b-bdc6-87b4adbec477"
   }
 }

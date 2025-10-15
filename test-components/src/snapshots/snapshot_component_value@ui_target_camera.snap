@@ -4,5 +4,5 @@ expression: serializer
 snapshot_kind: text
 ---
 {
-  "bevy_ui::ui_node::UiTargetCamera": 8589934591
+  "bevy_ui::ui_node::UiTargetCamera": 1
 }

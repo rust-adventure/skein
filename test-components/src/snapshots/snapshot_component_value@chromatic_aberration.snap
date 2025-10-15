@@ -4,14 +4,8 @@ expression: serializer
 snapshot_kind: text
 ---
 {
-  "bevy_core_pipeline::post_process::ChromaticAberration": {
-    "color_lut": {
-      "Weak": {
-        "Uuid": {
-          "uuid": "dc3e3307-40a1-49bb-be6d-e0634e8836b2"
-        }
-      }
-    },
+  "bevy_post_process::effect_stack::ChromaticAberration": {
+    "color_lut": null,
     "intensity": 0.02,
     "max_samples": 8
   }

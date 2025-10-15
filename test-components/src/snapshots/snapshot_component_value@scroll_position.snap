@@ -4,8 +4,8 @@ expression: serializer
 snapshot_kind: text
 ---
 {
-  "bevy_ui::ui_node::ScrollPosition": {
-    "offset_x": 0.0,
-    "offset_y": 0.0
-  }
+  "bevy_ui::ui_node::ScrollPosition": [
+    0.0,
+    0.0
+  ]
 }

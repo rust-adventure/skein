@@ -5,11 +5,37 @@ snapshot_kind: text
 ---
 {
   "bevy_ui::ui_node::BorderColor": {
-    "LinearRgba": {
-      "red": 0.0,
-      "green": 0.0,
-      "blue": 0.0,
-      "alpha": 0.0
+    "top": {
+      "LinearRgba": {
+        "red": 0.0,
+        "green": 0.0,
+        "blue": 0.0,
+        "alpha": 0.0
+      }
+    },
+    "right": {
+      "LinearRgba": {
+        "red": 0.0,
+        "green": 0.0,
+        "blue": 0.0,
+        "alpha": 0.0
+      }
+    },
+    "bottom": {
+      "LinearRgba": {
+        "red": 0.0,
+        "green": 0.0,
+        "blue": 0.0,
+        "alpha": 0.0
+      }
+    },
+    "left": {
+      "LinearRgba": {
+        "red": 0.0,
+        "green": 0.0,
+        "blue": 0.0,
+        "alpha": 0.0
+      }
     }
   }
 }

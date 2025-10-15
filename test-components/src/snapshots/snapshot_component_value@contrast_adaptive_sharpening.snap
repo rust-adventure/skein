@@ -4,7 +4,7 @@ expression: serializer
 snapshot_kind: text
 ---
 {
-  "bevy_core_pipeline::contrast_adaptive_sharpening::ContrastAdaptiveSharpening": {
+  "bevy_anti_alias::contrast_adaptive_sharpening::ContrastAdaptiveSharpening": {
     "enabled": true,
     "sharpening_strength": 0.6,
     "denoise": false

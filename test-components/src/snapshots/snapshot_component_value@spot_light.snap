@@ -4,7 +4,7 @@ expression: serializer
 snapshot_kind: text
 ---
 {
-  "bevy_pbr::light::spot_light::SpotLight": {
+  "bevy_light::spot_light::SpotLight": {
     "color": {
       "LinearRgba": {
         "red": 1.0,

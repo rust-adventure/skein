@@ -5,7 +5,6 @@ snapshot_kind: text
 ---
 {
   "bevy_animation::AnimationPlayer": {
-    "active_animations": {},
-    "blend_weights": {}
+    "active_animations": {}
   }
 }

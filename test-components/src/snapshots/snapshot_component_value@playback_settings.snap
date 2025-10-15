@@ -13,6 +13,8 @@ snapshot_kind: text
     "paused": false,
     "muted": false,
     "spatial": false,
-    "spatial_scale": null
+    "spatial_scale": null,
+    "start_position": null,
+    "duration": null
   }
 }

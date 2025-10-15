@@ -4,5 +4,5 @@ expression: serializer
 snapshot_kind: text
 ---
 {
-  "bevy_pbr::light_probe::LightProbe": {}
+  "bevy_light::probe::LightProbe": {}
 }

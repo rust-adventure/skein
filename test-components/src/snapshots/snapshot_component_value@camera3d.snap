@@ -4,7 +4,7 @@ expression: serializer
 snapshot_kind: text
 ---
 {
-  "bevy_core_pipeline::core_3d::camera_3d::Camera3d": {
+  "bevy_camera::components::Camera3d": {
     "depth_load_op": {
       "Clear": 0.0
     },

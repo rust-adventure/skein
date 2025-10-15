@@ -4,20 +4,12 @@ expression: serializer
 snapshot_kind: text
 ---
 {
-  "bevy_pbr::light_probe::environment_map::EnvironmentMapLight": {
+  "bevy_light::probe::EnvironmentMapLight": {
     "diffuse_map": {
-      "Weak": {
-        "Uuid": {
-          "uuid": "97128bb1-2588-480b-bdc6-87b4adbec477"
-        }
-      }
+      "Uuid": "97128bb1-2588-480b-bdc6-87b4adbec477"
     },
     "specular_map": {
-      "Weak": {
-        "Uuid": {
-          "uuid": "97128bb1-2588-480b-bdc6-87b4adbec477"
-        }
-      }
+      "Uuid": "97128bb1-2588-480b-bdc6-87b4adbec477"
     },
     "intensity": 0.0,
     "rotation": [

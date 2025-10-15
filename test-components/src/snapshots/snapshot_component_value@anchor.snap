@@ -4,5 +4,8 @@ expression: serializer
 snapshot_kind: text
 ---
 {
-  "bevy_sprite::sprite::Anchor": "Center"
+  "bevy_sprite::sprite::Anchor": [
+    0.0,
+    0.0
+  ]
 }

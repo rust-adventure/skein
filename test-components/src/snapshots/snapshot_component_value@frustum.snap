@@ -4,5 +4,5 @@ expression: serializer
 snapshot_kind: text
 ---
 {
-  "bevy_render::primitives::Frustum": {}
+  "bevy_camera::primitives::Frustum": {}
 }

@@ -4,7 +4,7 @@ expression: serializer
 snapshot_kind: text
 ---
 {
-  "bevy_render::camera::projection::Projection": {
+  "bevy_camera::projection::Projection": {
     "Perspective": {
       "fov": 0.7853982,
       "aspect_ratio": 1.0,

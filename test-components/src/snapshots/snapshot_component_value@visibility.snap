@@ -4,5 +4,5 @@ expression: serializer
 snapshot_kind: text
 ---
 {
-  "bevy_render::view::visibility::Visibility": "Inherited"
+  "bevy_camera::visibility::Visibility": "Inherited"
 }

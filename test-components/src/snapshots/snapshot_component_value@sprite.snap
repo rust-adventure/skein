@@ -6,11 +6,7 @@ snapshot_kind: text
 {
   "bevy_sprite::sprite::Sprite": {
     "image": {
-      "Weak": {
-        "Uuid": {
-          "uuid": "97128bb1-2588-480b-bdc6-87b4adbec477"
-        }
-      }
+      "Uuid": "97128bb1-2588-480b-bdc6-87b4adbec477"
     },
     "texture_atlas": null,
     "color": {
@@ -25,7 +21,6 @@ snapshot_kind: text
     "flip_y": false,
     "custom_size": null,
     "rect": null,
-    "anchor": "Center",
     "image_mode": "Auto"
   }
 }

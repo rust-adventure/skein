@@ -4,7 +4,7 @@ expression: serializer
 snapshot_kind: text
 ---
 {
-  "bevy_core_pipeline::bloom::settings::Bloom": {
+  "bevy_post_process::bloom::settings::Bloom": {
     "intensity": 0.15,
     "low_frequency_boost": 0.7,
     "low_frequency_boost_curvature": 0.95,

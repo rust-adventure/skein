@@ -11,10 +11,10 @@ snapshot_kind: text
     "top_right": {
       "Px": 0.0
     },
-    "bottom_left": {
+    "bottom_right": {
       "Px": 0.0
     },
-    "bottom_right": {
+    "bottom_left": {
       "Px": 0.0
     }
   }

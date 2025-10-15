@@ -4,5 +4,5 @@ expression: serializer
 snapshot_kind: text
 ---
 {
-  "bevy_text::text2d::Text2d": ""
+  "bevy_sprite::text2d::Text2d": ""
 }

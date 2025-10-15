@@ -4,5 +4,5 @@ expression: serializer
 snapshot_kind: text
 ---
 {
-  "bevy_pbr::light::NotShadowCaster": {}
+  "bevy_light::NotShadowCaster": {}
 }

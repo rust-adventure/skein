@@ -5,7 +5,9 @@ snapshot_kind: text
 ---
 {
   "bevy_text::pipeline::TextLayoutInfo": {
+    "scale_factor": 0.0,
     "glyphs": [],
+    "section_rects": [],
     "size": [
       0.0,
       0.0

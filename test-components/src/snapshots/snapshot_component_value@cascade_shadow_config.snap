@@ -4,7 +4,7 @@ expression: serializer
 snapshot_kind: text
 ---
 {
-  "bevy_pbr::light::CascadeShadowConfig": {
+  "bevy_light::cascade::CascadeShadowConfig": {
     "bounds": [
       10.0,
       24.66212,

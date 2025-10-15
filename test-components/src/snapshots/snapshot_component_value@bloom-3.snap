@@ -4,7 +4,7 @@ expression: serializer
 snapshot_kind: text
 ---
 {
-  "bevy_core_pipeline::fxaa::Fxaa": {
+  "bevy_anti_alias::fxaa::Fxaa": {
     "enabled": true,
     "edge_threshold": "High",
     "edge_threshold_min": "High"

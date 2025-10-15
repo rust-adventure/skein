@@ -4,5 +4,5 @@ expression: serializer
 snapshot_kind: text
 ---
 {
-  "bevy_pbr::components::VisibleMeshEntities": {}
+  "bevy_camera::visibility::VisibleMeshEntities": {}
 }

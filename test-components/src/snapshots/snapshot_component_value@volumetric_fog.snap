@@ -4,7 +4,7 @@ expression: serializer
 snapshot_kind: text
 ---
 {
-  "bevy_pbr::volumetric_fog::VolumetricFog": {
+  "bevy_light::volumetric::VolumetricFog": {
     "ambient_color": {
       "LinearRgba": {
         "red": 1.0,

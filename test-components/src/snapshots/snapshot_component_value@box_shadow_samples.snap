@@ -4,5 +4,5 @@ expression: serializer
 snapshot_kind: text
 ---
 {
-  "bevy_ui::ui_node::BoxShadowSamples": 4
+  "bevy_ui_render::BoxShadowSamples": 4
 }

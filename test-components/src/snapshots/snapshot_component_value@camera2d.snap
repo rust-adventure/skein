@@ -4,5 +4,5 @@ expression: serializer
 snapshot_kind: text
 ---
 {
-  "bevy_core_pipeline::core_2d::camera_2d::Camera2d": {}
+  "bevy_camera::components::Camera2d": {}
 }

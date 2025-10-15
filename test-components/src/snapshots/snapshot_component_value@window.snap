@@ -5,11 +5,6 @@ snapshot_kind: text
 ---
 {
   "bevy_window::window::Window": {
-    "cursor_options": {
-      "visible": true,
-      "grab_mode": "None",
-      "hit_test": true
-    },
     "present_mode": "Fifo",
     "mode": "Windowed",
     "position": "Automatic",
@@ -19,7 +14,7 @@ snapshot_kind: text
       "scale_factor_override": null,
       "scale_factor": 1.0
     },
-    "title": "App",
+    "title": "test_components-a0beed4875319182",
     "name": null,
     "composite_alpha_mode": "Auto",
     "resize_constraints": {
@@ -70,6 +65,7 @@ snapshot_kind: text
     "titlebar_show_title": true,
     "titlebar_show_buttons": true,
     "prefers_home_indicator_hidden": false,
-    "prefers_status_bar_hidden": false
+    "prefers_status_bar_hidden": false,
+    "preferred_screen_edges_deferring_system_gestures": "None"
   }
 }

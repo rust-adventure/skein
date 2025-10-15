@@ -1,6 +1,14 @@
 use bevy::{math::*, prelude::*};
 use std::num::{NonZeroI16, NonZeroU8};
 
+/// A component that holds a Vec of primitives
+#[derive(Component, Reflect, Debug)]
+#[reflect(Component)]
+pub struct VecContainer {
+    stuff: Vec<String>,
+    teams: Vec<Team>,
+}
+
 /// A Component with fields
 #[derive(Component, Reflect, Debug)]
 #[reflect(Component)]
@@ -623,12 +631,12 @@ mod tests {
     #[test]
     fn bloom() {
         let value =
-            bevy::core_pipeline::bloom::Bloom::default();
+            bevy::post_process::bloom::Bloom::default();
         snapshot_component_value(&value, "bloom");
     }
     #[test]
     fn contrast_adaptive_sharpening() {
-        let value = bevy::core_pipeline::contrast_adaptive_sharpening::ContrastAdaptiveSharpening::default();
+        let value = bevy::anti_alias::contrast_adaptive_sharpening::ContrastAdaptiveSharpening::default();
         snapshot_component_value(
             &value,
             "contrast_adaptive_sharpening",
@@ -647,19 +655,18 @@ mod tests {
     #[test]
     fn depth_of_field() {
         let value =
-            bevy::core_pipeline::dof::DepthOfField::default(
+            bevy::post_process::dof::DepthOfField::default(
             );
         snapshot_component_value(&value, "depth_of_field");
     }
     #[test]
     fn fxaa() {
-        let value =
-            bevy::core_pipeline::fxaa::Fxaa::default();
+        let value = bevy::anti_alias::fxaa::Fxaa::default();
         snapshot_component_value(&value, "bloom");
     }
     #[test]
     fn chromatic_aberration() {
-        let value = bevy::core_pipeline::post_process::ChromaticAberration::default();
+        let value = bevy::post_process::effect_stack::ChromaticAberration::default();
         snapshot_component_value(
             &value,
             "chromatic_aberration",
@@ -700,8 +707,7 @@ mod tests {
     }
     #[test]
     fn smaa() {
-        let value =
-            bevy::core_pipeline::smaa::Smaa::default();
+        let value = bevy::anti_alias::smaa::Smaa::default();
         snapshot_component_value(&value, "smaa");
     }
     #[test]
@@ -745,7 +751,8 @@ mod tests {
     }
     #[test]
     fn mesh_morph_weights() {
-        let value = bevy::render::mesh::morph::MeshMorphWeights::default();
+        let value =
+            bevy::mesh::morph::MeshMorphWeights::default();
         snapshot_component_value(
             &value,
             "mesh_morph_weights",
@@ -753,26 +760,24 @@ mod tests {
     }
     #[test]
     fn morph_weights() {
-        let value =
-        bevy::render::mesh::morph::MorphWeights::default();
+        let value = MorphWeights::default();
         snapshot_component_value(&value, "morph_weights");
     }
     #[test]
     fn skinned_mesh() {
         let value =
-        bevy::render::mesh::skinning::SkinnedMesh::default(
-        );
+            bevy::mesh::skinning::SkinnedMesh::default();
         snapshot_component_value(&value, "skinned_mesh");
     }
     #[test]
     fn cluster_config() {
-        let value = bevy::pbr::ClusterConfig::default();
+        let value =
+            bevy::light::cluster::ClusterConfig::default();
         snapshot_component_value(&value, "cluster_config");
     }
     #[test]
     fn cascades_visible_entities() {
-        let value =
-            bevy::pbr::CascadesVisibleEntities::default();
+        let value = bevy::camera::visibility::CascadesVisibleEntities::default();
         snapshot_component_value(
             &value,
             "cascades_visible_entities",
@@ -780,8 +785,7 @@ mod tests {
     }
     #[test]
     fn cubemap_visible_entities() {
-        let value =
-            bevy::pbr::CubemapVisibleEntities::default();
+        let value = bevy::camera::visibility::CubemapVisibleEntities::default();
         snapshot_component_value(
             &value,
             "cubemap_visible_entities",
@@ -789,8 +793,7 @@ mod tests {
     }
     #[test]
     fn visible_mesh_entities() {
-        let value =
-            bevy::pbr::VisibleMeshEntities::default();
+        let value = bevy::camera::visibility::VisibleMeshEntities::default();
         snapshot_component_value(
             &value,
             "visible_mesh_entities",
@@ -800,13 +803,13 @@ mod tests {
     // clustered_decal:  bevy::pbr::decal::clustered::ClusteredDecal,
     #[test]
     fn distance_fog() {
-        let value = bevy::pbr::DistanceFog::default();
+        let value = DistanceFog::default();
         snapshot_component_value(&value, "distance_fog");
     }
     #[test]
     fn cascade_shadow_config() {
         let value =
-            bevy::pbr::CascadeShadowConfig::default();
+            bevy::light::CascadeShadowConfig::default();
         snapshot_component_value(
             &value,
             "cascade_shadow_config",
@@ -814,12 +817,12 @@ mod tests {
     }
     #[test]
     fn cascades() {
-        let value = bevy::pbr::Cascades::default();
+        let value = bevy::light::Cascades::default();
         snapshot_component_value(&value, "cascades");
     }
     #[test]
     fn not_shadow_caster() {
-        let value = bevy::pbr::NotShadowCaster::default();
+        let value = bevy::light::NotShadowCaster::default();
         snapshot_component_value(
             &value,
             "not_shadow_caster",
@@ -827,7 +830,8 @@ mod tests {
     }
     #[test]
     fn not_shadow_receiver() {
-        let value = bevy::pbr::NotShadowReceiver::default();
+        let value =
+            bevy::light::NotShadowReceiver::default();
         snapshot_component_value(
             &value,
             "not_shadow_receiver",
@@ -836,7 +840,7 @@ mod tests {
     #[test]
     fn shadow_filtering_method() {
         let value =
-            bevy::pbr::ShadowFilteringMethod::default();
+            bevy::light::ShadowFilteringMethod::default();
         snapshot_component_value(
             &value,
             "shadow_filtering_method",
@@ -844,12 +848,13 @@ mod tests {
     }
     #[test]
     fn ambient_light() {
-        let value = bevy::pbr::AmbientLight::default();
+        let value = bevy::light::AmbientLight::default();
         snapshot_component_value(&value, "ambient_light");
     }
     #[test]
     fn directional_light() {
-        let value = bevy::pbr::DirectionalLight::default();
+        let value =
+            bevy::light::DirectionalLight::default();
         snapshot_component_value(
             &value,
             "directional_light",
@@ -857,22 +862,22 @@ mod tests {
     }
     #[test]
     fn point_light() {
-        let value = bevy::pbr::PointLight::default();
+        let value = bevy::light::PointLight::default();
         snapshot_component_value(&value, "point_light");
     }
     #[test]
     fn spot_light() {
-        let value = bevy::pbr::SpotLight::default();
+        let value = bevy::light::SpotLight::default();
         snapshot_component_value(&value, "spot_light");
     }
     #[test]
     fn light_probe() {
-        let value = bevy::pbr::LightProbe::default();
+        let value = bevy::light::LightProbe::default();
         snapshot_component_value(&value, "light_probe");
     }
     #[test]
     fn environment_map_light() {
-        let value = bevy::pbr::environment_map::EnvironmentMapLight::default();
+        let value = EnvironmentMapLight::default();
         snapshot_component_value(
             &value,
             "environment_map_light",
@@ -880,7 +885,8 @@ mod tests {
     }
     #[test]
     fn irradiance_volume() {
-        let value = bevy::pbr::irradiance_volume::IrradianceVolume::default();
+        let value =
+            bevy::light::IrradianceVolume::default();
         snapshot_component_value(
             &value,
             "irradiance_volume",
@@ -909,12 +915,12 @@ mod tests {
     }
     #[test]
     fn volumetric_fog() {
-        let value = bevy::pbr::VolumetricFog::default();
+        let value = bevy::light::VolumetricFog::default();
         snapshot_component_value(&value, "volumetric_fog");
     }
     #[test]
     fn volumetric_light() {
-        let value = bevy::pbr::VolumetricLight::default();
+        let value = bevy::light::VolumetricLight::default();
         snapshot_component_value(
             &value,
             "volumetric_light",
@@ -967,7 +973,7 @@ mod tests {
     }
     #[test]
     fn camera() {
-        let value = bevy::render::camera::Camera::default();
+        let value = Camera::default();
         snapshot_component_value(&value, "camera");
     }
     // camera_main_texture_usages doesn't implement `ReflectSerialize` or `ReflectSerializeWithRegistry`
@@ -989,7 +995,9 @@ mod tests {
     }
     #[test]
     fn manual_texture_view_handle() {
-        let value = bevy::render::camera::ManualTextureViewHandle::default();
+        let value =
+            bevy::camera::ManualTextureViewHandle::default(
+            );
         snapshot_component_value(
             &value,
             "manual_texture_view_handle",
@@ -997,8 +1005,7 @@ mod tests {
     }
     #[test]
     fn projection() {
-        let value =
-            bevy::render::camera::Projection::default();
+        let value = Projection::default();
         snapshot_component_value(&value, "projection");
     }
     #[test]
@@ -1011,36 +1018,34 @@ mod tests {
     }
     #[test]
     fn mesh2d() {
-        let value = bevy::render::mesh::Mesh2d::default();
+        let value = Mesh2d::default();
         snapshot_component_value(&value, "mesh2d");
     }
     #[test]
     fn mesh3d() {
-        let value = bevy::render::mesh::Mesh3d::default();
+        let value = Mesh3d::default();
         snapshot_component_value(&value, "mesh3d");
     }
     #[test]
     fn aabb() {
         let value =
-            bevy::render::primitives::Aabb::default();
+            bevy::camera::primitives::Aabb::default();
         snapshot_component_value(&value, "aabb");
     }
     #[test]
     fn cascades_frusta() {
-        let value =
-        bevy::render::primitives::CascadesFrusta::default();
+        let value = bevy::camera::primitives::CascadesFrusta::default();
         snapshot_component_value(&value, "cascades_frusta");
     }
     #[test]
     fn cubemap_frusta() {
-        let value =
-        bevy::render::primitives::CubemapFrusta::default();
+        let value = bevy::camera::primitives::CubemapFrusta::default();
         snapshot_component_value(&value, "cubemap_frusta");
     }
     #[test]
     fn frustum() {
         let value =
-            bevy::render::primitives::Frustum::default();
+            bevy::camera::primitives::Frustum::default();
         snapshot_component_value(&value, "frustum");
     }
     #[test]
@@ -1061,7 +1066,7 @@ mod tests {
     }
     #[test]
     fn inherited_visibility() {
-        let value = bevy::render::view::visibility::InheritedVisibility::default();
+        let value = InheritedVisibility::default();
         snapshot_component_value(
             &value,
             "inherited_visibility",
@@ -1069,7 +1074,7 @@ mod tests {
     }
     #[test]
     fn no_frustum_culling() {
-        let value = bevy::render::view::visibility::NoFrustumCulling::default();
+        let value = bevy::camera::visibility::NoFrustumCulling::default();
         snapshot_component_value(
             &value,
             "no_frustum_culling",
@@ -1077,19 +1082,17 @@ mod tests {
     }
     #[test]
     fn view_visibility() {
-        let value = bevy::render::view::visibility::ViewVisibility::default();
+        let value = ViewVisibility::default();
         snapshot_component_value(&value, "view_visibility");
     }
     #[test]
     fn visibility() {
-        let value =
-        bevy::render::view::visibility::Visibility::default(
-        );
+        let value = Visibility::default();
         snapshot_component_value(&value, "visibility");
     }
     #[test]
     fn visibility_class() {
-        let value = bevy::render::view::visibility::VisibilityClass::default();
+        let value = bevy::camera::visibility::VisibilityClass::default();
         snapshot_component_value(
             &value,
             "visibility_class",
@@ -1097,7 +1100,7 @@ mod tests {
     }
     #[test]
     fn visible_entities() {
-        let value = bevy::render::view::visibility::VisibleEntities::default();
+        let value = bevy::camera::visibility::VisibleEntities::default();
         snapshot_component_value(
             &value,
             "visible_entities",
@@ -1109,7 +1112,9 @@ mod tests {
     // visibility_range:  bevy::render::view::visibility::VisibilityRange,
     #[test]
     fn render_layers() {
-        let value = bevy::render::view::visibility::RenderLayers::default();
+        let value =
+            bevy::camera::visibility::RenderLayers::default(
+            );
         snapshot_component_value(&value, "render_layers");
     }
     // screenshot:  bevy::render::view::window::screenshot::Screenshot,
@@ -1162,7 +1167,7 @@ mod tests {
     }
     #[test]
     fn text2d() {
-        let value = bevy::text::Text2d::default();
+        let value = Text2d::default();
         snapshot_component_value(&value, "text2d");
     }
     #[test]
@@ -1254,7 +1259,7 @@ mod tests {
     }
     #[test]
     fn background_color() {
-        let value = bevy::ui::BackgroundColor::default();
+        let value = BackgroundColor::default();
         snapshot_component_value(
             &value,
             "background_color",
@@ -1262,22 +1267,22 @@ mod tests {
     }
     #[test]
     fn border_color() {
-        let value = bevy::ui::BorderColor::default();
+        let value = BorderColor::default();
         snapshot_component_value(&value, "border_color");
     }
     #[test]
     fn border_radius() {
-        let value = bevy::ui::BorderRadius::default();
+        let value = BorderRadius::default();
         snapshot_component_value(&value, "border_radius");
     }
     #[test]
     fn box_shadow() {
-        let value = bevy::ui::BoxShadow::default();
+        let value = BoxShadow::default();
         snapshot_component_value(&value, "box_shadow");
     }
     #[test]
     fn box_shadow_samples() {
-        let value = bevy::ui::BoxShadowSamples::default();
+        let value = BoxShadowSamples::default();
         snapshot_component_value(
             &value,
             "box_shadow_samples",
@@ -1285,45 +1290,38 @@ mod tests {
     }
     #[test]
     fn calculated_clip() {
-        let value = bevy::ui::CalculatedClip::default();
+        let value = CalculatedClip::default();
         snapshot_component_value(&value, "calculated_clip");
     }
     #[test]
     fn computed_node() {
-        let value = bevy::ui::ComputedNode::default();
+        let value = ComputedNode::default();
         snapshot_component_value(&value, "computed_node");
     }
-    #[test]
-    fn computed_node_target() {
-        let value = bevy::ui::ComputedNodeTarget::default();
-        snapshot_component_value(
-            &value,
-            "computed_node_target",
-        );
-    }
+
     #[test]
     fn node() {
-        let value = bevy::ui::Node::default();
+        let value = Node::default();
         snapshot_component_value(&value, "node");
     }
     #[test]
     fn outline() {
-        let value = bevy::ui::Outline::default();
+        let value = Outline::default();
         snapshot_component_value(&value, "outline");
     }
     #[test]
     fn scroll_position() {
-        let value = bevy::ui::ScrollPosition::default();
+        let value = ScrollPosition::default();
         snapshot_component_value(&value, "scroll_position");
     }
     #[test]
     fn text_shadow() {
-        let value = bevy::ui::TextShadow::default();
+        let value = TextShadow::default();
         snapshot_component_value(&value, "text_shadow");
     }
     #[test]
     fn ui_anti_alias() {
-        let value = bevy::ui::UiAntiAlias::default();
+        let value = UiAntiAlias::default();
         snapshot_component_value(&value, "ui_anti_alias");
     }
     #[test]
@@ -1403,8 +1401,7 @@ mod tests {
     }
     #[test]
     fn cursor_icon() {
-        let value =
-            bevy::winit::cursor::CursorIcon::default();
+        let value = bevy::window::CursorIcon::default();
         snapshot_component_value(&value, "cursor_icon");
     }
 }

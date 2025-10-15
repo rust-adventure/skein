@@ -4,5 +4,5 @@ expression: serializer
 snapshot_kind: text
 ---
 {
-  "bevy_pbr::volumetric_fog::VolumetricLight": {}
+  "bevy_light::volumetric::VolumetricLight": {}
 }

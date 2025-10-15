@@ -41,13 +41,13 @@ pub fn HomePage() -> impl IntoView {
         <Meta property="og:type" content="article"/>
         <Meta
             property="og:url"
-            content=format!("https://bevy-skein.netlify.app/")
+            content=format!("https://bevyskein.dev/")
         />
         <Link
             rel="canonical"
-            href=format!("https://bevy-skein.netlify.app/")
+            href=format!("https://bevyskein.dev/")
         />
-        <Meta property="og:image" content=format!("https://bevy-skein.netlify.app{}", opengraph_image.clone()) />
+        <Meta property="og:image" content=format!("https://bevyskein.dev{}", opengraph_image.clone()) />
         <Meta name="twitter:card" content="summary_large_image" />
         <Meta name="twitter:creator" content="@chrisbiscardi" />
         <Meta name="twitter:title" content=title.clone() />
@@ -55,7 +55,7 @@ pub fn HomePage() -> impl IntoView {
             name="twitter:description"
             content=description
         />
-        <Meta property="twitter:image" content=format!("https://bevy-skein.netlify.app{}", opengraph_image.clone()) />
+        <Meta property="twitter:image" content=format!("https://bevyskein.dev{}", opengraph_image.clone()) />
 
         <DocsLayout
             title=title

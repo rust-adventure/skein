@@ -1,7 +1,7 @@
 ---
 title: Overview
 description: Skein is a Bevy Plugin and a Blender extension that integrates your Bevy App's Component data into Blender's UI
-opengraph_image: /opengraph/opengraph-index.jpg
+opengraph_image: /opengraph/opengraph-index.webp
 ---
 
 [Bevy](https://bevyengine.org/) is a free and open source refreshingly simple data-driven game engine built in Rust.

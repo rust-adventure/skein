@@ -1,0 +1,17 @@
+---
+source: src/lib.rs
+assertion_line: 313
+expression: serializer
+---
+{
+  "test_components::VecContainer": {
+    "stuff": [
+      "Something",
+      "another"
+    ],
+    "teams": [
+      "Red",
+      "Blue"
+    ]
+  }
+}

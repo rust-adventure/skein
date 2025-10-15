@@ -324,6 +324,17 @@ mod tests {
     }
 
     #[test]
+    fn vecs() {
+        let value = VecContainer {
+            stuff: vec![
+                "Something".to_string(),
+                "another".to_string(),
+            ],
+            teams: vec![Team::Red, Team::Blue],
+        };
+        snapshot_component_value(&value, "vec_container");
+    }
+    #[test]
     fn struct_fields() {
         let value = Player {
             name: "Chris Biscardi".to_string(),

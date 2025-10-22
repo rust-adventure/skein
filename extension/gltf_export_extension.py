@@ -260,7 +260,7 @@ def pre_export_hook(export_settings):
     pass
 
 def gather_skein_two(source, sink):
-    if "skein_two" in source:
+    if "skein_two" in dir(source):
         objs = []
         skein_property_groups = bpy.context.window_manager.skein_property_groups
         for component in source.skein_two:
@@ -293,11 +293,15 @@ def gather_skein_two(source, sink):
         # for gltf KHR lights extension (and likely other extensions?) extras is a `[]` access
         try:
             sink.extras
-            if sink.extras is None:
-                sink.extras = {}
-            sink.extras["skein"] = objs
+            # python allows checking for empty arrays by "if array"
+            if objs:
+                if sink.extras is None:
+                    sink.extras = {}
+                sink.extras["skein"] = objs
         except:
-            if sink["extras"] is None:
-                sink["extras"] = {}
-            sink["extras"]["skein"] = objs
+            # python allows checking for empty arrays by "if array"
+            if objs:
+                if sink["extras"] is None:
+                    sink["extras"] = {}
+                sink["extras"]["skein"] = objs
 

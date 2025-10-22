@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+- Enable Blender 5 compatibility
+- Don't set skein extras field if components array is empty
+
 ## [0.1.12]
 
 - Fix the application of Presets such that they apply correctly to types that are not objects.

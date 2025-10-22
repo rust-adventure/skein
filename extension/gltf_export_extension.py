@@ -260,7 +260,7 @@ def pre_export_hook(export_settings):
     pass
 
 def gather_skein_two(source, sink):
-    if "skein_two" in source:
+    if "skein_two" in dir(source):
         objs = []
         skein_property_groups = bpy.context.window_manager.skein_property_groups
         for component in source.skein_two:

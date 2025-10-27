@@ -1,4 +1,6 @@
 #![doc = include_str!("../README.md")]
+use std::net::IpAddr;
+
 use bevy_app::{App, Plugin};
 use bevy_ecs::{
     name::Name,
@@ -15,6 +17,7 @@ use bevy_gltf::{
 use bevy_log::{error, trace};
 use bevy_platform::collections::HashMap;
 use bevy_reflect::{Reflect, serde::ReflectDeserializer};
+use bevy_remote::http::{DEFAULT_ADDR, DEFAULT_PORT};
 use serde::de::DeserializeSeed;
 use serde_json::Value;
 use tracing::{instrument, warn};
@@ -44,12 +47,39 @@ pub struct SkeinPlugin {
     /// only enable BRP in dev builds.
     #[allow(dead_code)]
     pub handle_brp: bool,
+    /// Host address for the bevy protocol.
+    pub address: IpAddr,
+    /// Port for the bevy protocol.
+    pub port: u16,
 }
 
 impl Default for SkeinPlugin {
     fn default() -> Self {
         let dev = cfg!(debug_assertions);
-        Self { handle_brp: dev }
+        Self {
+            handle_brp: dev,
+            address: DEFAULT_ADDR,
+            port: DEFAULT_PORT,
+        }
+    }
+}
+
+impl SkeinPlugin {
+    /// Builder function to use bevy protocol
+    /// with custom host address.
+    pub fn with_address(
+        &mut self,
+        address: IpAddr,
+    ) -> &mut Self {
+        self.address = address;
+        self
+    }
+
+    /// Builder function to use bevy protocol
+    /// with custom port.
+    pub fn with_port(&mut self, port: u16) -> &mut Self {
+        self.port = port;
+        self
     }
 }
 
@@ -77,7 +107,7 @@ impl Plugin for SkeinPlugin {
 
             app.add_plugins((
                 remote_plugin,
-                bevy_remote::http::RemoteHttpPlugin::default(),
+                bevy_remote::http::RemoteHttpPlugin::default().with_address(self.address).with_port(self.port)
             ));
         }
     }

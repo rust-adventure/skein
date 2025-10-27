@@ -21,13 +21,22 @@ class SkeinAddonPreferences(bpy.types.AddonPreferences):
     debug: bpy.props.BoolProperty(
         name="Debug",
         description="Enable logs when launching Blender from the console",
-        default=False
-    ) # type: ignore
+        default=False,
+    )  # type: ignore
     presets: bpy.props.BoolProperty(
         name="Presets",
         description="Enable the fetching of Default and Preset implementations from Bevy, and the usage of Defaults when inserting a new Component.",
-        default=True
-    ) # type: ignore
+        default=True,
+    )  # type: ignore
+    host: bpy.props.StringProperty(
+        name="Host",
+        description="Change the host for the bevy protocol.",
+        default="127.0.0.1",
+    )  # type: ignore
+    port: bpy.props.IntProperty(
+        name="Port", description="Change the port for the bevy protocol.", default=15702
+    )  # type: ignore
+
     def draw(self, context):
         layout = self.layout
         layout.label(text="Skein Preferences")

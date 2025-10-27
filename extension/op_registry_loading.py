@@ -10,6 +10,10 @@ from .property_groups import hash_over_64, make_property
 #  registry, for panel display      #
 # --------------------------------- #
 
+host = "127.0.0.1"
+port = 15702
+
+
 class FetchRemoteTypeRegistry(bpy.types.Operator):
     """Fetch a Bevy type registry from a compatible endpoint"""
     bl_idname = "wm.fetch_type_registry" # unique identifier. not specially named
@@ -24,6 +28,10 @@ class FetchRemoteTypeRegistry(bpy.types.Operator):
             preferences = context.preferences.addons[__package__].preferences
             debug = preferences.debug
             presets = preferences.presets
+            global host
+            global port
+            host = preferences.host
+            port = preferences.port
 
         if debug:
             print("\nexecute: FetchRemoteTypeRegistry")
@@ -101,7 +109,7 @@ class FetchRemoteTypeRegistry(bpy.types.Operator):
 
 # TODO: allow configuration of url via addon settings or
 # custom fetch operator?
-def brp_simple_request(rpc_endpoint, host="http://127.0.0.1", port=15702):
+def brp_simple_request(rpc_endpoint):
     """Fetch the registry schema from a running Bevy application"""
     # 0.16 payload
     data = {"jsonrpc": "2.0", "method": rpc_endpoint, "params": {}}
@@ -111,7 +119,7 @@ def brp_simple_request(rpc_endpoint, host="http://127.0.0.1", port=15702):
 
 # TODO: allow configuration of url via addon settings or
 # custom fetch operator?
-def brp_fetch_skein_presets(host="http://127.0.0.1", port=15702):
+def brp_fetch_skein_presets():
     """Fetch the presets (and Default values) from a running Bevy application"""
 
     data = {"jsonrpc": "2.0", "method": "skein/presets", "params": {}}

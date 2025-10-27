@@ -42,6 +42,9 @@ class SkeinAddonPreferences(bpy.types.AddonPreferences):
         layout.label(text="Skein Preferences")
         layout.prop(self, "debug")
         layout.prop(self, "presets")
+        layout.prop(self, "host")
+        layout.prop(self, "port")
+
 
 class ComponentTypeData(bpy.types.PropertyGroup):
     name: bpy.props.StringProperty(name="Name", default="Unknown") # type: ignore

@@ -1,5 +1,5 @@
 #![doc = include_str!("../README.md")]
-use std::net::IpAddr;
+use std::net::{IpAddr, Ipv4Addr};
 
 use bevy_app::{App, Plugin};
 use bevy_ecs::{
@@ -67,17 +67,14 @@ impl Default for SkeinPlugin {
 impl SkeinPlugin {
     /// Builder function to use bevy protocol
     /// with custom host address.
-    pub fn with_address(
-        &mut self,
-        address: IpAddr,
-    ) -> &mut Self {
+    pub fn with_address(mut self, address: IpAddr) -> Self {
         self.address = address;
         self
     }
 
     /// Builder function to use bevy protocol
     /// with custom port.
-    pub fn with_port(&mut self, port: u16) -> &mut Self {
+    pub fn with_port(mut self, port: u16) -> Self {
         self.port = port;
         self
     }

@@ -31,7 +31,7 @@ class SkeinAddonPreferences(bpy.types.AddonPreferences):
     host: bpy.props.StringProperty(
         name="Host",
         description="Change the host for the bevy protocol.",
-        default="127.0.0.1",
+        default="http://127.0.0.1",
     )  # type: ignore
     port: bpy.props.IntProperty(
         name="Port", description="Change the port for the bevy protocol.", default=15702

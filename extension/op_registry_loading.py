@@ -10,7 +10,7 @@ from .property_groups import hash_over_64, make_property
 #  registry, for panel display      #
 # --------------------------------- #
 
-host = "127.0.0.1"
+host = "http://127.0.0.1"
 port = 15702
 
 

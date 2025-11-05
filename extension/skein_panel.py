@@ -152,6 +152,9 @@ def draw_generic_panel(context, obj, layout, execute_mode, skein_preset_panel_id
         row = layout.row()
 
         if registry:
+            row = layout.row(align=True)
+            row.operator("wm.fetch_type_registry", text="Fetch a Remote Type Registry")
+
             layout.label(text="Insert a new Component")
             box = layout.box()
             box.prop_search(

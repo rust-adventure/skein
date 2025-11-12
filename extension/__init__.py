@@ -3,6 +3,7 @@ import json
 from bpy.app.handlers import persistent
 from .op_apply_preset import ApplyPresetToBone, ApplyPresetToCollection, ApplyPresetToLight, ApplyPresetToMaterial, ApplyPresetToMesh, ApplyPresetToObject, ApplyPresetToScene
 from .cli_dump_component_data import dump_component_data # type: ignore
+from .cli_change_component_path import change_component_path # type: ignore
 from .op_insert_component import InsertComponentOnBone, InsertComponentOnCollection, InsertComponentOnLight, InsertComponentOnMaterial, InsertComponentOnMesh, InsertComponentOnObject, InsertComponentOnScene
 from .op_registry_loading import FetchRemoteTypeRegistry, ReloadSkeinRegistryJson
 from .op_remove_component import RemoveComponentOnBone, RemoveComponentOnCollection, RemoveComponentOnLight, RemoveComponentOnMaterial, RemoveComponentOnMesh, RemoveComponentOnObject, RemoveComponentOnScene
@@ -215,6 +216,7 @@ def register():
     bpy.app.handlers.load_post.append(on_post_blend_file_load)
 
     cli_commands.append(bpy.utils.register_cli_command("dump_component_data", dump_component_data))
+    cli_commands.append(bpy.utils.register_cli_command("change_component_path", change_component_path))
 
     # Use the following 2 lines to register the UI for the gltf extension hook
     from io_scene_gltf2 import exporter_extension_layout_draw # type: ignore

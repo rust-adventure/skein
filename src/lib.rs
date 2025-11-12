@@ -12,7 +12,7 @@ use bevy_gltf::{
     GltfExtras, GltfMaterialExtras, GltfMeshExtras,
     GltfSceneExtras,
 };
-use bevy_log::{error, trace};
+use bevy_log::{debug, error, trace};
 use bevy_platform::collections::HashMap;
 use bevy_reflect::{Reflect, serde::ReflectDeserializer};
 use serde::de::DeserializeSeed;
@@ -26,7 +26,10 @@ use tracing::{instrument, warn};
 /// In Bevy, this module enables the BRP endpoint
 /// that serves up the Default and user-provided
 /// preset values.
-#[cfg(feature = "presets")]
+#[cfg(all(
+    not(target_family = "wasm"),
+    feature = "presets"
+))]
 pub mod presets;
 
 /// [`SkeinPlugin`] is the main plugin.
@@ -54,31 +57,95 @@ impl Default for SkeinPlugin {
 }
 
 impl Plugin for SkeinPlugin {
+    #[instrument(skip(self, app))]
     fn build(&self, app: &mut App) {
         app.init_resource::<SkeinPresetRegistry>()
             .add_observer(skein_processing);
 
+        // If we're not on wasm, and the brp feature
+        // is enabled, check for whether the user wants
+        // skein to handle setting up BRP or not.
+        //
+        // The `handle_brp` default is to enable `brp`
+        // and skein's custom endpoints when `debug_assertions`
+        // are enabled. This is mostly the difference
+        // between `dev` and `release`, but can be configured
+        // by users as well.
         #[cfg(all(
             not(target_family = "wasm"),
             feature = "brp"
         ))]
         if self.handle_brp {
-            #[allow(unused_mut)]
-            let mut remote_plugin =
-                bevy_remote::RemotePlugin::default();
-
-            #[cfg(feature = "presets")]
-            {
-                remote_plugin = remote_plugin.with_method(
-                    presets::BRP_SKEIN_PRESETS_METHOD,
-                    presets::export_presets,
-                );
-            }
-
+            debug!(
+                "adding `bevy_remote::RemotePlugin` and `bevy_remote::http::RemoteHttpPlugin`. BRP HTTP server running at: {}:{}",
+                bevy_remote::http::DEFAULT_ADDR,
+                bevy_remote::http::DEFAULT_PORT
+            );
             app.add_plugins((
-                remote_plugin,
+                // We only add the defaults. If a user wants 
+                // a different configuration, they can set 
+                // the plugins up themselves.
+                bevy_remote::RemotePlugin::default(),
                 bevy_remote::http::RemoteHttpPlugin::default(),
             ));
+        } else {
+            debug!(
+                "Skein is *not* adding `RemotePlugin` and `RemoteHttpPlugin`"
+            );
+        }
+    }
+
+    #[cfg(all(
+        not(target_family = "wasm"),
+        feature = "brp"
+    ))]
+    #[instrument(skip(self, app))]
+    fn finish(&self, app: &mut App) {
+        {
+            // add presets endpoint
+            #[cfg(feature = "presets")]
+            {
+                debug!(
+                    "enabling {} endpoint",
+                    presets::BRP_SKEIN_PRESETS_METHOD
+                );
+                let presets_id =
+                bevy_remote::RemoteMethodSystemId::Instant(
+                    app.main_mut()
+                        .world_mut()
+                        .register_system(
+                            presets::export_presets,
+                        ),
+                );
+                let remote_methods = app
+                    .world_mut()
+                    .get_resource_mut::<bevy_remote::RemoteMethods>(
+                );
+                if let Some(mut remote_methods) =
+                    remote_methods
+                {
+                    remote_methods.insert(
+                        presets::BRP_SKEIN_PRESETS_METHOD,
+                        presets_id,
+                    );
+                } else {
+                    warn!(
+                        "bevy_remote::RemoteMethods Resource was not found. Skein can not add custom endpoints without this Resource. `SkeinPlugin::handle_brp` is `{}`, which means `{}` is responsible for adding `bevy_remote::RemotePlugin` and `bevy_remote::http::RemoteHttpPlugin`. {}",
+                        self.handle_brp,
+                        if self.handle_brp {
+                            "skein"
+                        } else {
+                            "the user"
+                        },
+                        if self.handle_brp {
+                            // if skein was supposed to add the plugins and didn't, then this is likely a skein bug
+                            "This is likely a bug: https://github.com/rust-adventure/skein/issues"
+                        } else {
+                            ""
+                        }
+                    );
+                }
+            }
         }
     }
 }

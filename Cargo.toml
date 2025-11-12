@@ -26,11 +26,14 @@ bevy_ecs = "0.17"
 bevy_gltf = "0.17"
 bevy_reflect = "0.17"
 bevy_scene = "0.17"
-bevy_remote = { version = "0.17", optional = true }
 bevy_platform = "0.17"
 serde = "1.0"
 serde_json = "1.0"
 tracing = "0.1"
+
+# wasm can't support brp, so disable the dependency entirely
+[target.'cfg(not(target_family = "wasm"))'.dependencies]
+bevy_remote = { version = "0.17", optional = true }
 
 [dev-dependencies]
 # bevy = { version = "0.17", features = ["jpeg", "experimental_pbr_pcss"] }

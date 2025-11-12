@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+- Add custom BRP methods in `Plugin::finish`, which enables users to configure their own BRP host/port and plays nicely with other crates which may add methods of their own
+- Don't attempt to use `brp` feature or `dep:bevy_remote` on wasm
+
+- New `debug` logs in the skein plugin enable showing whether skein is controlling the BRP plugins or not, as well as if skein is adding additional endpoints. These aren't shown by default, so you have to enable them if you want them:
+
+```
+❯ RUST_LOG=info,bevy_skein=debug bevy run --example components_on_bone
+DEBUG build: bevy_skein: adding `bevy_remote::RemotePlugin` and `bevy_remote::http::RemoteHttpPlugin`. BRP HTTP server running at: 127.0.0.1:15702
+DEBUG bevy_skein: enabling skein/presets endpoint
+```
+
 ## [0.3.0]
 
 - Bevy 0.17 support

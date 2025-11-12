@@ -28,11 +28,25 @@ class SkeinAddonPreferences(bpy.types.AddonPreferences):
         description="Enable the fetching of Default and Preset implementations from Bevy, and the usage of Defaults when inserting a new Component.",
         default=True
     ) # type: ignore
+    host: bpy.props.StringProperty(
+        name="Host",
+        description="A custom BRP host, if you configured your Bevy application with a custom BRP host.",
+        default=""
+    ) # type: ignore
+    # port is a string so that we can take advantage of "" for "default"
+    port: bpy.props.StringProperty(
+        name="Port",
+        description="A custom BRP port, if you configured your Bevy application with a custom BRP port.",
+        default=""
+    ) # type: ignore
     def draw(self, context):
         layout = self.layout
         layout.label(text="Skein Preferences")
         layout.prop(self, "debug")
         layout.prop(self, "presets")
+        layout.label(text="custom host/port:")
+        layout.prop(self, "host")
+        layout.prop(self, "port")
 
 class ComponentTypeData(bpy.types.PropertyGroup):
     name: bpy.props.StringProperty(name="Name", default="Unknown") # type: ignore

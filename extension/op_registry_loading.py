@@ -20,10 +20,14 @@ class FetchRemoteTypeRegistry(bpy.types.Operator):
     def execute(self, context):
         debug = False
         presets = False
+        host = ""
+        port = ""
         if __package__ in context.preferences.addons:
             preferences = context.preferences.addons[__package__].preferences
             debug = preferences.debug
             presets = preferences.presets
+            host = preferences.host or "http://127.0.0.1"
+            port = preferences.port or "15702"
 
         if debug:
             print("\nexecute: FetchRemoteTypeRegistry")
@@ -31,24 +35,25 @@ class FetchRemoteTypeRegistry(bpy.types.Operator):
         brp_response = None
 
         try:
-            print("\nexecute: TODO: a")
-            rpc_response = brp_simple_request("rpc.discover")
-            print("\nexecute: TODO: b")
+            rpc_response = brp_simple_request("rpc.discover", host, port)
             print(rpc_response)
             if rpc_response is not None and "error" in rpc_response:
                 if debug:
                     print("bevy request errored out", rpc_response["error"])
                 self.report({"ERROR"}, "request for Bevy registry data returned an error, is the Bevy Remote Protocol Plugin added and is the Bevy app running? :: " + brp_response["error"]["message"])
                 return {'CANCELLED'}
-            print("\nexecute: TODO: c")
             bevy_version = rpc_response["result"]["info"]["version"]
             print(bevy_version)
             if bevy_version.startswith("0.16"):
-                brp_response = brp_simple_request("bevy/registry/schema")
+                brp_response = brp_simple_request("bevy/registry/schema", host, port)
             elif bevy_version.startswith("0.17"):
-                brp_response = brp_simple_request("registry.schema")
+                brp_response = brp_simple_request("registry.schema", host, port)
+            else:
+                # assume anything else is a bevy version "from the future"
+                # and use the most recent version's endpoint
+                brp_response = brp_simple_request("registry.schema", host, port)
         except:
-            self.report({"ERROR"}, "Could not connect to bevy application to fetch registry data from the Bevy Remote Protocol")
+            self.report({"ERROR"}, "Could not connect to bevy application to fetch registry data from the Bevy Remote Protocol using " + host + ":" + port)
             return {'CANCELLED'}
 
         # If the bevy remote protocol returns an error, report it to the user
@@ -77,7 +82,7 @@ class FetchRemoteTypeRegistry(bpy.types.Operator):
         # and view the output)
         if presets:
             try:
-                brp_response = brp_fetch_skein_presets()
+                brp_response = brp_fetch_skein_presets(host, port)
             except:
                 print("Could not connect to bevy application to fetch presets data from the Bevy Remote Protocol")
                 return {'FINISHED'}
@@ -99,21 +104,18 @@ class FetchRemoteTypeRegistry(bpy.types.Operator):
 
         return {'FINISHED'}
 
-# TODO: allow configuration of url via addon settings or
-# custom fetch operator?
-def brp_simple_request(rpc_endpoint, host="http://127.0.0.1", port=15702):
+def brp_simple_request(rpc_endpoint, host, port):
     """Fetch the registry schema from a running Bevy application"""
-    # 0.16 payload
+
+    # 0.16+ payload
     data = {"jsonrpc": "2.0", "method": rpc_endpoint, "params": {}}
     r = requests.post(host + ":" + str(port), json=data)
     brp_response = r.json()
     return brp_response
 
-# TODO: allow configuration of url via addon settings or
-# custom fetch operator?
-def brp_fetch_skein_presets(host="http://127.0.0.1", port=15702):
+def brp_fetch_skein_presets(host, port):
     """Fetch the presets (and Default values) from a running Bevy application"""
-
+    
     data = {"jsonrpc": "2.0", "method": "skein/presets", "params": {}}
     r = requests.post(host + ":" + str(port), json=data)
     brp_response = r.json()

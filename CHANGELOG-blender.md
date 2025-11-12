@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 - Enable Blender 5 compatibility
 - Don't set skein extras field if components array is empty
+- Enable configuration for custom BRP host/port
 
 ## [0.1.12]
 

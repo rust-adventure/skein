@@ -7,6 +7,52 @@ All notable changes to this project will be documented in this file.
 - Enable Blender 5 compatibility
 - Don't set skein extras field if components array is empty
 - Enable configuration for custom BRP host/port
+- the `dump_component_data` cli command (that can run headlessly) has been updated to account for all current object types and a new format that records unrecognized components
+
+  ```
+  blender --background -b art/tunic.blend -c dump_component_data -o components.json
+  ```
+
+  ```json
+  {
+    "object": [
+      {
+        "name": "ActivationSensor",
+        "components": [
+          {
+            "avian3d::collision::collider::constructor::ColliderConstructor": {
+              "Sphere": {
+                "radius": 0.4999999403953552
+              }
+            }
+          }
+        ],
+        "unrecognized_components": ["tunic_bush::BushSensor"]
+      },
+      {
+        "name": "Blade",
+        "components": [],
+        "unrecognized_components": ["tunic_bush::Bush"]
+      }
+    ],
+    "mesh": [],
+    "material": [
+      {
+        "name": "TerrainMat",
+        "components": [
+          {
+            "api::TerrainMat": {}
+          }
+        ]
+      }
+    ],
+    "scene": [],
+    "camera": [],
+    "light": [],
+    "collection": [],
+    "bone": []
+  }
+  ```
 
 ## [0.1.12]
 

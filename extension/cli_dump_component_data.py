@@ -47,60 +47,98 @@ def dump_component_data(argv):
 
     data = []
     for object in bpy.data.objects:
-        gather(data, object, args.type_paths)
+        gather(object, data, args.type_paths)
     component_data["object"] = data
 
     data = []
     for object in bpy.data.meshes:
-        gather(data, object, args.type_paths)
+        gather(object, data, args.type_paths)
     component_data["mesh"] = data
 
     data = []
     for object in bpy.data.materials:
-        gather(data, object, args.type_paths)
+        gather(object, data, args.type_paths)
     component_data["material"] = data
 
     data = []
+    for object in bpy.data.scenes:
+        gather(object, data, args.type_paths)
+    component_data["scene"] = data
+
+    data = []
     for object in bpy.data.cameras:
-        gather(data, object, args.type_paths)
+        gather(object, data, args.type_paths)
     component_data["camera"] = data
 
     data = []
     for object in bpy.data.lights:
-        gather(data, object, args.type_paths)
+        gather(object, data, args.type_paths)
     component_data["light"] = data
 
     data = []
     for object in bpy.data.collections:
-        gather(data, object, args.type_paths)
+        gather(object, data, args.type_paths)
     component_data["collection"] = data
+
+    data = []
+    for armature in bpy.data.armatures:
+        for object in armature.bones:
+            print(object)
+            gather(data, object, args.type_paths)
+    component_data["bone"] = data
 
     with open(args.output, 'w') as json_file:
         json.dump(component_data, json_file, indent=4)
 
     return 0
 
-def gather(object_data, object, type_path_filters):
-    components = []
-    for component in object.skein_two:
+# this function is basically a copy of gltf_export_extension::gather_skein_two
+# with a few changes.
+# - type_path_filters allows for filtering out certain components
+# - instead of adding to the "extras" of the sink, we append to a list
+def gather(source, sink, type_path_filters):
+    if "skein_two" in dir(source):
+        objs = []
+        unrecognized_components = []
         skein_property_groups = bpy.context.window_manager.skein_property_groups
         if type_path_filters and component.selected_type_path not in type_path_filters:
             return
-        if inspect.isclass(skein_property_groups[component.selected_type_path]):
-            components.append({
-                "type_path": component.selected_type_path,
-                "data": get_data_from_active_editor(
-                    component,
-                    hash_over_64(component.selected_type_path),
-                )
-            })
-        else:
-            components.append({
-                "type_path": component.selected_type_path,
-                "data": getattr(component, component.selected_type_path)
-            })
-    if components:
-        object_data.append({
-            "name": object.name,
-            "components": components
-        })
+        for component in source.skein_two:
+            obj = {}
+            type_path = component["selected_type_path"]
+
+            if type_path not in skein_property_groups:
+                unrecognized_components.append(type_path)
+                continue
+            
+            if inspect.isclass(skein_property_groups[type_path]):
+                try:
+                    match skein_property_groups[type_path].force_default:
+                        case "object":
+                            obj[type_path] = {}
+                        case "list":
+                            obj[type_path] = []
+                    objs.append(obj)
+                except AttributeError:
+                    value = get_data_from_active_editor(
+                        component,
+                        hash_over_64(type_path),
+                    )
+                    obj[type_path] = value
+                    objs.append(obj)
+            else:
+                # if the component is a tuple struct, etc
+                # retrieve the value directly instead of
+                # recursing
+                obj[type_path] = getattr(component, hash_over_64(type_path))
+                objs.append(obj)
+
+        if objs or unrecognized_components:
+            output = {
+                "name": source.name,
+                "components": objs,
+            }
+            if unrecognized_components:
+                output["unrecognized_components"] = unrecognized_components
+            sink.append(output)
+

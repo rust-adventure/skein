@@ -3,7 +3,7 @@ schema_version = "1.0.0"
 # Example of manifest file for a Blender extension
 # Change the values according to your extension
 id = "bevy_skein"
-version = "0.1.12"
+version = "0.1.13-dev"
 name = "Bevy Skein"
 tagline = "Apply Bevy Components in Blender"
 maintainer = "Chis Biscardi <chris@christopherbiscardi.com>"

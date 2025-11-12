@@ -7,6 +7,12 @@ All notable changes to this project will be documented in this file.
 - Enable Blender 5 compatibility
 - Don't set skein extras field if components array is empty
 - Enable configuration for custom BRP host/port
+- A new `change_component_path` cli command (that can run headlessly) was introduced which can make migration easier by enabling changing the type_paths of a component on the CLI: https://github.com/rust-adventure/skein/pull/82
+
+  ```
+  blender --background -b art/tunic.blend -c change_component_path --old_path tunic_bush::BushSensor --new_path api::BushSensor
+  ```
+
 - the `dump_component_data` cli command (that can run headlessly) has been updated to account for all current object types and a new format that records unrecognized components
 
   ```

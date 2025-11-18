@@ -28,8 +28,9 @@ fn main() {
         .run();
 }
 
-#[derive(Component, Reflect, Debug)]
-#[reflect(Component)]
+#[derive(Component, Reflect, Default)]
+#[reflect(Component, Default)]
+#[type_path = "api"]
 struct Character {
     name: String,
 }

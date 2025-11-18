@@ -5,7 +5,7 @@ edition = "2024"
 
 [dependencies]
 bevy = "0.17"
-bevy_skein = "0.3"
+bevy_skein = "0.4"
 # Set max log levels. This helps avoid unwanted low-severity log spam, which can affect performance.
 log = { version = "0.4", features = [
     "max_level_debug",

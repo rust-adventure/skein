@@ -18,7 +18,7 @@
       "extras": {
         "skein": [
           {
-            "{{crate_name}}::Character": {
+            "api::Character": {
               "name": "Hollow Knight"
             }
           }

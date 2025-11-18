@@ -1,7 +1,7 @@
 [package]
 name = "bevy_skein"
 description = "Process glTF extras when spawning Scenes to insert Components using Reflection, such as when using Blender as an editor"
-version = "0.4.0-dev"
+version = "0.4.0"
 authors = ["Chris Biscardi"]
 repository = "https://github.com/rust-adventure/skein"
 homepage = "https://bevyskein.dev/"

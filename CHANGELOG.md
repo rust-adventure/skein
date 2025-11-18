@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.4.0]
+
 - Add custom BRP methods in `Plugin::finish`, which enables users to configure their own BRP host/port and plays nicely with other crates which may add methods of their own
 - Don't attempt to use `brp` feature or `dep:bevy_remote` on wasm
 
@@ -57,6 +59,7 @@ Bevy 0.16-rc compatible release
 
 Initial Release of Rust crate. Compatible with Bevy 0.15
 
-[unreleased]: https://github.com/rust-adventure/skein/compare/v0.1.5...HEAD
-[0.2.0-rc.3]: https://github.com/rust-adventure/skein/compare/v0.2.0-rc.2...v0.2.0-rc.3
+[unreleased]: https://github.com/rust-adventure/skein/compare/v0.4.0...HEAD
+[0.4.x]: https://github.com/rust-adventure/skein/compare/v0.3.0...0.4.0
+[0.2.x]: https://github.com/rust-adventure/skein/compare/v0.2.0-rc.2...v0.2.0-rc.3
 [0.1.x]: https://github.com/rust-adventure/skein/releases/tag/v0.1.0

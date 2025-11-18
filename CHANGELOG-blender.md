@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.1.13]
+
 - Enable Blender 5 compatibility
 - Don't set skein extras field if components array is empty
 - Enable configuration for custom BRP host/port
@@ -141,7 +143,8 @@ These presets are one-off. There is no special storage for them once they are ap
 
 Initial Release of Blender Addon
 
-[unreleased]: https://github.com/rust-adventure/skein/compare/blender-v0.1.9...HEAD
+[unreleased]: https://github.com/rust-adventure/skein/compare/blender-v0.1.13...HEAD
+[0.1.13]: https://github.com/rust-adventure/skein/compare/blender-v0.1.12...blender-v0.1.13
 [0.1.9]: https://github.com/rust-adventure/skein/compare/blender-v0.1.8...blender-v0.1.9
 [0.1.8]: https://github.com/rust-adventure/skein/compare/blender-v0.1.7...blender-v0.1.8
 [0.1.7]: https://github.com/rust-adventure/skein/compare/blender-v0.1.6...blender-v0.1.7

@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+- Add a "Trigger all Collection Exporters" operator. This can be used from a sidemenu or bound to a key.
+
 ## [0.1.13]
 
 - Enable Blender 5 compatibility

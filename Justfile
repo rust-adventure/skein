@@ -20,7 +20,7 @@ clippy:
 #
 # copies the python extension directly into the Blender addons directory.
 copy-for-dev:
-    cp -r ./extension/* /Users/chris/Library/Application\ Support/Blender/4.5/extensions/user_default/bevy_skein/
+    cp -r ./extension/* /Users/chris/Library/Application\ Support/Blender/5.0/extensions/user_default/bevy_skein/
 
 # run python tests headlessly in a blender environment
 run-headless-blender-tests:

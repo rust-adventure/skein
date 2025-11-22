@@ -161,3 +161,15 @@ def touch_all_fields(context, key):
                 touch_all_fields(obj, key)
     except:
         pass
+
+classes = (
+    ApplyPresetToObject,
+    ApplyPresetToMesh,
+    ApplyPresetToMaterial,
+    ApplyPresetToScene,
+    ApplyPresetToLight,
+    ApplyPresetToCollection,
+    ApplyPresetToBone,
+)
+
+register, unregister = bpy.utils.register_classes_factory(classes)

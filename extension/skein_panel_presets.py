@@ -146,3 +146,14 @@ def draw_generic_panel(context, obj, layout, execute_mode):
 
 
         
+classes = (
+    SkeinPanelPresetsObject,
+    SkeinPanelPresetsMesh,
+    SkeinPanelPresetsMaterial,
+    SkeinPanelPresetsScene,
+    SkeinPanelPresetsLight,
+    SkeinPanelPresetsCollection,
+    SkeinPanelPresetsBone,
+)
+
+register, unregister = bpy.utils.register_classes_factory(classes)

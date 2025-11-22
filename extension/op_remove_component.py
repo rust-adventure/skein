@@ -113,3 +113,15 @@ def remove_component_data(context, obj):
 
     # blender uses strings to indicate when operation is done
     return {'FINISHED'}
+
+classes = (
+    RemoveComponentOnObject,
+    RemoveComponentOnMesh,
+    RemoveComponentOnMaterial,
+    RemoveComponentOnScene,
+    RemoveComponentOnLight,
+    RemoveComponentOnCollection,
+    RemoveComponentOnBone,
+)
+
+register, unregister = bpy.utils.register_classes_factory(classes)

@@ -437,3 +437,14 @@ def render_two(layout, context, context_key):
             layout.prop(obj, key)
     return
 
+classes = (
+    SkeinPanelObject,
+    SkeinPanelMesh,
+    SkeinPanelMaterial,
+    SkeinPanelScene,
+    SkeinPanelLight,
+    SkeinPanelCollection,
+    SkeinPanelBone,
+)
+
+register, unregister = bpy.utils.register_classes_factory(classes)

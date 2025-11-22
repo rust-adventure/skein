@@ -169,3 +169,15 @@ def touch_all_fields(context, key):
                 touch_all_fields(obj, key)
     except:
         pass
+
+classes = (
+    InsertComponentOnObject,
+    InsertComponentOnMesh,
+    InsertComponentOnMaterial,
+    InsertComponentOnScene,
+    InsertComponentOnLight,
+    InsertComponentOnCollection,
+    InsertComponentOnBone,
+)
+
+register, unregister = bpy.utils.register_classes_factory(classes)

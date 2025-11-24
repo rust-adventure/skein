@@ -62,14 +62,17 @@ All versions of `bevy_skein` are currently compatible with all versions of the `
 
 | Bevy version | `bevy_skein` version |
 | :----------- | :------------------- |
-| `0.17`       | `0.3`                |
+| `0.17`       | `0.3+`               |
 | `0.16`       | `0.2`                |
 | `0.15`       | `0.1`                |
 
-| Blender version | `skein` addon version |
-| :-------------- | :-------------------- |
-| `>4.2`          | `0.1+`                |
-| `>4.2`          | branch `main`         |
+The skein addon current release and main branch support as far back as 4.2. Upgrading Blender to new versions requires updating the addon to at least the minimum version here as well. 
+
+| Blender version | `skein` minimum addon version |
+| :-------------- | :---------------------------- |
+| `>=5.0`         | `0.1.13`                      |
+| `>=4.2 && < 5.0`| `0.1.0`                       |
+| `>=4.2`         | branch `main`                 |
 
 ## Why is it named Skein?
 

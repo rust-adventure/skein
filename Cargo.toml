@@ -20,24 +20,44 @@ exclude = [
 rust-version = "1.88.0"
 
 [dependencies]
-bevy_app = "0.17"
-bevy_log = "0.17"
-bevy_ecs = "0.17"
-bevy_gltf = "0.17"
-bevy_reflect = "0.17"
-bevy_scene = "0.17"
-bevy_platform = "0.17"
+bevy_app = { git = "https://github.com/ChristopherBiscardi/bevy.git", branch = "gltf-extension-processor" }
+bevy_log = { git = "https://github.com/ChristopherBiscardi/bevy.git", branch = "gltf-extension-processor" }
+bevy_ecs = { git = "https://github.com/ChristopherBiscardi/bevy.git", branch = "gltf-extension-processor" }
+bevy_gltf = { git = "https://github.com/ChristopherBiscardi/bevy.git", branch = "gltf-extension-processor" }
+bevy_reflect = { git = "https://github.com/ChristopherBiscardi/bevy.git", branch = "gltf-extension-processor" }
+bevy_scene = { git = "https://github.com/ChristopherBiscardi/bevy.git", branch = "gltf-extension-processor" }
+bevy_platform = { git = "https://github.com/ChristopherBiscardi/bevy.git", branch = "gltf-extension-processor" }
+bevy_animation = { git = "https://github.com/ChristopherBiscardi/bevy.git", branch = "gltf-extension-processor" }
+bevy_asset = { git = "https://github.com/ChristopherBiscardi/bevy.git", branch = "gltf-extension-processor" }
+bevy_image = { git = "https://github.com/ChristopherBiscardi/bevy.git", branch = "gltf-extension-processor" }
+bevy_pbr = { git = "https://github.com/ChristopherBiscardi/bevy.git", branch = "gltf-extension-processor" }
+bevy_light = { git = "https://github.com/ChristopherBiscardi/bevy.git", branch = "gltf-extension-processor" }
+# bevy_app = { path = "/Users/chris/github/bevyengine/bevy-gltf-extensions/crates/bevy_app" }
+# bevy_log = { path = "/Users/chris/github/bevyengine/bevy-gltf-extensions/crates/bevy_log" }
+# bevy_ecs = { path = "/Users/chris/github/bevyengine/bevy-gltf-extensions/crates/bevy_ecs" }
+# bevy_gltf = { path = "/Users/chris/github/bevyengine/bevy-gltf-extensions/crates/bevy_gltf" }
+# bevy_reflect = { path = "/Users/chris/github/bevyengine/bevy-gltf-extensions/crates/bevy_reflect" }
+# bevy_scene = { path = "/Users/chris/github/bevyengine/bevy-gltf-extensions/crates/bevy_scene" }
+# bevy_platform = { path = "/Users/chris/github/bevyengine/bevy-gltf-extensions/crates/bevy_platform" }
+# bevy_animation = { path = "/Users/chris/github/bevyengine/bevy-gltf-extensions/crates/bevy_animation" }
+# bevy_asset = { path = "/Users/chris/github/bevyengine/bevy-gltf-extensions/crates/bevy_asset" }
+# bevy_image = { path = "/Users/chris/github/bevyengine/bevy-gltf-extensions/crates/bevy_image" }
+# bevy_pbr = { path = "/Users/chris/github/bevyengine/bevy-gltf-extensions/crates/bevy_pbr" }
+# bevy_light = { path = "/Users/chris/github/bevyengine/bevy-gltf-extensions/crates/bevy_light" }
 serde = "1.0"
 serde_json = "1.0"
 tracing = "0.1"
+gltf = "1.4.0"
 
 # wasm can't support brp, so disable the dependency entirely
 [target.'cfg(not(target_family = "wasm"))'.dependencies]
-bevy_remote = { version = "0.17", optional = true }
+bevy_remote = { git = "https://github.com/ChristopherBiscardi/bevy.git", branch = "gltf-extension-processor", optional = true }
+# bevy_remote = { path = "/Users/chris/github/bevyengine/bevy-gltf-extensions/crates/bevy_remote", optional = true }
 
 [dev-dependencies]
+# bevy = { path = "/Users/chris/github/bevyengine/bevy-gltf-extensions" }
 # bevy = { version = "0.17", features = ["jpeg", "experimental_pbr_pcss"] }
-bevy = "0.17"
+bevy = { git = "https://github.com/ChristopherBiscardi/bevy.git", branch = "gltf-extension-processor" }
 serde = { version = "1.0", features = ["derive"] }
 test-components = { path = "./test-components" }
 

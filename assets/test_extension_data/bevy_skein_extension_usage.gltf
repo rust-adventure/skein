@@ -1,0 +1,287 @@
+{
+  "asset": {
+    "generator": "Khronos glTF Blender I/O v5.0.21",
+    "version": "2.0"
+  },
+  "extensionsUsed": ["BEVY_skein", "KHR_lights_punctual"],
+  "extensionsRequired": ["KHR_lights_punctual"],
+  "extensions": {
+    "KHR_lights_punctual": {
+      "lights": [
+        {
+          "color": [1, 1, 1],
+          "intensity": 54351.41306588226,
+          "type": "point",
+          "name": "Light"
+        }
+      ]
+    }
+  },
+  "scene": 0,
+  "scenes": [
+    {
+      "extensions": {
+        "BEVY_skein": {
+          "components": [
+            {
+              "test_components::Player": {
+                "name": "Is a Scene",
+                "power": 85.2300033569336,
+                "test": 20
+              }
+            }
+          ]
+        }
+      },
+      "name": "Scene",
+      "nodes": [0, 1, 2, 4]
+    }
+  ],
+  "nodes": [
+    {
+      "extensions": {
+        "BEVY_skein": {
+          "components": [
+            {
+              "test_components::Player": {
+                "name": "Is the Mesh Object",
+                "power": 90.93000030517578,
+                "test": -234
+              }
+            }
+          ]
+        }
+      },
+      "mesh": 0,
+      "name": "Cube"
+    },
+    {
+      "extensions": {
+        "KHR_lights_punctual": {
+          "light": 0
+        },
+        "BEVY_skein": {
+          "components": [
+            {
+              "test_components::Player": {
+                "name": "Is a Light Object",
+                "power": 85.2300033569336,
+                "test": 20
+              }
+            }
+          ]
+        }
+      },
+      "name": "Light",
+      "rotation": [
+        -0.28416627645492554, 0.7269423007965088, 0.34203392267227173,
+        0.5232754945755005
+      ],
+      "translation": [4.076245307922363, 5.903861999511719, -1.0054539442062378]
+    },
+    {
+      "camera": 0,
+      "extensions": {
+        "BEVY_skein": {
+          "components": [
+            {
+              "test_components::Player": {
+                "name": "Is a Camera",
+                "power": 85.2300033569336,
+                "test": 20
+              }
+            }
+          ]
+        }
+      },
+      "name": "Camera",
+      "rotation": [
+        -0.20997299253940582, 0.3857799470424652, 0.09062844514846802,
+        0.8937962055206299
+      ],
+      "translation": [7.358891487121582, 4.958309173583984, 6.925790786743164]
+    },
+    {
+      "extensions": {
+        "BEVY_skein": {
+          "components": [
+            {
+              "test_components::Player": {
+                "name": "Is a Bone",
+                "power": 85.2300033569336,
+                "test": 20
+              }
+            }
+          ]
+        }
+      },
+      "name": "Bone"
+    },
+    {
+      "children": [3],
+      "extensions": {
+        "BEVY_skein": {
+          "components": [
+            {
+              "test_components::Player": {
+                "name": "Is an Armature",
+                "power": 85.2300033569336,
+                "test": 20
+              }
+            }
+          ]
+        }
+      },
+      "name": "Armature"
+    }
+  ],
+  "cameras": [
+    {
+      "extensions": {},
+      "name": "Camera",
+      "perspective": {
+        "aspectRatio": 1.7777777777777777,
+        "yfov": 0.39959648408210363,
+        "zfar": 100,
+        "znear": 0.10000000149011612
+      },
+      "type": "perspective"
+    }
+  ],
+  "materials": [
+    {
+      "doubleSided": true,
+      "extensions": {
+        "BEVY_skein": {
+          "components": [
+            {
+              "test_components::TeamMember": {
+                "player": {
+                  "name": "Is a Material",
+                  "power": 85.2300033569336,
+                  "test": 20
+                },
+                "team": "Red"
+              }
+            }
+          ]
+        }
+      },
+      "name": "Material",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.800000011920929, 0.800000011920929, 0.800000011920929, 1
+        ],
+        "metallicFactor": 0,
+        "roughnessFactor": 0.5
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "extensions": {
+        "BEVY_skein": {
+          "components": [
+            {
+              "test_components::Player": {
+                "name": "Is a Mesh",
+                "power": 81.6300048828125,
+                "test": 20
+              }
+            }
+          ]
+        }
+      },
+      "name": "Cube",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 0,
+            "NORMAL": 1,
+            "TEXCOORD_0": 2
+          },
+          "indices": 3,
+          "material": 0
+        }
+      ]
+    }
+  ],
+  "skins": [
+    {
+      "inverseBindMatrices": 4,
+      "joints": [3],
+      "name": "Armature"
+    }
+  ],
+  "accessors": [
+    {
+      "bufferView": 0,
+      "componentType": 5126,
+      "count": 24,
+      "max": [1, 1, 1],
+      "min": [-1, -1, -1],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 24,
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 24,
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 3,
+      "componentType": 5123,
+      "count": 36,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 4,
+      "componentType": 5126,
+      "count": 1,
+      "type": "MAT4"
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 288,
+      "byteOffset": 0,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 288,
+      "byteOffset": 288,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 192,
+      "byteOffset": 576,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 72,
+      "byteOffset": 768,
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteLength": 64,
+      "byteOffset": 840
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 904,
+      "uri": "bevy_skein_extension_usage.bin"
+    }
+  ]
+}

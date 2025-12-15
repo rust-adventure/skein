@@ -88,6 +88,7 @@ impl Plugin for SkeinPlugin {
         app.world_mut()
             .resource_mut::<GltfExtensionHandlers>()
             .0
+            .write_blocking()
             .push(Box::new(GltfExtensionHandlerSkein {
                 type_registry,
             }));
@@ -384,23 +385,9 @@ impl GltfExtensionHandler for GltfExtensionHandlerSkein {
         Box::new((*self).clone())
     }
 
-    fn extension_ids(&self) -> &'static [&'static str] {
-        &["BEVY_skein"]
-    }
-
-    fn on_root_data(
-        &mut self,
-        _extension_id: &str,
-        _value: Option<&serde_json::Value>,
-    ) {
-    }
-
     fn on_animation(
         &mut self,
-        _extension_id: &str,
-        _value: Option<&serde_json::Value>,
         _gltf_animation: &gltf::Animation,
-        _name: Option<&str>,
         _handle: bevy_asset::Handle<
             bevy_animation::AnimationClip,
         >,
@@ -421,30 +408,24 @@ impl GltfExtensionHandler for GltfExtensionHandlerSkein {
 
     fn on_texture(
         &mut self,
-        _extension_id: &str,
-        _value: Option<&serde_json::Value>,
-        _texture: Handle<Image>,
+        _extension_data: Option<
+            &serde_json::Map<String, serde_json::Value>,
+        >,
+        _texture: Handle<bevy_image::Image>,
     ) {
     }
-
     fn on_material(
         &mut self,
-        _extension_id: &str,
-        _value: Option<&serde_json::Value>,
         _load_context: &mut LoadContext<'_>,
         _gltf_material: &gltf::Material,
-        _name: Option<&str>,
         _material: Handle<StandardMaterial>,
     ) {
     }
 
     fn on_gltf_mesh(
         &mut self,
-        _extension_id: &str,
-        _value: Option<&serde_json::Value>,
         _load_context: &mut LoadContext<'_>,
         _gltf_mesh: &gltf::Mesh,
-        _name: Option<&str>,
         _mesh: Handle<bevy_gltf::GltfMesh>,
     ) {
     }
@@ -490,15 +471,13 @@ impl GltfExtensionHandler for GltfExtensionHandlerSkein {
 
     fn on_scene_completed(
         &mut self,
-        _extension_id: &str,
-        value: Option<&serde_json::Value>,
-        _scene: &gltf::Scene,
-        _name: Option<&str>,
+        _load_context: &mut LoadContext<'_>,
+        scene: &gltf::Scene,
         world_root_id: bevy_ecs::entity::Entity,
         world: &mut World,
-        _load_context: &mut LoadContext<'_>,
     ) {
-        let Some(value) = value else {
+        let Some(value) = scene.extension_value(EXTENSION)
+        else {
             return;
         };
         let type_registry = self.type_registry.read();
@@ -511,13 +490,13 @@ impl GltfExtensionHandler for GltfExtensionHandlerSkein {
 
     fn on_gltf_node(
         &mut self,
-        _extension_id: &str,
-        value: Option<&serde_json::Value>,
         _load_context: &mut LoadContext<'_>,
         gltf_node: &Node,
         entity: &mut EntityWorldMut,
     ) {
-        let Some(value) = value else {
+        let Some(value) =
+            gltf_node.extension_value(EXTENSION)
+        else {
             return;
         };
 
@@ -535,13 +514,13 @@ impl GltfExtensionHandler for GltfExtensionHandlerSkein {
 
     fn on_spawn_light_directional(
         &mut self,
-        _extension_id: &str,
-        value: Option<&serde_json::Value>,
         _load_context: &mut LoadContext<'_>,
-        _gltf_node: &Node,
+        gltf_node: &Node,
         entity: &mut EntityWorldMut,
     ) {
-        let Some(value) = value else {
+        let Some(value) =
+            gltf_node.extension_value(EXTENSION)
+        else {
             return;
         };
 
@@ -551,13 +530,13 @@ impl GltfExtensionHandler for GltfExtensionHandlerSkein {
 
     fn on_spawn_light_point(
         &mut self,
-        _extension_id: &str,
-        value: Option<&serde_json::Value>,
         _load_context: &mut LoadContext<'_>,
-        _gltf_node: &Node,
+        gltf_node: &Node,
         entity: &mut EntityWorldMut,
     ) {
-        let Some(value) = value else {
+        let Some(value) =
+            gltf_node.extension_value(EXTENSION)
+        else {
             return;
         };
 
@@ -567,13 +546,13 @@ impl GltfExtensionHandler for GltfExtensionHandlerSkein {
 
     fn on_spawn_light_spot(
         &mut self,
-        _extension_id: &str,
-        value: Option<&serde_json::Value>,
         _load_context: &mut LoadContext<'_>,
-        _gltf_node: &Node,
+        gltf_node: &Node,
         entity: &mut EntityWorldMut,
     ) {
-        let Some(value) = value else {
+        let Some(value) =
+            gltf_node.extension_value(EXTENSION)
+        else {
             return;
         };
 

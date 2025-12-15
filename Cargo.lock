@@ -347,7 +347,6 @@ checksum = "72b3254f16251a8381aa12e40e3c4d2f0199f8c6508fbecb9d91f575e0fbb8c6"
 [[package]]
 name = "bevy"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "bevy_internal",
 ]
@@ -355,7 +354,6 @@ dependencies = [
 [[package]]
 name = "bevy_a11y"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "accesskit",
  "bevy_app",
@@ -367,7 +365,6 @@ dependencies = [
 [[package]]
 name = "bevy_android"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "android-activity",
 ]
@@ -375,7 +372,6 @@ dependencies = [
 [[package]]
 name = "bevy_animation"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "bevy_animation_macros",
  "bevy_app",
@@ -407,7 +403,6 @@ dependencies = [
 [[package]]
 name = "bevy_animation_macros"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "bevy_macro_utils",
  "quote",
@@ -417,7 +412,6 @@ dependencies = [
 [[package]]
 name = "bevy_anti_alias"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "bevy_app",
  "bevy_asset",
@@ -438,7 +432,6 @@ dependencies = [
 [[package]]
 name = "bevy_app"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "bevy_derive",
  "bevy_ecs",
@@ -460,7 +453,6 @@ dependencies = [
 [[package]]
 name = "bevy_asset"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "async-broadcast",
  "async-channel",
@@ -501,7 +493,6 @@ dependencies = [
 [[package]]
 name = "bevy_asset_macros"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "bevy_macro_utils",
  "proc-macro2",
@@ -512,7 +503,6 @@ dependencies = [
 [[package]]
 name = "bevy_audio"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "bevy_app",
  "bevy_asset",
@@ -529,7 +519,6 @@ dependencies = [
 [[package]]
 name = "bevy_camera"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "bevy_app",
  "bevy_asset",
@@ -554,7 +543,6 @@ dependencies = [
 [[package]]
 name = "bevy_color"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "bevy_math",
  "bevy_reflect",
@@ -569,13 +557,13 @@ dependencies = [
 [[package]]
 name = "bevy_core_pipeline"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "bevy_app",
  "bevy_asset",
  "bevy_camera",
  "bevy_color",
  "bevy_derive",
+ "bevy_diagnostic",
  "bevy_ecs",
  "bevy_image",
  "bevy_math",
@@ -597,7 +585,6 @@ dependencies = [
 [[package]]
 name = "bevy_derive"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "bevy_macro_utils",
  "quote",
@@ -605,9 +592,33 @@ dependencies = [
 ]
 
 [[package]]
+name = "bevy_dev_tools"
+version = "0.18.0-dev"
+dependencies = [
+ "bevy_app",
+ "bevy_asset",
+ "bevy_camera",
+ "bevy_color",
+ "bevy_diagnostic",
+ "bevy_ecs",
+ "bevy_input",
+ "bevy_math",
+ "bevy_picking",
+ "bevy_reflect",
+ "bevy_render",
+ "bevy_shader",
+ "bevy_state",
+ "bevy_text",
+ "bevy_time",
+ "bevy_ui",
+ "bevy_ui_render",
+ "bevy_window",
+ "tracing",
+]
+
+[[package]]
 name = "bevy_diagnostic"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "atomic-waker",
  "bevy_app",
@@ -624,7 +635,6 @@ dependencies = [
 [[package]]
 name = "bevy_ecs"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "arrayvec",
  "bevy_ecs_macros",
@@ -651,7 +661,6 @@ dependencies = [
 [[package]]
 name = "bevy_ecs_macros"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "bevy_macro_utils",
  "proc-macro2",
@@ -662,7 +671,6 @@ dependencies = [
 [[package]]
 name = "bevy_encase_derive"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "bevy_macro_utils",
  "encase_derive_impl",
@@ -671,7 +679,6 @@ dependencies = [
 [[package]]
 name = "bevy_gilrs"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "bevy_app",
  "bevy_ecs",
@@ -686,7 +693,6 @@ dependencies = [
 [[package]]
 name = "bevy_gizmos"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "bevy_app",
  "bevy_asset",
@@ -705,7 +711,6 @@ dependencies = [
 [[package]]
 name = "bevy_gizmos_macros"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "bevy_macro_utils",
  "quote",
@@ -715,7 +720,6 @@ dependencies = [
 [[package]]
 name = "bevy_gizmos_render"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "bevy_app",
  "bevy_asset",
@@ -739,8 +743,8 @@ dependencies = [
 [[package]]
 name = "bevy_gltf"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
+ "async-lock",
  "base64 0.22.1",
  "bevy_animation",
  "bevy_app",
@@ -773,7 +777,6 @@ dependencies = [
 [[package]]
 name = "bevy_image"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "bevy_app",
  "bevy_asset",
@@ -801,7 +804,6 @@ dependencies = [
 [[package]]
 name = "bevy_input"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "bevy_app",
  "bevy_ecs",
@@ -817,7 +819,6 @@ dependencies = [
 [[package]]
 name = "bevy_input_focus"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "bevy_app",
  "bevy_camera",
@@ -835,7 +836,6 @@ dependencies = [
 [[package]]
 name = "bevy_internal"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "bevy_a11y",
  "bevy_android",
@@ -848,6 +848,7 @@ dependencies = [
  "bevy_color",
  "bevy_core_pipeline",
  "bevy_derive",
+ "bevy_dev_tools",
  "bevy_diagnostic",
  "bevy_ecs",
  "bevy_gilrs",
@@ -887,7 +888,6 @@ dependencies = [
 [[package]]
 name = "bevy_light"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "bevy_app",
  "bevy_asset",
@@ -907,7 +907,6 @@ dependencies = [
 [[package]]
 name = "bevy_log"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "android_log-sys",
  "bevy_app",
@@ -924,7 +923,6 @@ dependencies = [
 [[package]]
 name = "bevy_macro_utils"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -935,9 +933,9 @@ dependencies = [
 [[package]]
 name = "bevy_math"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "approx",
+ "arrayvec",
  "bevy_reflect",
  "derive_more",
  "glam",
@@ -946,7 +944,6 @@ dependencies = [
  "rand",
  "rand_distr",
  "serde",
- "smallvec",
  "thiserror 2.0.17",
  "variadics_please",
 ]
@@ -954,7 +951,6 @@ dependencies = [
 [[package]]
 name = "bevy_mesh"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "bevy_app",
  "bevy_asset",
@@ -984,7 +980,6 @@ checksum = "7ef8e4b7e61dfe7719bb03c884dc270cd46a82efb40f93e9933b990c5c190c59"
 [[package]]
 name = "bevy_pbr"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "bevy_app",
  "bevy_asset",
@@ -1019,7 +1014,6 @@ dependencies = [
 [[package]]
 name = "bevy_picking"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "bevy_app",
  "bevy_asset",
@@ -1042,12 +1036,10 @@ dependencies = [
 [[package]]
 name = "bevy_platform"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "critical-section",
  "foldhash 0.2.0",
  "futures-channel",
- "getrandom",
  "hashbrown 0.16.1",
  "js-sys",
  "portable-atomic",
@@ -1062,7 +1054,6 @@ dependencies = [
 [[package]]
 name = "bevy_post_process"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "bevy_app",
  "bevy_asset",
@@ -1091,12 +1082,10 @@ dependencies = [
 [[package]]
 name = "bevy_ptr"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 
 [[package]]
 name = "bevy_reflect"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "assert_type_match",
  "bevy_platform",
@@ -1123,7 +1112,6 @@ dependencies = [
 [[package]]
 name = "bevy_reflect_derive"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "bevy_macro_utils",
  "indexmap",
@@ -1136,7 +1124,6 @@ dependencies = [
 [[package]]
 name = "bevy_remote"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "anyhow",
  "async-channel",
@@ -1160,7 +1147,6 @@ dependencies = [
 [[package]]
 name = "bevy_render"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "async-channel",
  "bevy_app",
@@ -1209,7 +1195,6 @@ dependencies = [
 [[package]]
 name = "bevy_render_macros"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "bevy_macro_utils",
  "proc-macro2",
@@ -1220,7 +1205,6 @@ dependencies = [
 [[package]]
 name = "bevy_scene"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "bevy_app",
  "bevy_asset",
@@ -1241,7 +1225,6 @@ dependencies = [
 [[package]]
 name = "bevy_shader"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "bevy_asset",
  "bevy_platform",
@@ -1282,7 +1265,6 @@ dependencies = [
 [[package]]
 name = "bevy_sprite"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "bevy_app",
  "bevy_asset",
@@ -1306,7 +1288,6 @@ dependencies = [
 [[package]]
 name = "bevy_sprite_render"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "bevy_app",
  "bevy_asset",
@@ -1337,7 +1318,6 @@ dependencies = [
 [[package]]
 name = "bevy_state"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "bevy_app",
  "bevy_ecs",
@@ -1352,7 +1332,6 @@ dependencies = [
 [[package]]
 name = "bevy_state_macros"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "bevy_macro_utils",
  "quote",
@@ -1362,7 +1341,6 @@ dependencies = [
 [[package]]
 name = "bevy_tasks"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "async-channel",
  "async-executor",
@@ -1381,7 +1359,6 @@ dependencies = [
 [[package]]
 name = "bevy_text"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "bevy_app",
  "bevy_asset",
@@ -1406,7 +1383,6 @@ dependencies = [
 [[package]]
 name = "bevy_time"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "bevy_app",
  "bevy_ecs",
@@ -1420,7 +1396,6 @@ dependencies = [
 [[package]]
 name = "bevy_transform"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "bevy_app",
  "bevy_ecs",
@@ -1437,7 +1412,6 @@ dependencies = [
 [[package]]
 name = "bevy_ui"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "accesskit",
  "bevy_a11y",
@@ -1469,7 +1443,6 @@ dependencies = [
 [[package]]
 name = "bevy_ui_render"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "bevy_app",
  "bevy_asset",
@@ -1499,7 +1472,6 @@ dependencies = [
 [[package]]
 name = "bevy_utils"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "bevy_platform",
  "disqualified",
@@ -1509,7 +1481,6 @@ dependencies = [
 [[package]]
 name = "bevy_window"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "bevy_app",
  "bevy_asset",
@@ -1527,7 +1498,6 @@ dependencies = [
 [[package]]
 name = "bevy_winit"
 version = "0.18.0-dev"
-source = "git+https://github.com/ChristopherBiscardi/bevy.git?branch=gltf-extension-processor#2d137c2ef7d1e785650d7fd6d4403ec9f83c52eb"
 dependencies = [
  "accesskit",
  "accesskit_winit",
@@ -2445,11 +2415,9 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "899def5c37c4fd7b2664648c28120ecec138e4d395b459e5ca34f9cce2dd77fd"
 dependencies = [
  "cfg-if",
- "js-sys",
  "libc",
  "r-efi",
  "wasip2",
- "wasm-bindgen",
 ]
 
 [[package]]
@@ -2693,6 +2661,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "841d1cc9bed7f9236f321df977030373f4a4163ae1a7dbfe1a51a2c1a51d9100"
 dependencies = [
  "equivalent",
+ "foldhash 0.2.0",
  "serde",
  "serde_core",
 ]
@@ -3135,9 +3104,9 @@ dependencies = [
 
 [[package]]
 name = "moxcms"
-version = "0.7.10"
+version = "0.7.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "80986bbbcf925ebd3be54c26613d861255284584501595cf418320c078945608"
+checksum = "ac9557c559cd6fc9867e122e20d2cbefc9ca29d80d027a8e39310920ed2f0a97"
 dependencies = [
  "num-traits",
  "pxfm",
@@ -3145,9 +3114,9 @@ dependencies = [
 
 [[package]]
 name = "naga"
-version = "26.0.0"
+version = "27.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "916cbc7cb27db60be930a4e2da243cf4bc39569195f22fd8ee419cd31d5b662c"
+checksum = "066cf25f0e8b11ee0df221219010f213ad429855f57c494f995590c861a9a7d8"
 dependencies = [
  "arrayvec",
  "bit-set",
@@ -3156,7 +3125,7 @@ dependencies = [
  "cfg_aliases",
  "codespan-reporting",
  "half",
- "hashbrown 0.15.5",
+ "hashbrown 0.16.1",
  "hexf-parse",
  "indexmap",
  "libm",
@@ -3172,9 +3141,9 @@ dependencies = [
 
 [[package]]
 name = "naga_oil"
-version = "0.19.1"
+version = "0.20.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1b586d3cf5c9b7e13fe2af6e114406ff70773fd80881960378933b63e76f37dd"
+checksum = "310c347db1b30e69581f3b84dc9a5c311ed583f67851b39b77953cb7a066c97f"
 dependencies = [
  "codespan-reporting",
  "data-encoding",
@@ -4015,14 +3984,15 @@ dependencies = [
 
 [[package]]
 name = "ron"
-version = "0.11.0"
+version = "0.12.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "db09040cc89e461f1a265139777a2bde7f8d8c67c4936f700c63ce3e2904d468"
+checksum = "fd490c5b18261893f14449cbd28cb9c0b637aebf161cd77900bfdedaff21ec32"
 dependencies = [
- "base64 0.22.1",
  "bitflags 2.10.0",
+ "once_cell",
  "serde",
  "serde_derive",
+ "typeid",
  "unicode-ident",
 ]
 
@@ -4954,16 +4924,16 @@ dependencies = [
 
 [[package]]
 name = "wgpu"
-version = "26.0.1"
+version = "27.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "70b6ff82bbf6e9206828e1a3178e851f8c20f1c9028e74dd3a8090741ccd5798"
+checksum = "bfe68bac7cde125de7a731c3400723cadaaf1703795ad3f4805f187459cd7a77"
 dependencies = [
  "arrayvec",
  "bitflags 2.10.0",
  "cfg-if",
  "cfg_aliases",
  "document-features",
- "hashbrown 0.15.5",
+ "hashbrown 0.16.1",
  "js-sys",
  "log",
  "naga",
@@ -4981,17 +4951,18 @@ dependencies = [
 
 [[package]]
 name = "wgpu-core"
-version = "26.0.1"
+version = "27.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d5f62f1053bd28c2268f42916f31588f81f64796e2ff91b81293515017ca8bd9"
+checksum = "27a75de515543b1897b26119f93731b385a19aea165a1ec5f0e3acecc229cae7"
 dependencies = [
  "arrayvec",
  "bit-set",
  "bit-vec",
  "bitflags 2.10.0",
+ "bytemuck",
  "cfg_aliases",
  "document-features",
- "hashbrown 0.15.5",
+ "hashbrown 0.16.1",
  "indexmap",
  "log",
  "naga",
@@ -5012,36 +4983,36 @@ dependencies = [
 
 [[package]]
 name = "wgpu-core-deps-apple"
-version = "26.0.0"
+version = "27.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "18ae5fbde6a4cbebae38358aa73fcd6e0f15c6144b67ef5dc91ded0db125dbdf"
+checksum = "0772ae958e9be0c729561d5e3fd9a19679bcdfb945b8b1a1969d9bfe8056d233"
 dependencies = [
  "wgpu-hal",
 ]
 
 [[package]]
 name = "wgpu-core-deps-wasm"
-version = "26.0.0"
+version = "27.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c03b9f9e1a50686d315fc6debe4980cc45cd37b0e919351917df494e8fdc8885"
+checksum = "9b1027dcf3b027a877e44819df7ceb0e2e98578830f8cd34cd6c3c7c2a7a50b7"
 dependencies = [
  "wgpu-hal",
 ]
 
 [[package]]
 name = "wgpu-core-deps-windows-linux-android"
-version = "26.0.0"
+version = "27.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "720a5cb9d12b3d337c15ff0e24d3e97ed11490ff3f7506e7f3d98c68fa5d6f14"
+checksum = "71197027d61a71748e4120f05a9242b2ad142e3c01f8c1b47707945a879a03c3"
 dependencies = [
  "wgpu-hal",
 ]
 
 [[package]]
 name = "wgpu-hal"
-version = "26.0.6"
+version = "27.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a8d0e67224cc7305b3b4eb2cc57ca4c4c3afc665c1d1bee162ea806e19c47bdd"
+checksum = "5b21cb61c57ee198bc4aff71aeadff4cbb80b927beb912506af9c780d64313ce"
 dependencies = [
  "android_system_properties",
  "arrayvec",
@@ -5058,7 +5029,7 @@ dependencies = [
  "gpu-alloc",
  "gpu-allocator",
  "gpu-descriptor",
- "hashbrown 0.15.5",
+ "hashbrown 0.16.1",
  "js-sys",
  "khronos-egl",
  "libc",
@@ -5068,6 +5039,7 @@ dependencies = [
  "naga",
  "ndk-sys 0.6.0+11769913",
  "objc",
+ "once_cell",
  "ordered-float",
  "parking_lot",
  "portable-atomic",
@@ -5087,9 +5059,9 @@ dependencies = [
 
 [[package]]
 name = "wgpu-types"
-version = "26.0.0"
+version = "27.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "eca7a8d8af57c18f57d393601a1fb159ace8b2328f1b6b5f80893f7d672c9ae2"
+checksum = "afdcf84c395990db737f2dd91628706cb31e86d72e53482320d368e52b5da5eb"
 dependencies = [
  "bitflags 2.10.0",
  "bytemuck",
@@ -5750,9 +5722,9 @@ checksum = "111f7d9820f05fd715df3144e254d6fc02ee4088b0644c0ffd0efc9e6d9d2773"
 
 [[package]]
 name = "zune-jpeg"
-version = "0.5.6"
+version = "0.5.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f520eebad972262a1dde0ec455bce4f8b298b1e5154513de58c114c4c54303e8"
+checksum = "51d915729b0e7d5fe35c2f294c5dc10b30207cc637920e5b59077bfa3da63f28"
 dependencies = [
  "zune-core",
 ]

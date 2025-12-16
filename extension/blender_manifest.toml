@@ -6,7 +6,7 @@ id = "bevy_skein"
 version = "0.1.13"
 name = "Bevy Skein"
 tagline = "Apply Bevy Components in Blender"
-maintainer = "Chis Biscardi <chris@christopherbiscardi.com>"
+maintainer = "Chris Biscardi <chris@christopherbiscardi.com>"
 # Supported types: "add-on", "theme"
 type = "add-on"
 

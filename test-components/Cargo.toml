@@ -7,7 +7,8 @@ edition = "2024"
 
 [dependencies]
 # bevy = { git = "https://github.com/ChristopherBiscardi/bevy.git", branch = "yeet-extension-ids" }
-bevy = { path = "/Users/chris/github/bevyengine/bevy-gltf-extensions" }
+# bevy = { path = "/Users/chris/github/bevyengine/bevy-gltf-extensions" }
+bevy = { git = "https://github.com/bevyengine/bevy.git" }
 
 serde_json = "1.0"
 

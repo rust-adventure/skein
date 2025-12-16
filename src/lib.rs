@@ -22,7 +22,6 @@ use bevy_gltf::{
         GltfExtensionHandler, GltfExtensionHandlers,
     },
 };
-use bevy_image::Image;
 use bevy_log::{debug, error, trace};
 use bevy_pbr::StandardMaterial;
 use bevy_platform::collections::HashMap;
@@ -408,9 +407,7 @@ impl GltfExtensionHandler for GltfExtensionHandlerSkein {
 
     fn on_texture(
         &mut self,
-        _extension_data: Option<
-            &serde_json::Map<String, serde_json::Value>,
-        >,
+        _gltf_texture: &gltf::Texture,
         _texture: Handle<bevy_image::Image>,
     ) {
     }

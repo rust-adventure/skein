@@ -119,13 +119,13 @@ class SkeinPanelBone(bpy.types.Panel):
         return bpy.ops.bone.insert_component.poll()
 
     def draw(self, context):
-        # we use context.bone because context.active_bone will return 
+        # we use context.bone because context.active_bone will return
         # an EditBone *or* a Bone and we want a Bone
         obj = context.bone
         draw_generic_panel(context, obj, self.layout, "bone", "BONE_PT_skein_preset_panel")
 
 def draw_generic_panel(context, obj, layout, execute_mode, skein_preset_panel_id):
-        
+
         global_skein = context.window_manager.skein
         # TODO: the registry can likely be loaded into a dict in a less
         # common place. This function runs every draw
@@ -133,12 +133,12 @@ def draw_generic_panel(context, obj, layout, execute_mode, skein_preset_panel_id
         skein_property_groups = context.window_manager.skein_property_groups
 
         if not registry:
-            import textwrap 
+            import textwrap
 
             description = "The skein-registry.json text block does not exist. You can create it by fetching from a remote location or by creating the file locally."
             wrapper = textwrap.TextWrapper(width=50)
             text_lines = wrapper.wrap(text=description)
-            
+
             for text in text_lines:
                 row = layout.row(align = True)
                 row.alignment = 'EXPAND'
@@ -216,7 +216,7 @@ def render_two(layout, context, context_key):
     if context_key not in context:
         layout.label(text=context_key + " not in context")
         return
-    
+
     # The current PropertyGroup we're working with
     obj = getattr(context, context_key)
 
@@ -257,7 +257,7 @@ def render_two(layout, context, context_key):
         pass
 
     # If we have a `skein_enum_index`, then we have the representation
-    # of a Rust Enum. The index holds the currently selected enum 
+    # of a Rust Enum. The index holds the currently selected enum
     # variant name as a string
     if "skein_enum_index" in annotations:
         layout.prop(obj, "skein_enum_index")
@@ -277,10 +277,10 @@ def render_two(layout, context, context_key):
         return
 
     # attempt to handle any type overrides, like glam::Vec3
-    # Currently all of the types here are *also* hardcoded 
+    # Currently all of the types here are *also* hardcoded
     # because their serialization format differs from their
-    # reflection data. That means this handling is unlikely 
-    # to change. If it does, we need to ship a new version 
+    # reflection data. That means this handling is unlikely
+    # to change. If it does, we need to ship a new version
     # of the addon anyway.
     try:
         match obj.type_override:
@@ -316,7 +316,7 @@ def render_two(layout, context, context_key):
     #         case "glam::Mat2" | "glam::DMat2":
     #             x_axis = getattr(obj, "x_axis")
     #             y_axis = getattr(obj, "y_axis")
-                
+
     #             return [
     #                 getattr(x_axis, "x"),
     #                 getattr(x_axis, "y"),
@@ -329,7 +329,7 @@ def render_two(layout, context, context_key):
     #             x_axis = getattr(obj, "x_axis")
     #             y_axis = getattr(obj, "y_axis")
     #             z_axis = getattr(obj, "z_axis")
-                
+
     #             return [
     #                 getattr(x_axis, "x"),
     #                 getattr(x_axis, "y"),
@@ -348,7 +348,7 @@ def render_two(layout, context, context_key):
     #             y_axis = getattr(obj, "y_axis")
     #             z_axis = getattr(obj, "z_axis")
     #             w_axis = getattr(obj, "w_axis")
-                
+
     #             return [
     #                 getattr(x_axis, "x"),
     #                 getattr(x_axis, "y"),
@@ -370,13 +370,13 @@ def render_two(layout, context, context_key):
     #                 getattr(w_axis, "z"),
     #                 getattr(w_axis, "w"),
     #             ]
-  
+
     #         case "glam::Affine2" | "glam::DAffine2":
     #             mat = getattr(obj, "matrix2")
     #             x_axis = getattr(mat, "x_axis")
     #             y_axis = getattr(mat, "y_axis")
     #             translation = getattr(obj, "translation")
-                
+
     #             return [
     #                 getattr(x_axis, "x"),
     #                 getattr(x_axis, "y"),
@@ -391,7 +391,7 @@ def render_two(layout, context, context_key):
     #             y_axis = getattr(mat, "y_axis")
     #             z_axis = getattr(mat, "z_axis")
     #             translation = getattr(obj, "translation")
-                
+
     #             return [
     #                 getattr(x_axis, "x"),
     #                 getattr(x_axis, "y"),
@@ -406,7 +406,7 @@ def render_two(layout, context, context_key):
     #                 getattr(translation, "y"),
     #                 getattr(translation, "z"),
     #             ]
-            
+
     except AttributeError:
         # Not all PropertyGroups have the type_override attribute, so
         # this is a common failure case that doesn't actually mean failure
@@ -415,6 +415,8 @@ def render_two(layout, context, context_key):
     # No more special handling, just take the keys and values that are
     # in the annotations, and plug them into the object
     for key, value in annotations.items():
+        if key == "skein_enum_id": # skip the hidden property
+            continue
         if "PointerProperty" == value.function.__name__:
             try:
                 next_type = getattr(obj, key)

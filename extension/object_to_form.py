@@ -8,7 +8,7 @@ def object_to_form(context, context_key, data):
     """
     if context_key not in context:
         return
-    
+
     # The current PropertyGroup we're working with
     obj = getattr(context, context_key)
 
@@ -37,7 +37,7 @@ def object_to_form(context, context_key, data):
         pass
 
     # If we have a `skein_enum_index`, then we have the representation
-    # of a Rust Enum. The index holds the currently selected enum 
+    # of a Rust Enum. The index holds the currently selected enum
     # variant name as a string
     if "skein_enum_index" in annotations:
         # if the data is a string, we have a unit variant
@@ -57,7 +57,7 @@ def object_to_form(context, context_key, data):
             #     print("scalar?")
             #     # setattr primitive value
             #     setattr(obj, enum_variant, enum_data)
-        # if we handled an enum, return since there's 
+        # if we handled an enum, return since there's
         # no further processing to do.
         return
 
@@ -98,7 +98,7 @@ def object_to_form(context, context_key, data):
             case "glam::Mat2" | "glam::DMat2":
                 x_axis = getattr(obj, "x_axis")
                 y_axis = getattr(obj, "y_axis")
-                
+
                 return [
                     setattr(x_axis, "x", data[0]),
                     setattr(x_axis, "y", data[1]),
@@ -111,7 +111,7 @@ def object_to_form(context, context_key, data):
                 x_axis = getattr(obj, "x_axis")
                 y_axis = getattr(obj, "y_axis")
                 z_axis = getattr(obj, "z_axis")
-                
+
                 return [
                     setattr(x_axis, "x", data[0]),
                     setattr(x_axis, "y", data[1]),
@@ -130,7 +130,7 @@ def object_to_form(context, context_key, data):
                 y_axis = getattr(obj, "y_axis")
                 z_axis = getattr(obj, "z_axis")
                 w_axis = getattr(obj, "w_axis")
-                
+
                 return [
                     setattr(x_axis, "x", data[0]),
                     setattr(x_axis, "y", data[1]),
@@ -152,13 +152,13 @@ def object_to_form(context, context_key, data):
                     setattr(w_axis, "z", data[14]),
                     setattr(w_axis, "w", data[15]),
                 ]
-  
+
             case "glam::Affine2" | "glam::DAffine2":
                 mat = getattr(obj, "matrix2")
                 x_axis = getattr(mat, "x_axis")
                 y_axis = getattr(mat, "y_axis")
                 translation = getattr(obj, "translation")
-                
+
                 return [
                     setattr(x_axis, "x", data[0]),
                     setattr(x_axis, "y", data[1]),
@@ -173,7 +173,7 @@ def object_to_form(context, context_key, data):
                 y_axis = getattr(mat, "y_axis")
                 z_axis = getattr(mat, "z_axis")
                 translation = getattr(obj, "translation")
-                
+
                 return [
                     setattr(x_axis, "x", data[0]),
                     setattr(x_axis, "y", data[1]),
@@ -188,7 +188,7 @@ def object_to_form(context, context_key, data):
                     setattr(translation, "y", data[10]),
                     setattr(translation, "z", data[11]),
                 ]
-            
+
     except AttributeError:
         # Not all PropertyGroups have the type_override attribute, so
         # this is a common failure case that doesn't actually mean failure
@@ -197,7 +197,7 @@ def object_to_form(context, context_key, data):
     # No more special handling, just take the keys and values that are
     # in the annotations, and plug them into the object
     for key, value in annotations.items():
-        # value is the _PropertyDeferred class here, if we need it to 
+        # value is the _PropertyDeferred class here, if we need it to
         # set values in a specific way
         if isinstance(data[key], list) or isinstance(data[key], dict) or value.function.__name__ == "PointerProperty":
             object_to_form(getattr(context, context_key), key, data[key])

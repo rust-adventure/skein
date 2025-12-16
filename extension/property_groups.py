@@ -27,15 +27,34 @@ def hash_type_path(data):
     output = base64_bytes.decode("ascii")
     return "SKEIN_" + output
 
-# hash a type_path if its length is over 63, which can 
+# hash a type_path if its length is over 63, which can
 # cause classes to fail to register
 # TODO: could this be a getter on ComponentContainer?
 def hash_over_64(type_path):
     maybe_hashed_type_path = type_path
     if len(type_path) > 63:
         maybe_hashed_type_path = hash_type_path(type_path)
-    
+
     return maybe_hashed_type_path
+
+# unfortunately, Blender has an architectural limitation: it stores EnumProperties
+# as ints and there is nothing you can do about it.
+# but we can save the string value of the enum in the additional `skein_enum_id` hidden property
+# and comapre them later
+def get_enum(self):
+    """
+    It gets the value from the `skein_enum_id` property and returns the int value of the enum
+    """
+    if "skein_enum_id" in self and self.skein_enum_id and self.skein_enum_id in self.bl_rna.properties['skein_enum_index'].enum_items:
+        return self.bl_rna.properties['skein_enum_index'].enum_items[self.skein_enum_id].value
+    return 0
+
+def set_enum(self, value):
+    """
+    It gets the string value of the enum and sets it on the `skein_enum_id` property
+    """
+    if 'skein_enum_index' in self.bl_rna.properties:
+        self.skein_enum_id = self.bl_rna.properties['skein_enum_index'].enum_items[value].identifier
 
 def make_property(
         skein_property_groups,
@@ -64,7 +83,7 @@ def make_property(
         print(type_path)
 
     if type_path in skein_property_groups:
-        # The type was already constructed and can be 
+        # The type was already constructed and can be
         # returned from the "cache" instead of being
         # created again
         return skein_property_groups[type_path]
@@ -96,13 +115,23 @@ def make_property(
                     if debug:
                         print(items)
 
-                    # TODO: make an enum default value
-                    skein_property_groups[type_path] = bpy.props.EnumProperty(
+                    annotations = {}
+                    annotations["skein_enum_index"] = bpy.props.EnumProperty(
                         items=items,
                         override={"LIBRARY_OVERRIDABLE"},
+                        get=get_enum,
+                        set=set_enum,
                     )
+                    annotations["skein_enum_id"] = bpy.props.StringProperty()
 
-                    return skein_property_groups[type_path]
+                    class_name = hash_type_path(capitalize_path(type_path))
+                    new_type = type(class_name, (ComponentData,), {
+                        "__annotations__": annotations
+                    })
+                    skein_property_groups[type_path] = new_type
+                    bpy.utils.register_class(new_type)
+
+                    return new_type
                 case "object":
                     annotations = {}
                     items = []
@@ -119,7 +148,11 @@ def make_property(
                         name="variant",
                         items=items,
                         override={"LIBRARY_OVERRIDABLE"},
+                        get=get_enum,
+                        set=set_enum,
                     )
+
+                    annotations["skein_enum_id"] = bpy.props.StringProperty()
 
                     for option in component["oneOf"]:
                         if debug:
@@ -128,7 +161,7 @@ def make_property(
 
                         if (key == "None" and component["modulePath"] == "core::option") or ("kind" not in option):
                             # this is the None variant of a core::option::Option
-                            # so we'll leave it out of the annotations and 
+                            # so we'll leave it out of the annotations and
                             # keep it in the `skein_enum_index` so the user can
                             # select it, but there's no value to edit
                             pass
@@ -148,14 +181,14 @@ def make_property(
                                 annotations[key] = property
 
                     if "core::option::Option<" in type_path and component["modulePath"] == "core::option" and "Option<" in component["shortPath"]:
-                        # add this struct type to the skein_property_groups so it 
+                        # add this struct type to the skein_property_groups so it
                         # can be accessed elsewhere by type_path
                         skein_property_groups[type_path] = type(hash_type_path(capitalize_path(type_path)), (ComponentData,), {
                             '__annotations__': annotations,
                             "is_core_option": True
                         })
                     else:
-                        # add this struct type to the skein_property_groups so it 
+                        # add this struct type to the skein_property_groups so it
                         # can be accessed elsewhere by type_path
                         skein_property_groups[type_path] = type(hash_type_path(capitalize_path(type_path)), (ComponentData,), {
                             '__annotations__': annotations,
@@ -223,7 +256,7 @@ def make_property(
                     else:
                         annotations[key] = property
 
-            # add this struct type to the skein_property_groups so it 
+            # add this struct type to the skein_property_groups so it
             # can be accessed elsewhere by type_path
             t = hash_type_path(capitalize_path(type_path))
             skein_property_groups[type_path] = type(t, (ComponentData,), {
@@ -477,8 +510,8 @@ def make_property(
                                     max=999999999,
                                     override={"LIBRARY_OVERRIDABLE"},
                             )
-                                        
-                            # add this struct type to the skein_property_groups so it 
+
+                            # add this struct type to the skein_property_groups so it
                             # can be accessed elsewhere by type_path
                             t = capitalize_path(type_path)
                             skein_property_groups[type_path] = type(t, (ComponentData,), {

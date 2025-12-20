@@ -1,20 +1,35 @@
 #![doc = include_str!("../README.md")]
+
+use bevy_animation::AnimationClip;
 use bevy_app::{App, Plugin};
+use bevy_asset::{Handle, LoadContext};
 use bevy_ecs::{
     name::Name,
     observer::On,
     prelude::Add,
-    reflect::{AppTypeRegistry, ReflectCommandExt},
+    reflect::{
+        AppTypeRegistry, ReflectBundle, ReflectCommandExt,
+        ReflectComponent,
+    },
     resource::Resource,
     system::{Commands, Query, Res},
+    world::{EntityWorldMut, World},
 };
 use bevy_gltf::{
     GltfExtras, GltfMaterialExtras, GltfMeshExtras,
     GltfSceneExtras,
+    extensions::{
+        GltfExtensionHandler, GltfExtensionHandlers,
+    },
 };
 use bevy_log::{debug, error, trace};
+use bevy_pbr::StandardMaterial;
 use bevy_platform::collections::HashMap;
-use bevy_reflect::{Reflect, serde::ReflectDeserializer};
+use bevy_reflect::{
+    PartialReflect, Reflect, TypeRegistry, TypeRegistryArc,
+    serde::ReflectDeserializer,
+};
+use gltf::Node;
 use serde::de::DeserializeSeed;
 use serde_json::Value;
 use tracing::{instrument, warn};
@@ -31,6 +46,8 @@ use tracing::{instrument, warn};
     feature = "presets"
 ))]
 pub mod presets;
+
+const EXTENSION: &str = "BEVY_skein";
 
 /// [`SkeinPlugin`] is the main plugin.
 ///
@@ -62,6 +79,18 @@ impl Plugin for SkeinPlugin {
         app.init_resource::<SkeinPresetRegistry>()
             .add_observer(skein_processing);
 
+        let type_registry = app
+            .world()
+            .resource::<AppTypeRegistry>()
+            .0
+            .clone();
+        app.world_mut()
+            .resource_mut::<GltfExtensionHandlers>()
+            .0
+            .write_blocking()
+            .push(Box::new(GltfExtensionHandlerSkein {
+                type_registry,
+            }));
         // If we're not on wasm, and the brp feature
         // is enabled, check for whether the user wants
         // skein to handle setting up BRP or not.
@@ -342,5 +371,282 @@ fn skein_processing(
                 .entity(entity)
                 .insert_reflect(reflect_value);
         }
+    }
+}
+
+#[derive(Default, Clone)]
+struct GltfExtensionHandlerSkein {
+    type_registry: TypeRegistryArc,
+}
+
+impl GltfExtensionHandler for GltfExtensionHandlerSkein {
+    fn dyn_clone(&self) -> Box<dyn GltfExtensionHandler> {
+        Box::new((*self).clone())
+    }
+
+    fn on_animation(
+        &mut self,
+        _gltf_animation: &gltf::Animation,
+        _handle: bevy_asset::Handle<
+            bevy_animation::AnimationClip,
+        >,
+    ) {
+    }
+
+    fn on_animations_collected(
+        &mut self,
+        _load_context: &mut LoadContext<'_>,
+        _animations: &[Handle<AnimationClip>],
+        _named_animations: &HashMap<
+            Box<str>,
+            Handle<AnimationClip>,
+        >,
+        _animation_roots: &bevy_platform::collections::HashSet<usize>,
+    ) {
+    }
+
+    fn on_texture(
+        &mut self,
+        _gltf_texture: &gltf::Texture,
+        _texture: Handle<bevy_image::Image>,
+    ) {
+    }
+    fn on_material(
+        &mut self,
+        _load_context: &mut LoadContext<'_>,
+        _gltf_material: &gltf::Material,
+        _material: Handle<StandardMaterial>,
+    ) {
+    }
+
+    fn on_gltf_mesh(
+        &mut self,
+        _load_context: &mut LoadContext<'_>,
+        _gltf_mesh: &gltf::Mesh,
+        _mesh: Handle<bevy_gltf::GltfMesh>,
+    ) {
+    }
+
+    fn on_spawn_mesh_and_material(
+        &mut self,
+        _load_context: &mut LoadContext<'_>,
+        primitive: &gltf::Primitive,
+        mesh: &gltf::Mesh,
+        material: &gltf::Material,
+        entity: &mut EntityWorldMut,
+    ) {
+        if let Some(value) =
+            primitive.extension_value(EXTENSION)
+        {
+            let type_registry = self.type_registry.read();
+            insert_components(
+                value,
+                entity,
+                &type_registry,
+            );
+        }
+        if let Some(value) = mesh.extension_value(EXTENSION)
+        {
+            let type_registry = self.type_registry.read();
+            insert_components(
+                value,
+                entity,
+                &type_registry,
+            );
+        }
+        if let Some(value) =
+            material.extension_value(EXTENSION)
+        {
+            let type_registry = self.type_registry.read();
+            insert_components(
+                value,
+                entity,
+                &type_registry,
+            );
+        }
+    }
+
+    fn on_scene_completed(
+        &mut self,
+        _load_context: &mut LoadContext<'_>,
+        scene: &gltf::Scene,
+        world_root_id: bevy_ecs::entity::Entity,
+        world: &mut World,
+    ) {
+        let Some(value) = scene.extension_value(EXTENSION)
+        else {
+            return;
+        };
+        let type_registry = self.type_registry.read();
+        insert_components(
+            value,
+            &mut world.entity_mut(world_root_id),
+            &type_registry,
+        );
+    }
+
+    fn on_gltf_node(
+        &mut self,
+        _load_context: &mut LoadContext<'_>,
+        gltf_node: &Node,
+        entity: &mut EntityWorldMut,
+    ) {
+        let Some(value) =
+            gltf_node.extension_value(EXTENSION)
+        else {
+            return;
+        };
+
+        if gltf_node.light().is_some() {
+            // If this node has light information, it is the
+            // parent of a *Light.
+            // Lights are created as children of their parents
+            // similar to how meshes and objects work.
+            // so handle them in dedicated functions.
+            return;
+        }
+        let type_registry = self.type_registry.read();
+        insert_components(value, entity, &type_registry);
+    }
+
+    fn on_spawn_light_directional(
+        &mut self,
+        _load_context: &mut LoadContext<'_>,
+        gltf_node: &Node,
+        entity: &mut EntityWorldMut,
+    ) {
+        let Some(value) =
+            gltf_node.extension_value(EXTENSION)
+        else {
+            return;
+        };
+
+        let type_registry = self.type_registry.read();
+        insert_components(value, entity, &type_registry);
+    }
+
+    fn on_spawn_light_point(
+        &mut self,
+        _load_context: &mut LoadContext<'_>,
+        gltf_node: &Node,
+        entity: &mut EntityWorldMut,
+    ) {
+        let Some(value) =
+            gltf_node.extension_value(EXTENSION)
+        else {
+            return;
+        };
+
+        let type_registry = self.type_registry.read();
+        insert_components(value, entity, &type_registry);
+    }
+
+    fn on_spawn_light_spot(
+        &mut self,
+        _load_context: &mut LoadContext<'_>,
+        gltf_node: &Node,
+        entity: &mut EntityWorldMut,
+    ) {
+        let Some(value) =
+            gltf_node.extension_value(EXTENSION)
+        else {
+            return;
+        };
+
+        let type_registry = self.type_registry.read();
+        insert_components(value, entity, &type_registry);
+    }
+}
+
+fn insert_components(
+    obj: &serde_json::Value,
+    entity: &mut EntityWorldMut,
+    type_registry: &TypeRegistry,
+) {
+    let skein = match obj.get("components") {
+        Some(Value::Array(components)) => components,
+        Some(value) => {
+            // let name = names.get(entity).ok();
+            error!(entity=?entity.id(),
+                // ?name,
+                parsed_as=?value, "the skein gltf extra field could not be parsed as a serde_json::Value::Object");
+            return;
+        }
+        None => {
+            // the skein field not existing is *normal*
+            // for most entities
+            // a skein field being an object would be an
+            // error
+            return;
+        }
+    };
+
+    // for each component, attempt to reflect it and
+    // insert it
+    for json_component in skein.iter() {
+        // deserialize
+        let reflect_deserializer =
+            ReflectDeserializer::new(&type_registry);
+        let reflect_value = match reflect_deserializer
+            .deserialize(json_component)
+        {
+            Ok(value) => value,
+            Err(err) => {
+                error!(
+                    ?err,
+                    ?obj,
+                    "failed to instantiate component data from glTF data"
+                );
+                continue;
+            }
+        };
+
+        trace!(?reflect_value);
+        // TODO: can we do this insert without panic
+        // if the intended component
+        insert_reflect_with_registry_ref(
+            entity,
+            type_registry,
+            reflect_value,
+        );
+    }
+}
+fn insert_reflect_with_registry_ref(
+    entity: &mut EntityWorldMut,
+    type_registry: &TypeRegistry,
+    component: Box<dyn PartialReflect>,
+) {
+    let type_info = component
+        .get_represented_type_info()
+        .expect("component should represent a type.");
+    let type_path = type_info.type_path();
+    let Some(type_registration) =
+        type_registry.get(type_info.type_id())
+    else {
+        panic!(
+            "`{type_path}` should be registered in type registry via `App::register_type<{type_path}>`"
+        );
+    };
+
+    if let Some(reflect_component) =
+        type_registration.data::<ReflectComponent>()
+    {
+        reflect_component.insert(
+            entity,
+            component.as_partial_reflect(),
+            type_registry,
+        );
+    } else if let Some(reflect_bundle) =
+        type_registration.data::<ReflectBundle>()
+    {
+        reflect_bundle.insert(
+            entity,
+            component.as_partial_reflect(),
+            type_registry,
+        );
+    } else {
+        panic!(
+            "`{type_path}` should have #[reflect(Component)] or #[reflect(Bundle)]"
+        );
     }
 }

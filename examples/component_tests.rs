@@ -32,19 +32,5 @@ fn main() {
             DefaultPlugins,
             SkeinPlugin::default(),
         ))
-        // .add_systems(Startup, setup)
         .run();
 }
-
-// fn setup(
-//     mut commands: Commands,
-//     asset_server: Res<AssetServer>,
-// ) {
-//     // replace this .gltf file to show data
-//     commands.spawn(SceneRoot(
-//         asset_server.load(
-//             GltfAssetLabel::Scene(0)
-//                 .from_asset("untitled.gltf"),
-//         ),
-//     ));
-// }

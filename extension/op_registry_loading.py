@@ -44,7 +44,7 @@ class FetchRemoteTypeRegistry(bpy.types.Operator):
                 return {'CANCELLED'}
             bevy_version = rpc_response["result"]["info"]["version"]
             print(bevy_version)
-            if bevy_version.startswith("0.16"):
+            if bevy_version.startswith("0.16") or bevy_version.startswith("0.15"):
                 brp_response = brp_simple_request("bevy/registry/schema", host, port)
             elif bevy_version.startswith("0.17"):
                 brp_response = brp_simple_request("registry.schema", host, port)

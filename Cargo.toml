@@ -20,24 +20,31 @@ exclude = [
 rust-version = "1.88.0"
 
 [dependencies]
-bevy_app = "0.17"
-bevy_log = "0.17"
-bevy_ecs = "0.17"
-bevy_gltf = "0.17"
-bevy_reflect = "0.17"
-bevy_scene = "0.17"
-bevy_platform = "0.17"
+bevy_app = "0.18.0-rc.1"
+bevy_log = "0.18.0-rc.1"
+bevy_ecs = "0.18.0-rc.1"
+bevy_gltf = "0.18.0-rc.1"
+bevy_reflect = "0.18.0-rc.1"
+bevy_scene = "0.18.0-rc.1"
+bevy_platform = "0.18.0-rc.1"
+bevy_animation = "0.18.0-rc.1"
+bevy_asset = "0.18.0-rc.1"
+bevy_image = "0.18.0-rc.1"
+bevy_pbr = "0.18.0-rc.1"
+bevy_light = "0.18.0-rc.1"
 serde = "1.0"
 serde_json = "1.0"
 tracing = "0.1"
+gltf = "1.4.0"
 
 # wasm can't support brp, so disable the dependency entirely
 [target.'cfg(not(target_family = "wasm"))'.dependencies]
-bevy_remote = { version = "0.17", optional = true }
+bevy_remote = { version = "0.18.0-rc.1", optional = true }
+
 
 [dev-dependencies]
-# bevy = { version = "0.17", features = ["jpeg", "experimental_pbr_pcss"] }
-bevy = "0.17"
+bevy = { version = "0.18.0-rc.1" }
+
 serde = { version = "1.0", features = ["derive"] }
 test-components = { path = "./test-components" }
 

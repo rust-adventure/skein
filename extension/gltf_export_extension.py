@@ -7,7 +7,7 @@ from .form_to_object import get_data_from_active_editor
 # glTF extensions are named following a convention with known prefixes.
 # See: https://github.com/KhronosGroup/glTF/tree/main/extensions#about-gltf-extensions
 # also: https://github.com/KhronosGroup/glTF/blob/main/extensions/Prefixes.md
-glTF_extension_name = "EXT_skein"
+glTF_extension_name = "BEVY_skein"
 
 # is this extension required to view the glTF?
 extension_is_required = False
@@ -41,7 +41,16 @@ class SkeinExtensionProperties(bpy.types.PropertyGroup):
         description='Rewrite Skein data into a directly Bevy reflectable format',
         default=True
         ) # type: ignore
-
+    extras: bpy.props.BoolProperty(
+        name="extras",
+        description='Export using glTF Extras',
+        default=True
+        ) # type: ignore
+    extensions: bpy.props.BoolProperty(
+        name="extensions",
+        description='Export data into glTF Extensions',
+        default=False
+        ) # type: ignore
 # Draw the Skein settings options in the glTF export panel
 def draw_export(context, layout):
 
@@ -59,6 +68,9 @@ def draw_export(context, layout):
     props = bpy.context.scene.skein_extension_properties
 
     header.prop(props, 'enabled')
+    body.prop(props, 'extras')
+    body.prop(props, 'extensions')
+
     # if body != None:
     #     body.prop(props, 'float_property', text="Some float value")
 
@@ -86,7 +98,7 @@ class glTF2ExportUserExtension:
                 # if this is a node with a light and the KHR_lights_punctual extension is on
                 # then handle the light skein data
                 if blender_object.data.type in LIGHTS and "KHR_lights_punctual" in gltf2_object.extensions:
-                    gather_skein_two(
+                    self.gather_skein_two(
                         blender_object.data,
                         gltf2_object.extensions["KHR_lights_punctual"].extension["light"].extension
                     )
@@ -94,38 +106,30 @@ class glTF2ExportUserExtension:
                 pass
 
             # gather the main node skein data
-            gather_skein_two(blender_object, gltf2_object)
+            self.gather_skein_two(blender_object, gltf2_object)
             
-            # if gltf2_object.extensions is None:
-            #     gltf2_object.extensions = {}
-            # gltf2_object.extensions[glTF_extension_name] = self.Extension(
-            #     name=glTF_extension_name,
-            #     # extension={"float": self.properties.float_property},
-            #     extension={"float": 2.0},
-            #     required=extension_is_required
-            # )
     def gather_mesh_hook(self, gltf2_mesh, blender_mesh, blender_object, vertex_groups, modifiers, materials, export_settings):
         if self.properties.enabled:
-            gather_skein_two(blender_mesh, gltf2_mesh)
+            self.gather_skein_two(blender_mesh, gltf2_mesh)
 
     def gather_material_hook(self, gltf2_material, blender_material, export_settings):
         if self.properties.enabled:
-            gather_skein_two(blender_material, gltf2_material)
+            self.gather_skein_two(blender_material, gltf2_material)
     def gather_camera_hook(self, gltf2_camera, blender_camera, export_settings):
         if self.properties.enabled:
-            gather_skein_two(blender_camera, gltf2_camera)
+            self.gather_skein_two(blender_camera, gltf2_camera)
     def gather_joint_hook(self, gltf2_node, blender_bone, export_settings):
         # blender_bone seems to be a PoseBone
         if self.properties.enabled:
             # blender_bone.bone is the way the gltf extension grabs the extras
             # https://github.com/KhronosGroup/glTF-Blender-IO/blob/d97e93200cff331b7d58bb8347237740fd7ccd89/addons/io_scene_gltf2/blender/exp/joints.py#L119
-            gather_skein_two(blender_bone.bone, gltf2_node)
+            self.gather_skein_two(blender_bone.bone, gltf2_node)
         pass
     def gather_gltf_extensions_hook(self, gltf2_plan, export_settings):
         pass
     def gather_scene_hook(self, gltf2_scene, blender_scene, export_settings):
         if self.properties.enabled:
-            gather_skein_two(blender_scene, gltf2_scene)
+            self.gather_skein_two(blender_scene, gltf2_scene)
         pass
     # 
     # this commented code is some code meant to aid in debugging any
@@ -249,59 +253,76 @@ class glTF2ExportUserExtension:
     #     print("debug: extra_animation_manage")
     # def animation_action_hook(self, gltf2_animation, blender_object, blender_action_data, export_settings):
     #     print("debug: animation_action_hook")
+    def gather_skein_two(self, source, sink):
+        if "skein_two" in dir(source):
+            objs = []
+            skein_property_groups = bpy.context.window_manager.skein_property_groups
+            for component in source.skein_two:
+                obj = {}
+                type_path = component["selected_type_path"]
+
+                if inspect.isclass(skein_property_groups[type_path]):
+                    try:
+                        match skein_property_groups[type_path].force_default:
+                            case "object":
+                                obj[type_path] = {}
+                            case "list":
+                                obj[type_path] = []
+                        objs.append(obj)
+                    except AttributeError:
+                        value = get_data_from_active_editor(
+                            component,
+                            hash_over_64(type_path),
+                        )
+                        obj[type_path] = value
+                        objs.append(obj)
+                else:
+                    # if the component is a tuple struct, etc
+                    # retrieve the value directly instead of
+                    # recursing
+                    obj[type_path] = getattr(component, hash_over_64(type_path))
+                    objs.append(obj)
+
+            # storing data on glTF extras is the original way Skein worked
+            # and for the time being is easy to keep supporting, so we will.
+            # but we can also enable turning extras off.
+            #
+            # for most items, extras is a `.` access
+            # for gltf KHR lights extension (and likely other extensions?) extras is a `[]` access
+            if self.properties.extras:
+                try:
+                    sink.extras
+                    # python allows checking for empty arrays by "if array"
+                    if objs:
+                        if sink.extras is None:
+                            sink.extras = {}
+                        sink.extras["skein"] = objs
+                except:
+                    # python allows checking for empty arrays by "if array"
+                    if objs:
+                        if sink["extras"] is None:
+                            sink["extras"] = {}
+                        sink["extras"]["skein"] = objs
+            # if extension-based exporting is enabled, set the appropriate
+            # extensions data.
+            if self.properties.extensions:
+                if sink.extensions is None and objs:
+                    sink.extensions = {}
+                sink.extensions[glTF_extension_name] = self.Extension(
+                    name=glTF_extension_name,
+                    extension={"components": objs},
+                    required=extension_is_required
+                )
 
 def glTF2_pre_export_callback(export_settings):
-    print("This will be called before exporting the glTF file.")
+    print("skein::glTF2_pre_export_callback")
 
 def glTF2_post_export_callback(export_settings):
-    print("This will be called after exporting the glTF file.")
+    print("skein::glTF2_post_export_callback")
 
 def pre_export_hook(export_settings):
+    print("skein::pre_export_hook")
     pass
 
-def gather_skein_two(source, sink):
-    if "skein_two" in dir(source):
-        objs = []
-        skein_property_groups = bpy.context.window_manager.skein_property_groups
-        for component in source.skein_two:
-            obj = {}
-            type_path = component["selected_type_path"]
 
-            if inspect.isclass(skein_property_groups[type_path]):
-                try:
-                    match skein_property_groups[type_path].force_default:
-                        case "object":
-                            obj[type_path] = {}
-                        case "list":
-                            obj[type_path] = []
-                    objs.append(obj)
-                except AttributeError:
-                    value = get_data_from_active_editor(
-                        component,
-                        hash_over_64(type_path),
-                    )
-                    obj[type_path] = value
-                    objs.append(obj)
-            else:
-                # if the component is a tuple struct, etc
-                # retrieve the value directly instead of
-                # recursing
-                obj[type_path] = getattr(component, hash_over_64(type_path))
-                objs.append(obj)
-
-        # for most items, extras is a `.` access
-        # for gltf KHR lights extension (and likely other extensions?) extras is a `[]` access
-        try:
-            sink.extras
-            # python allows checking for empty arrays by "if array"
-            if objs:
-                if sink.extras is None:
-                    sink.extras = {}
-                sink.extras["skein"] = objs
-        except:
-            # python allows checking for empty arrays by "if array"
-            if objs:
-                if sink["extras"] is None:
-                    sink["extras"] = {}
-                sink["extras"]["skein"] = objs
 

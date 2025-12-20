@@ -4,7 +4,43 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.1.14]
+
+- Components data can now be exported using glTF Extensions.
+
+Bevy 0.18 gained support for processing glTF extensions.
+By exporting the component data as an extension, component processing will happen when the glTF file is being loaded, rather than when the GltfExtras components are inserted.
+This means Scenes built from glTF files are "ready to go", including component data, and don't need to be processed as they're being spawned.
+
+The data in a glTF file now looks like this.
+
+```json
+"nodes": [
+  {
+    "extensions": {
+      "BEVY_skein": {
+        "components": [
+          {
+            "test_components::Player": {
+              "name": "Is the Mesh Object",
+              "power": 90.93000030517578,
+              "test": -234
+            }
+          }
+        ]
+      }
+    },
+    "mesh": 0,
+    "name": "Cube"
+  },
+```
+
 - Add a "Trigger all Collection Exporters" operator. This can be used from a sidemenu or bound to a key.
+
+### Bugfixes
+
+- Fix a bug where the Blender addon wouldn't connect to Bevy 0.15 applications.
+- Fix
 
 ## [0.1.13]
 
@@ -145,7 +181,8 @@ These presets are one-off. There is no special storage for them once they are ap
 
 Initial Release of Blender Addon
 
-[unreleased]: https://github.com/rust-adventure/skein/compare/blender-v0.1.13...HEAD
+[unreleased]: https://github.com/rust-adventure/skein/compare/blender-v0.1.14...HEAD
+[0.1.14]: https://github.com/rust-adventure/skein/compare/blender-v0.1.13...blender-v0.1.14
 [0.1.13]: https://github.com/rust-adventure/skein/compare/blender-v0.1.12...blender-v0.1.13
 [0.1.9]: https://github.com/rust-adventure/skein/compare/blender-v0.1.8...blender-v0.1.9
 [0.1.8]: https://github.com/rust-adventure/skein/compare/blender-v0.1.7...blender-v0.1.8

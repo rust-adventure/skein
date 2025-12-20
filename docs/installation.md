@@ -21,7 +21,10 @@ Add the plugin to your application. Using `default` sets `handle_brp` to `true` 
 If you want more control, set this to `false` (or disable `default-features`) and set up the `RemotePlugin` and `RemoteHttpPlugin` yourself.
 
 > [!NOTE]  
-> Skein currently only uses the default ports and disables BRP on wasm.
+> By default Skein does not enable BRP when:
+>
+> - compiling to wasm targets
+> - using a release profile
 
 ```rust
 use bevy::prelude::*;
@@ -57,7 +60,7 @@ commands.spawn(SceneRoot(asset_server.load(
 
 The "auto-update" installation will use the "Static Registry" hosted on this website to check for extension updates when Blender starts up. This makes it easy to stay up to date.
 
-1. Drag [this link](/releases/bevy_skein-0.1.12.zip?repository=.%2Findex.json) onto Blender to add the registry
+1. Drag [this link](/releases/bevy_skein-0.1.13.zip?repository=.%2Findex.json) onto Blender to add the registry
 
    ![pre-drag](/images/introduction/pre-drag-installation.avif)
 

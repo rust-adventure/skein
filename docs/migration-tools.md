@@ -33,67 +33,40 @@ blender --background -b replace_material.blend -c dump_component_data -o test.js
 {
   "object": [
     {
-      "name": "Camera",
+      "name": "ActivationSensor",
       "components": [
         {
-          "type_path": "bevy_core_pipeline::prepass::DepthPrepass",
-          "data": {}
-        },
-        {
-          "type_path": "bevy_core_pipeline::prepass::NormalPrepass",
-          "data": {}
-        },
-        {
-          "type_path": "bevy_core_pipeline::bloom::settings::Bloom",
-          "data": {
-            "composite_mode": "EnergyConserving",
-            "high_pass_frequency": 1.0,
-            "intensity": 0.15000000596046448,
-            "low_frequency_boost": 0.699999988079071,
-            "low_frequency_boost_curvature": 0.949999988079071,
-            "max_mip_dimension": 512,
-            "prefilter": {
-              "threshold": 0.0,
-              "threshold_softness": 0.0
-            },
-            "scale": [1.0, 1.0]
+          "avian3d::collision::collider::constructor::ColliderConstructor": {
+            "Sphere": {
+              "radius": 0.4999999403953552
+            }
           }
         }
-      ]
+      ],
+      "unrecognized_components": ["tunic_bush::BushSensor"]
+    },
+    {
+      "name": "Blade",
+      "components": [],
+      "unrecognized_components": ["tunic_bush::Bush"]
     }
   ],
   "mesh": [],
   "material": [
     {
-      "name": "Debug",
+      "name": "TerrainMat",
       "components": [
         {
-          "type_path": "replace_material::UseDebugMaterial",
-          "data": {}
-        }
-      ]
-    },
-    {
-      "name": "ForceField",
-      "components": [
-        {
-          "type_path": "replace_material::UseForceFieldMaterial",
-          "data": {}
-        },
-        {
-          "type_path": "bevy_pbr::light::NotShadowCaster",
-          "data": {}
-        },
-        {
-          "type_path": "bevy_pbr::light::NotShadowReceiver",
-          "data": {}
+          "api::TerrainMat": {}
         }
       ]
     }
   ],
+  "scene": [],
   "camera": [],
   "light": [],
-  "collection": []
+  "collection": [],
+  "bone": []
 }
 ```
 
@@ -122,6 +95,29 @@ blender --background -b replace_material.blend -c dump_component_data -o test.js
   ],
   "camera": [],
   "light": [],
+  "collection": []
+}
+```
+
+## change_component_path
+
+Replace an old Component path with a new Component path.
+
+> [!WARNING]
+> Back up your blend file before using this command. It will mutate data and save the file
+
+```
+blender --background -b art/tunic.blend -c change_component_path --old_path tunic_bush::BushSensor --new_path api::BushSensor
+```
+
+The output shows the names of components that were modified
+
+```json
+{
+  "object": ["ActivationSensor"],
+  "mesh": [],
+  "material": [],
+  "scene": [],
   "collection": []
 }
 ```

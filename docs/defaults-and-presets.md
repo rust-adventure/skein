@@ -25,6 +25,7 @@ If you want to use the `Default` implementations in Blender, you must also `refl
 ```rust
 #[derive(Component, Default)]
 #[reflect(Component, Default)]
+#[type_path = "api"]
 struct Player {
     name: String
 }

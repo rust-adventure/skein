@@ -9,12 +9,12 @@ Skein uses Bevy's Reflection infrastructure to be able to know what Components c
 At its core, reflection allows us to inspect the program itself, its syntax, and its type information at runtime.
 The documentation for [`bevy_reflect`](https://docs.rs/bevy/latest/bevy/reflect/index.html) details a number of traits that enable a variety of use cases.
 
-Here is
+Here is an example component.
 
 ```rust
 #[derive(Component, Reflect, Default)]
 #[reflect(Component, Default)]
-#[type_path = "blender"]
+#[type_path = "api"]
 #[type_name = "Player"]
 struct MyComponent {
     name: String,
@@ -24,7 +24,7 @@ struct MyComponent {
 
 Skein's usage of Reflection comes in two major forms:
 
-- Reading the [TypeRegistry](https://docs.rs/bevy/0.16.1/bevy/reflect/struct.TypeRegistry.html) and sending relevant metadata about the types in a Bevy app to Blender
+- Reading the [TypeRegistry](https://docs.rs/bevy/latest/bevy/reflect/struct.TypeRegistry.html) and sending relevant metadata about the types in a Bevy app to Blender
 - Taking json-style Component data and instantiating it using reflection
 
 ## Inserting Reflected Data

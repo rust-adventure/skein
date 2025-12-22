@@ -3,6 +3,7 @@
     "generator": "Khronos glTF Blender I/O v4.2.57",
     "version": "2.0"
   },
+  "extensionsUsed": ["BEVY_skein"],
   "scene": 0,
   "scenes": [
     {
@@ -15,14 +16,16 @@
   ],
   "nodes": [
     {
-      "extras": {
-        "skein": [
-          {
-            "api::Character": {
-              "name": "Hollow Knight"
+      "extensions": {
+        "BEVY_skein": {
+          "components": [
+            {
+              "api::Character": {
+                "name": "Hollow Knight"
+              }
             }
-          }
-        ]
+          ]
+        }
       },
       "name": "Empty"
     }

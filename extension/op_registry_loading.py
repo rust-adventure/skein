@@ -44,7 +44,7 @@ class FetchRemoteTypeRegistry(bpy.types.Operator):
                 return {'CANCELLED'}
             bevy_version = rpc_response["result"]["info"]["version"]
             print(bevy_version)
-            if bevy_version.startswith("0.16") or bevy_version.startswith("0.15"):
+            if bevy_version.startswith("0.16"):
                 brp_response = brp_simple_request("bevy/registry/schema", host, port)
             elif bevy_version.startswith("0.17"):
                 brp_response = brp_simple_request("registry.schema", host, port)
@@ -53,8 +53,14 @@ class FetchRemoteTypeRegistry(bpy.types.Operator):
                 # and use the most recent version's endpoint
                 brp_response = brp_simple_request("registry.schema", host, port)
         except:
-            self.report({"ERROR"}, "Could not connect to bevy application to fetch registry data from the Bevy Remote Protocol using " + host + ":" + port)
-            return {'CANCELLED'}
+            # The 0.15 version of Bevy didn't have an `rpc.discover` endpoint, which 
+            # means failing the request could either be: a 0.15 application *or* being unable
+            # to connect. Try 0.15's endpoint first
+            try:
+                brp_response = brp_simple_request("bevy/registry/schema", host, port)
+            except:
+                self.report({"ERROR"}, "Could not connect to bevy application to fetch registry data from the Bevy Remote Protocol using " + host + ":" + port)
+                return {'CANCELLED'}
 
         # If the bevy remote protocol returns an error, report it to the user
         if brp_response is not None and "error" in brp_response:

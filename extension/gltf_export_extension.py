@@ -83,6 +83,9 @@ class glTF2ExportUserExtension:
         from io_scene_gltf2.io.com.gltf2_io_extensions import Extension # type: ignore
         self.Extension = Extension
         self.properties = bpy.context.scene.skein_extension_properties
+    
+    # def passthrough_extension_data(self, passthrough_extensions, gltf2_plan, export_settings):
+    #     passthrough_extensions.append(glTF_extension_name)
 
     def gather_node_hook(self, gltf2_object, blender_object, export_settings):
         # Note: If you are using Collection Exporters, you may want to restrict the export for some collections

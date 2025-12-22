@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.1.15]
+
+- re-enable the ability to fetch Bevy 0.15 registries
+
 ## [0.1.14]
 
 - Components data can now be exported using glTF Extensions.

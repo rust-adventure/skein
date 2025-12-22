@@ -189,11 +189,12 @@ def get_data_from_active_editor(context, context_key):
     # forcing an empty value. This can happen if a TupleStruct
     # contains a `force_default` type
     try:
-        match obj.force_default:
-            case "object":
-                return {}
-            case "list":
-                return []
+        if obj.force_default:
+            match obj.force_default:
+                case "object":
+                    return {}
+                case "list":
+                    return []
     except AttributeError:
         pass
 

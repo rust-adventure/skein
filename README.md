@@ -58,21 +58,22 @@ commands.spawn(SceneRoot(asset_server.load(
 
 The Bevy plugin and the Blender addon have separate release cycles and versions. The contact points are the BRP Registry API format for ingesting Bevy data into Blender and the glTF format we store data in to get data back into Bevy. These clearly-defined API points mean the Bevy Plugin and the Blender addon can evolve independently.
 
-All versions of `bevy_skein` are currently compatible with all versions of the `skein` Blender addon.
+All versions of `bevy_skein` are currently compatible with all versions of the `skein` Blender addon. However, the extension format export support was added in addon verison `0.1.14`, and is only supported by `Bevy 0.18+`.
 
 | Bevy version | `bevy_skein` version |
 | :----------- | :------------------- |
-| `0.17`       | `0.3+`               |
+| `0.18`       | `0.5`.               |
+| `0.17`       | `0.3-4`              |
 | `0.16`       | `0.2`                |
 | `0.15`       | `0.1`                |
 
-The skein addon current release and main branch support as far back as 4.2. Upgrading Blender to new versions requires updating the addon to at least the minimum version here as well. 
+The skein addon current release and main branch support as far back as 4.2. Upgrading Blender to new versions requires updating the addon to at least the minimum version here as well.
 
-| Blender version | `skein` minimum addon version |
-| :-------------- | :---------------------------- |
-| `>=5.0`         | `0.1.13`                      |
-| `>=4.2 && < 5.0`| `0.1.0`                       |
-| `>=4.2`         | branch `main`                 |
+| Blender version  | `skein` minimum addon version |
+| :--------------- | :---------------------------- |
+| `>=5.0`          | `0.1.13`                      |
+| `>=4.2 && < 5.0` | `0.1.0`                       |
+| `>=4.2`          | branch `main`                 |
 
 ## Why is it named Skein?
 

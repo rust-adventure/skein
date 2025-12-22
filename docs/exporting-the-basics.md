@@ -24,9 +24,16 @@ If you want to look at the output, then pick `.gltf`. For production you'll want
 
 ### The exported data
 
+Skein supports two export modes currently.
+The Extension data is the modern form, and the Extras data is the older form.
+Utilizing Extension data in Bevy was not possible until 0.18, so the older Extras form is still supported but you should prefer the Extension approach.
+
 Assuming we inserted a Component named `Character` structured like this
 
 ```rust
+#[derive(Component, Reflect)]
+#[reflect(Component, Default)]
+#[type_path = "api"]
 struct Character {
     name: String
 }
@@ -34,7 +41,41 @@ struct Character {
 
 Then the exported `.gltf` file with one Component that was applied to a Blender Empty Object would look like this:
 
-```rust
+```json
+{
+  "asset": {
+    "generator": "Khronos glTF Blender I/O v4.2.57",
+    "version": "2.0"
+  },
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "Scene",
+      "nodes": [0]
+    }
+  ],
+  "nodes": [
+    {
+      "extensions": {
+        "BEVY_skein": {
+          "components": [
+            {
+              "api::Character": {
+                "name": "Hollow Knight"
+              }
+            }
+          ]
+        }
+      },
+      "name": "Empty"
+    }
+  ]
+}
+```
+
+The older, extras-style output looks like this.
+
+```json
 {
   "asset": {
     "generator": "Khronos glTF Blender I/O v4.2.57",
@@ -52,7 +93,7 @@ Then the exported `.gltf` file with one Component that was applied to a Blender 
       "extras": {
         "skein": [
           {
-            "event_ordering::Character": {
+            "api::Character": {
               "name": "Hollow Knight"
             }
           }

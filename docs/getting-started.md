@@ -29,4 +29,4 @@ fn main() {
 
 This information is then stored in your `.blend` file (the Bevy App only needs to be running if you're updating the registry information) and used to power Component selection and insertion inside of Blender on the Object, Mesh, Material, etc properties pages.
 
-Skein applies the information you've inserted when exporting glTF from Blender. The data of the components you've inserted is included the exported glTF files and is inserted when spawning scenes in Bevy.
+Skein includes the information you've inserted when exporting glTF from Blender. The data of the components you've inserted is included the exported glTF files and is inserted when spawning scenes in Bevy.

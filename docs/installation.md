@@ -102,6 +102,16 @@ This is also a viable install strategy for local development.
 4. Bevy Skein should be installed in the list
    ![bevy_skein is installed](/images/docs/installation/bevy-skein-installed.avif)
 
+### Registry
+
+If you want to add the registry manually rather than dragging a link, you can add this registry.
+
+```
+https://bevyskein.dev/releases/index.json
+```
+
+![add a registry](assets/images/introduction/add-registry.avif)
+
 ### Addon Preferences
 
 > [!Tip]

@@ -60,7 +60,7 @@ commands.spawn(SceneRoot(asset_server.load(
 
 The "auto-update" installation will use the "Static Registry" hosted on this website to check for extension updates when Blender starts up. This makes it easy to stay up to date.
 
-1. Drag [this link](/releases/bevy_skein-0.1.14.zip?repository=.%2Findex.json) onto Blender to add the registry
+1. Drag [this link](/releases/bevy_skein-0.1.15.zip?repository=.%2Findex.json) onto Blender to add the registry
 
    ![pre-drag](/images/introduction/pre-drag-installation.avif)
 
@@ -110,7 +110,7 @@ If you want to add the registry manually rather than dragging a link, you can ad
 https://bevyskein.dev/releases/index.json
 ```
 
-![add a registry](assets/images/introduction/add-registry.avif)
+![add a registry](/images/introduction/add-registry.avif)
 
 ### Addon Preferences
 

@@ -308,7 +308,7 @@ class glTF2ExportUserExtension:
                         sink["extras"]["skein"] = objs
             # if extension-based exporting is enabled, set the appropriate
             # extensions data.
-            if self.properties.extensions:
+            if self.properties.extensions and objs:
                 if sink.extensions is None and objs:
                     sink.extensions = {}
                 sink.extensions[glTF_extension_name] = self.Extension(

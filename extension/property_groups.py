@@ -199,9 +199,17 @@ def make_property(
             )
             return skein_property_groups[type_path]
         case "Set":
-            if debug:
-                print("Set is unimplemented in make_property: ", type_path)
-            return
+            # Handle Sets in the same way as Vecs/Lists
+            skein_property_groups[type_path] = type(hash_type_path(capitalize_path(type_path)), (ComponentData,), {
+                '__annotations__': {},
+                # force_default bypasses recursion and forces
+                # an empty data structure in the output
+                "force_default": "list"
+            })
+            bpy.utils.register_class(
+                skein_property_groups[type_path]
+            )
+            return skein_property_groups[type_path]
         case "Struct":
             annotations = {}
             # only recurse if we have properties to set, otherwise

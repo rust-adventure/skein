@@ -185,6 +185,18 @@ def get_data_from_active_editor(context, context_key):
         # this is a common failure case that doesn't actually mean failure
         pass
 
+    # if the object has a "force_default", then we're 
+    # forcing an empty value. This can happen if a TupleStruct
+    # contains a `force_default` type
+    try:
+        match obj.force_default:
+            case "object":
+                return {}
+            case "list":
+                return []
+    except AttributeError:
+        pass
+
     # No more special handling, just take the keys and values that are
     # in the annotations, and plug them into the object
     data = {}

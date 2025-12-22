@@ -114,12 +114,20 @@ fn on_add_use_debug_material(
     mut world: DeferredWorld,
     HookContext { entity, .. }: HookContext,
 ) {
-    let debug_material =
-        world.resource::<MaterialStore>().debug.clone();
+    // this hook will run once in the
+    // Scene World and once for each scene spawn
+    // in the Main World.
+    let Some(materials) =
+        world.get_resource::<MaterialStore>()
+    else {
+        return;
+    };
 
+    let debug_material = materials.debug.clone();
     world
         .commands()
         .entity(entity)
+        .remove::<UseDebugMaterial>()
         .insert(MeshMaterial3d(debug_material));
 }
 
@@ -175,14 +183,17 @@ fn on_add_use_force_field_material(
     mut world: DeferredWorld,
     HookContext { entity, .. }: HookContext,
 ) {
-    let force_field = world
-        .resource::<MaterialStore>()
-        .force_field
-        .clone();
+    let Some(force_field) = world
+        .get_resource::<MaterialStore>()
+        .map(|store| store.force_field.clone())
+    else {
+        return;
+    };
 
     world
         .commands()
         .entity(entity)
+        .remove::<UseForceFieldMaterial>()
         .remove::<MeshMaterial3d<StandardMaterial>>()
         .insert(MeshMaterial3d(force_field));
 }

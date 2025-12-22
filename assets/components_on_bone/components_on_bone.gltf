@@ -3,6 +3,7 @@
     "generator": "Khronos glTF Blender I/O v4.4.55",
     "version": "2.0"
   },
+  "extensionsUsed": ["BEVY_skein"],
   "scene": 0,
   "scenes": [
     {
@@ -12,12 +13,14 @@
   ],
   "nodes": [
     {
-      "extras": {
-        "skein": [
-          {
-            "components_on_bone::ControlBone": {}
-          }
-        ]
+      "extensions": {
+        "BEVY_skein": {
+          "components": [
+            {
+              "components_on_bone::ControlBone": {}
+            }
+          ]
+        }
       },
       "name": "Bone"
     },

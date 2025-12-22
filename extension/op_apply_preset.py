@@ -14,7 +14,7 @@ class ApplyPresetToObject(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        return context.object is not None
+        return hasattr(context, "bone") and context.object is not None
 
     def execute(self, context):
         apply_preset_data(context, context.object, self.preset_id)
@@ -30,7 +30,7 @@ class ApplyPresetToMesh(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        return context.mesh is not None
+        return hasattr(context, "mesh") and context.mesh is not None
 
     def execute(self, context):
         apply_preset_data(context, context.mesh, self.preset_id)
@@ -46,7 +46,7 @@ class ApplyPresetToMaterial(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        return context.material is not None
+        return hasattr(context, "material") and context.material is not None
 
     def execute(self, context):
         apply_preset_data(context, context.material, self.preset_id)
@@ -62,7 +62,7 @@ class ApplyPresetToScene(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        return context.scene is not None
+        return hasattr(context, "scene") and context.scene is not None
 
     def execute(self, context):
         apply_preset_data(context, context.scene, self.preset_id)
@@ -79,7 +79,7 @@ class ApplyPresetToLight(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        return context.light is not None
+        return hasattr(context, "light") and context.light is not None
 
     def execute(self, context):
         apply_preset_data(context, context.light, self.preset_id)
@@ -95,7 +95,7 @@ class ApplyPresetToCollection(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        return context.collection is not None
+        return hasattr(context, "collection") and context.collection is not None
 
     def execute(self, context):
         apply_preset_data(context, context.collection, self.preset_id)
@@ -112,7 +112,7 @@ class ApplyPresetToBone(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        return context.bone is not None
+        return hasattr(context, "bone") and context.bone is not None
 
     def execute(self, context):
         apply_preset_data(context, context.collection, self.preset_id)

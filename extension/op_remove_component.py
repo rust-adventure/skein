@@ -8,7 +8,7 @@ class RemoveComponentOnObject(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        return context.object is not None
+        return hasattr(context, "object") and context.object is not None
 
     def execute(self, context):
         remove_component_data(context, context.object)
@@ -22,7 +22,7 @@ class RemoveComponentOnMesh(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        return context.mesh is not None
+        return hasattr(context, "mesh") and context.mesh is not None
 
     def execute(self, context):
         remove_component_data(context, context.mesh)
@@ -36,7 +36,7 @@ class RemoveComponentOnMaterial(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        return context.material is not None
+        return hasattr(context, "material") and context.material is not None
 
     def execute(self, context):
         remove_component_data(context, context.material)
@@ -50,7 +50,7 @@ class RemoveComponentOnScene(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        return context.scene is not None
+        return hasattr(context, "scene") and context.scene is not None
 
     def execute(self, context):
         remove_component_data(context, context.scene)
@@ -64,7 +64,7 @@ class RemoveComponentOnLight(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        return context.light is not None
+        return hasattr(context, "light") and context.light is not None
 
     def execute(self, context):
         remove_component_data(context, context.light)
@@ -78,7 +78,7 @@ class RemoveComponentOnCollection(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        return context.collection is not None
+        return hasattr(context, "collection") and context.collection is not None
 
     def execute(self, context):
         remove_component_data(context, context.collection)
@@ -92,7 +92,7 @@ class RemoveComponentOnBone(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        return context.bone is not None
+        return hasattr(context, "bone") and context.bone is not None
 
     def execute(self, context):
         remove_component_data(context, context.bone)

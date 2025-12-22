@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ## [0.1.15]
 
 - re-enable the ability to fetch Bevy 0.15 registries
+- only write the extension object if there are components to write
 
 ## [0.1.14]
 
@@ -185,7 +186,8 @@ These presets are one-off. There is no special storage for them once they are ap
 
 Initial Release of Blender Addon
 
-[unreleased]: https://github.com/rust-adventure/skein/compare/blender-v0.1.14...HEAD
+[unreleased]: https://github.com/rust-adventure/skein/compare/blender-v0.1.15...HEAD
+[0.1.15]: https://github.com/rust-adventure/skein/compare/blender-v0.1.14...blender-v0.1.15
 [0.1.14]: https://github.com/rust-adventure/skein/compare/blender-v0.1.13...blender-v0.1.14
 [0.1.13]: https://github.com/rust-adventure/skein/compare/blender-v0.1.12...blender-v0.1.13
 [0.1.9]: https://github.com/rust-adventure/skein/compare/blender-v0.1.8...blender-v0.1.9

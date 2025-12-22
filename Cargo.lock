@@ -1335,15 +1335,11 @@ name = "bevy_skein"
 version = "0.5.0-rc.1"
 dependencies = [
  "bevy",
- "bevy_animation",
  "bevy_app",
  "bevy_asset",
  "bevy_ecs",
  "bevy_gltf",
- "bevy_image",
- "bevy_light",
  "bevy_log",
- "bevy_pbr",
  "bevy_platform",
  "bevy_reflect",
  "bevy_remote",

@@ -1,8 +1,7 @@
 #![doc = include_str!("../README.md")]
 
-use bevy_animation::AnimationClip;
 use bevy_app::{App, Plugin};
-use bevy_asset::{Handle, LoadContext};
+use bevy_asset::LoadContext;
 use bevy_ecs::{
     name::Name,
     observer::On,
@@ -23,7 +22,6 @@ use bevy_gltf::{
     },
 };
 use bevy_log::{debug, error, trace};
-use bevy_pbr::StandardMaterial;
 use bevy_platform::collections::HashMap;
 use bevy_reflect::{
     PartialReflect, Reflect, TypeRegistry, TypeRegistryArc,
@@ -382,49 +380,6 @@ struct GltfExtensionHandlerSkein {
 impl GltfExtensionHandler for GltfExtensionHandlerSkein {
     fn dyn_clone(&self) -> Box<dyn GltfExtensionHandler> {
         Box::new((*self).clone())
-    }
-
-    fn on_animation(
-        &mut self,
-        _gltf_animation: &gltf::Animation,
-        _handle: bevy_asset::Handle<
-            bevy_animation::AnimationClip,
-        >,
-    ) {
-    }
-
-    fn on_animations_collected(
-        &mut self,
-        _load_context: &mut LoadContext<'_>,
-        _animations: &[Handle<AnimationClip>],
-        _named_animations: &HashMap<
-            Box<str>,
-            Handle<AnimationClip>,
-        >,
-        _animation_roots: &bevy_platform::collections::HashSet<usize>,
-    ) {
-    }
-
-    fn on_texture(
-        &mut self,
-        _gltf_texture: &gltf::Texture,
-        _texture: Handle<bevy_image::Image>,
-    ) {
-    }
-    fn on_material(
-        &mut self,
-        _load_context: &mut LoadContext<'_>,
-        _gltf_material: &gltf::Material,
-        _material: Handle<StandardMaterial>,
-    ) {
-    }
-
-    fn on_gltf_mesh(
-        &mut self,
-        _load_context: &mut LoadContext<'_>,
-        _gltf_mesh: &gltf::Mesh,
-        _mesh: Handle<bevy_gltf::GltfMesh>,
-    ) {
     }
 
     fn on_spawn_mesh_and_material(

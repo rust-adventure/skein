@@ -21,7 +21,7 @@ use bevy_gltf::{
         GltfExtensionHandler, GltfExtensionHandlers,
     },
 };
-use bevy_log::{debug, error, trace};
+use bevy_log::{error, trace};
 use bevy_platform::collections::HashMap;
 use bevy_reflect::{
     PartialReflect, Reflect, TypeRegistry, TypeRegistryArc,
@@ -82,6 +82,18 @@ impl Plugin for SkeinPlugin {
             .resource::<AppTypeRegistry>()
             .0
             .clone();
+        #[cfg(target_family = "wasm")]
+        bevy_tasks::block_on(async {
+            app.world_mut()
+                .resource_mut::<GltfExtensionHandlers>()
+                .0
+                .write()
+                .await
+                .push(Box::new(GltfExtensionHandlerSkein {
+                    type_registry,
+                }))
+        });
+        #[cfg(not(target_family = "wasm"))]
         app.world_mut()
             .resource_mut::<GltfExtensionHandlers>()
             .0
@@ -103,7 +115,7 @@ impl Plugin for SkeinPlugin {
             feature = "brp"
         ))]
         if self.handle_brp {
-            debug!(
+            bevy_log::debug!(
                 "adding `bevy_remote::RemotePlugin` and `bevy_remote::http::RemoteHttpPlugin`. BRP HTTP server running at: {}:{}",
                 bevy_remote::http::DEFAULT_ADDR,
                 bevy_remote::http::DEFAULT_PORT
@@ -116,7 +128,7 @@ impl Plugin for SkeinPlugin {
                 bevy_remote::http::RemoteHttpPlugin::default(),
             ));
         } else {
-            debug!(
+            bevy_log::debug!(
                 "Skein is *not* adding `RemotePlugin` and `RemoteHttpPlugin`"
             );
         }
@@ -132,7 +144,7 @@ impl Plugin for SkeinPlugin {
             // add presets endpoint
             #[cfg(feature = "presets")]
             {
-                debug!(
+                bevy_log::debug!(
                     "enabling {} endpoint",
                     presets::BRP_SKEIN_PRESETS_METHOD
                 );

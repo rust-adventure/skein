@@ -1,7 +1,7 @@
 [package]
 name = "bevy_skein"
 description = "Process glTF extras when spawning Scenes to insert Components using Reflection, such as when using Blender as an editor"
-version = "0.5.0-rc.1"
+version = "0.5.0"
 authors = ["Chris Biscardi"]
 repository = "https://github.com/rust-adventure/skein"
 homepage = "https://bevyskein.dev/"
@@ -20,14 +20,15 @@ exclude = [
 rust-version = "1.89.0"
 
 [dependencies]
-bevy_app = "0.18.0-rc.1"
-bevy_log = "0.18.0-rc.1"
-bevy_ecs = "0.18.0-rc.1"
-bevy_gltf = "0.18.0-rc.1"
-bevy_reflect = "0.18.0-rc.1"
-bevy_scene = "0.18.0-rc.1"
-bevy_platform = "0.18.0-rc.1"
-bevy_asset = "0.18.0-rc.1"
+bevy_app = "0.18.0"
+bevy_log = "0.18.0"
+bevy_ecs = "0.18.0"
+bevy_gltf = "0.18.0"
+bevy_reflect = "0.18.0"
+bevy_scene = "0.18.0"
+bevy_platform = "0.18.0"
+bevy_asset = "0.18.0"
+bevy_tasks = "0.18.0"
 serde = "1.0"
 serde_json = "1.0"
 tracing = "0.1"
@@ -35,11 +36,11 @@ gltf = "1.4.0"
 
 # wasm can't support brp, so disable the dependency entirely
 [target.'cfg(not(target_family = "wasm"))'.dependencies]
-bevy_remote = { version = "0.18.0-rc.1", optional = true }
+bevy_remote = { version = "0.18.0", optional = true }
 
 
 [dev-dependencies]
-bevy = { version = "0.18.0-rc.1" }
+bevy = { version = "0.18.0" }
 
 serde = { version = "1.0", features = ["derive"] }
 test-components = { path = "./test-components" }

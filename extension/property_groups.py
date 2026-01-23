@@ -75,6 +75,13 @@ def make_property(
     if debug:
         print(component)
 
+    match type_path:
+        case "bevy_asset::handle::Handle<bevy_image::image::Image>":
+            return bpy.props.PointerProperty(
+                type=bpy.types.Image,
+                override={"LIBRARY_OVERRIDABLE"},
+            )
+
     if "kind" not in component:
         if debug:
             print("kind not in ", type_path, component)

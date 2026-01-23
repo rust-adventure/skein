@@ -1,7 +1,11 @@
 #![doc = include_str!("../README.md")]
 
+use std::any::TypeId;
+
 use bevy_app::{App, Plugin};
-use bevy_asset::LoadContext;
+use bevy_asset::{
+    Handle, LoadContext, LoadedUntypedAsset, ReflectHandle,
+};
 use bevy_ecs::{
     name::Name,
     observer::On,
@@ -21,14 +25,22 @@ use bevy_gltf::{
         GltfExtensionHandler, GltfExtensionHandlers,
     },
 };
+use bevy_image::Image;
 use bevy_log::{error, trace};
 use bevy_platform::collections::HashMap;
 use bevy_reflect::{
-    PartialReflect, Reflect, TypeRegistry, TypeRegistryArc,
-    serde::ReflectDeserializer,
+    PartialReflect, Reflect, TypeRegistration,
+    TypeRegistry, TypeRegistryArc,
+    erased_serde::Deserializer,
+    serde::{
+        ReflectDeserializer, ReflectDeserializerProcessor,
+    },
 };
 use gltf::Node;
-use serde::de::DeserializeSeed;
+use serde::{
+    Deserialize,
+    de::{DeserializeSeed, Visitor},
+};
 use serde_json::Value;
 use tracing::{instrument, warn};
 
@@ -91,6 +103,7 @@ impl Plugin for SkeinPlugin {
                 .await
                 .push(Box::new(GltfExtensionHandlerSkein {
                     type_registry,
+                    textures: vec![],
                 }))
         });
         #[cfg(not(target_family = "wasm"))]
@@ -100,6 +113,7 @@ impl Plugin for SkeinPlugin {
             .write_blocking()
             .push(Box::new(GltfExtensionHandlerSkein {
                 type_registry,
+                textures: vec![],
             }));
         // If we're not on wasm, and the brp feature
         // is enabled, check for whether the user wants
@@ -384,9 +398,67 @@ fn skein_processing(
     }
 }
 
+struct HandleProcessor<'a, 'b, 'c> {
+    load_context: &'a mut bevy_asset::LoadContext<'b>,
+    textures: &'c [Handle<Image>],
+}
+
+impl ReflectDeserializerProcessor
+    for HandleProcessor<'_, '_, '_>
+{
+    fn try_deserialize<'de, D>(
+        &mut self,
+        registration: &TypeRegistration,
+        _registry: &TypeRegistry,
+        deserializer: D,
+    ) -> Result<Result<Box<dyn PartialReflect>, D>, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        // {
+        //     trace!("avoiding processing");
+        //     return Ok(Err(deserializer));
+        // }
+        let Some(reflect_handle) =
+            registration.data::<ReflectHandle>()
+        else {
+            trace!("nope");
+            // we don't want to deserialize this - give the deserializer back
+            return Ok(Err(deserializer));
+        };
+        trace!(num_textures=?       self.textures.len(), "yup");
+
+        let asset_type_id = reflect_handle.asset_type_id();
+        if asset_type_id != TypeId::of::<Image>() {
+            trace!(
+                "is handle, but isn't right asset type; aka: not an Image"
+            );
+            return Ok(Err(deserializer));
+        }
+        trace!(?asset_type_id);
+        // let gltf_index: i32 = deserializer
+        //     .deserialize_any(GltfIndexVisitor)?;
+        let value =
+            serde_json::Value::deserialize(deserializer)?;
+
+        trace!(?value);
+        if let Some(gltf_index) = value.as_number()
+            && let Some(gltf_index) = gltf_index.as_u64()
+        {
+            trace!(?gltf_index);
+            Ok(Ok(Box::new(
+                self.textures[gltf_index as usize].clone(),
+            )))
+        } else {
+            panic!("");
+        }
+    }
+}
+
 #[derive(Default, Clone)]
 struct GltfExtensionHandlerSkein {
     type_registry: TypeRegistryArc,
+    textures: Vec<Handle<Image>>,
 }
 
 impl GltfExtensionHandler for GltfExtensionHandlerSkein {
@@ -394,9 +466,22 @@ impl GltfExtensionHandler for GltfExtensionHandlerSkein {
         Box::new((*self).clone())
     }
 
+    fn on_root(&mut self, gltf: &gltf::Gltf) {
+        for image in gltf.images() {
+            dbg!(image);
+        }
+    }
+    fn on_texture(
+        &mut self,
+        gltf_texture: &gltf::Texture,
+        texture: Handle<bevy_image::Image>,
+    ) {
+        trace!(index=?gltf_texture.source().index(), "texture");
+        self.textures.push(texture);
+    }
     fn on_spawn_mesh_and_material(
         &mut self,
-        _load_context: &mut LoadContext<'_>,
+        load_context: &mut LoadContext<'_>,
         primitive: &gltf::Primitive,
         mesh: &gltf::Mesh,
         material: &gltf::Material,
@@ -410,6 +495,8 @@ impl GltfExtensionHandler for GltfExtensionHandlerSkein {
                 value,
                 entity,
                 &type_registry,
+                load_context,
+                &self.textures,
             );
         }
         if let Some(value) = mesh.extension_value(EXTENSION)
@@ -419,6 +506,8 @@ impl GltfExtensionHandler for GltfExtensionHandlerSkein {
                 value,
                 entity,
                 &type_registry,
+                load_context,
+                &self.textures,
             );
         }
         if let Some(value) =
@@ -429,13 +518,15 @@ impl GltfExtensionHandler for GltfExtensionHandlerSkein {
                 value,
                 entity,
                 &type_registry,
+                load_context,
+                &self.textures,
             );
         }
     }
 
     fn on_scene_completed(
         &mut self,
-        _load_context: &mut LoadContext<'_>,
+        load_context: &mut LoadContext<'_>,
         scene: &gltf::Scene,
         world_root_id: bevy_ecs::entity::Entity,
         world: &mut World,
@@ -449,12 +540,14 @@ impl GltfExtensionHandler for GltfExtensionHandlerSkein {
             value,
             &mut world.entity_mut(world_root_id),
             &type_registry,
+            load_context,
+            &self.textures,
         );
     }
 
     fn on_gltf_node(
         &mut self,
-        _load_context: &mut LoadContext<'_>,
+        load_context: &mut LoadContext<'_>,
         gltf_node: &Node,
         entity: &mut EntityWorldMut,
     ) {
@@ -473,12 +566,18 @@ impl GltfExtensionHandler for GltfExtensionHandlerSkein {
             return;
         }
         let type_registry = self.type_registry.read();
-        insert_components(value, entity, &type_registry);
+        insert_components(
+            value,
+            entity,
+            &type_registry,
+            load_context,
+            &self.textures,
+        );
     }
 
     fn on_spawn_light_directional(
         &mut self,
-        _load_context: &mut LoadContext<'_>,
+        load_context: &mut LoadContext<'_>,
         gltf_node: &Node,
         entity: &mut EntityWorldMut,
     ) {
@@ -489,12 +588,18 @@ impl GltfExtensionHandler for GltfExtensionHandlerSkein {
         };
 
         let type_registry = self.type_registry.read();
-        insert_components(value, entity, &type_registry);
+        insert_components(
+            value,
+            entity,
+            &type_registry,
+            load_context,
+            &self.textures,
+        );
     }
 
     fn on_spawn_light_point(
         &mut self,
-        _load_context: &mut LoadContext<'_>,
+        load_context: &mut LoadContext<'_>,
         gltf_node: &Node,
         entity: &mut EntityWorldMut,
     ) {
@@ -505,12 +610,18 @@ impl GltfExtensionHandler for GltfExtensionHandlerSkein {
         };
 
         let type_registry = self.type_registry.read();
-        insert_components(value, entity, &type_registry);
+        insert_components(
+            value,
+            entity,
+            &type_registry,
+            load_context,
+            &self.textures,
+        );
     }
 
-    fn on_spawn_light_spot(
+    fn on_spawn_light_spot<'a>(
         &mut self,
-        _load_context: &mut LoadContext<'_>,
+        load_context: &'a mut LoadContext<'_>,
         gltf_node: &Node,
         entity: &mut EntityWorldMut,
     ) {
@@ -521,15 +632,24 @@ impl GltfExtensionHandler for GltfExtensionHandlerSkein {
         };
 
         let type_registry = self.type_registry.read();
-        insert_components(value, entity, &type_registry);
+        insert_components(
+            value,
+            entity,
+            &type_registry,
+            load_context,
+            &self.textures,
+        );
     }
 }
 
-fn insert_components(
+fn insert_components<'a>(
     obj: &serde_json::Value,
     entity: &mut EntityWorldMut,
     type_registry: &TypeRegistry,
+    load_context: &'a mut LoadContext<'_>,
+    textures: &[Handle<Image>],
 ) {
+    trace!("insert_components");
     let skein = match obj.get("components") {
         Some(Value::Array(components)) => components,
         Some(value) => {
@@ -547,13 +667,22 @@ fn insert_components(
             return;
         }
     };
-
+    let mut processor = HandleProcessor {
+        load_context: load_context,
+        textures,
+    };
     // for each component, attempt to reflect it and
     // insert it
     for json_component in skein.iter() {
         // deserialize
+
         let reflect_deserializer =
-            ReflectDeserializer::new(&type_registry);
+            ReflectDeserializer::with_processor(
+                type_registry,
+                &mut processor,
+            );
+        // let reflect_deserializer =
+        // ReflectDeserializer::new(&type_registry);
         let reflect_value = match reflect_deserializer
             .deserialize(json_component)
         {

@@ -15,7 +15,6 @@
 //! allowing us to re-use the handle as many times
 //! as needed. You could use a HashMap instead to
 //! handle many handles like this.
-use bevy::render::render_resource::SpecializedMeshPipelineError;
 use bevy::{
     asset::RenderAssetUsages,
     color::palettes::tailwind::SLATE_950,
@@ -25,15 +24,15 @@ use bevy::{
     pbr::{MaterialPipeline, MaterialPipelineKey},
     post_process::bloom::Bloom,
     prelude::*,
-    render::{
-        render_resource::{
-            AsBindGroup, Extent3d,
-            RenderPipelineDescriptor, TextureDimension,
-            TextureFormat,
-        },
-        view::Hdr,
+    render::render_resource::{
+        AsBindGroup, Extent3d, RenderPipelineDescriptor,
+        TextureDimension, TextureFormat,
     },
     shader::ShaderRef,
+};
+use bevy::{
+    camera::Hdr,
+    render::render_resource::SpecializedMeshPipelineError,
 };
 use bevy_skein::SkeinPlugin;
 

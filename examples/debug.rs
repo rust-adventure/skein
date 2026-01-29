@@ -61,7 +61,7 @@ fn setup(
     ));
 
     commands.spawn(DirectionalLight {
-        shadows_enabled: true,
+        shadow_maps_enabled: true,
         ..default()
     });
 

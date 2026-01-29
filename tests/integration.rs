@@ -14,7 +14,7 @@ fn test_skein_options() {
         // immediately exit
         .add_systems(
             Startup,
-            |mut exit_event: EventWriter<AppExit>| {
+            |mut exit_event: MessageWriter<AppExit>| {
                 exit_event.write(AppExit::Success);
             },
         )

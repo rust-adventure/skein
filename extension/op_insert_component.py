@@ -161,13 +161,19 @@ def insert_component_data(context, obj):
         print("no global registry set")
 
 def touch_all_fields(context, key):
+    print("touch_all_fields", context, key)
     try:
+        print("pre getattr")
         obj = getattr(context, key)
+        print("pre annotations")
         annotations = getattr(obj, "__annotations__")
+        print("loop")
         for key, value in annotations.items():
+            print("item", key, value)
             if "PointerProperty" == value.function.__name__:
                 touch_all_fields(obj, key)
-    except:
+    except Exception as e:
+        print("failed to init fields", e)
         pass
 
 classes = (

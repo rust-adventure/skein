@@ -2,7 +2,7 @@ import bpy # type: ignore
 import json
 import inspect
 
-from .property_groups import hash_over_64
+from .property_groups import BevyTexture, hash_over_64
 
 # ---------------------------------- #
 #  Skein Panel for adding components #
@@ -184,12 +184,12 @@ def draw_generic_panel(context, obj, layout, execute_mode, skein_preset_panel_id
         # obj_skein is an array of component data
         obj_skein = obj.skein_two
         if registry and obj_skein:
-            active_component_data = obj_skein[obj.active_component_index]
-            type_path = active_component_data.selected_type_path
+            selected_container_component = obj_skein[obj.active_component_index]
+            type_path = selected_container_component.selected_type_path
 
             row = layout.row()
             col = row.column()
-            col.label(text=active_component_data.selected_type_path, icon='BOIDS')
+            col.label(text=selected_container_component.selected_type_path, icon='BOIDS')
 
             col = row.column()
             col.popover(
@@ -204,13 +204,16 @@ def draw_generic_panel(context, obj, layout, execute_mode, skein_preset_panel_id
             row = layout.row()
             row.separator()
 
+            print("pre-class")
             if inspect.isclass(skein_property_groups[type_path]):
-                if hash_over_64(type_path) not in active_component_data:
-                    layout.label(text=active_component_data.name + " has no data to edit")
+                print("isclass")
+                if hash_over_64(type_path) not in selected_container_component:
+                    layout.label(text=selected_container_component.name + " has no data to edit")
                 else:
-                    render_two(layout, active_component_data, hash_over_64(type_path))
+                    render_two(layout, selected_container_component, hash_over_64(type_path))
             else:
-                layout.prop(active_component_data, hash_over_64(type_path))
+                print("notclass")
+                layout.prop(selected_container_component, hash_over_64(type_path))
 
 def render_two(layout, context, context_key):
     if context_key not in context:
@@ -418,18 +421,23 @@ def render_two(layout, context, context_key):
         if "PointerProperty" == value.function.__name__:
             try:
                 next_type = getattr(obj, key)
-                match next_type.type_override:
-                    case "glam::Vec2" | "glam::DVec2" | "glam::I8Vec2" | "glam::U8Vec2" | "glam::I16Vec2" | "glam::U16Vec2" | "glam::IVec2" | "glam::UVec2" | "glam::I64Vec2" | "glam::U64Vec2" | "glam::BVec2":
-                        render_two(layout, obj, key)
-                    case "glam::Vec3" | "glam::Vec3A" | "glam::DVec3" | "glam::I8Vec3" | "glam::U8Vec3" | "glam::I16Vec3" | "glam::U16Vec3" | "glam::IVec3" | "glam::UVec3" | "glam::I64Vec3" | "glam::U64Vec3" | "glam::BVec3":
-                        render_two(layout, obj, key)
-                    case "glam::Vec4" | "glam::DVec4" | "glam::I8Vec4" | "glam::U8Vec4" | "glam::I16Vec4" | "glam::U16Vec4" | "glam::IVec4" | "glam::UVec4" | "glam::I64Vec4" | "glam::U64Vec4" | "glam::BVec4":
-                        render_two(layout, obj, key)
-                    case "glam::Quat" | "glam::DQuat":
-                        render_two(layout, obj, key)
-                    case _:
-                        layout.label(text=key + ":")
-                        render_two(layout.box(), obj, key)
+                # if this type is a BevyTexture, and the next field is an image
+                # then we need to render the "image picker" ui
+                if hasattr(obj, "custom_type") and obj.custom_type == "BevyTexture" and key == "image":
+                    layout.template_ID(obj, key, new="image.new", open="image.open")
+                else:
+                    match next_type.type_override:
+                        case "glam::Vec2" | "glam::DVec2" | "glam::I8Vec2" | "glam::U8Vec2" | "glam::I16Vec2" | "glam::U16Vec2" | "glam::IVec2" | "glam::UVec2" | "glam::I64Vec2" | "glam::U64Vec2" | "glam::BVec2":
+                            render_two(layout, obj, key)
+                        case "glam::Vec3" | "glam::Vec3A" | "glam::DVec3" | "glam::I8Vec3" | "glam::U8Vec3" | "glam::I16Vec3" | "glam::U16Vec3" | "glam::IVec3" | "glam::UVec3" | "glam::I64Vec3" | "glam::U64Vec3" | "glam::BVec3":
+                            render_two(layout, obj, key)
+                        case "glam::Vec4" | "glam::DVec4" | "glam::I8Vec4" | "glam::U8Vec4" | "glam::I16Vec4" | "glam::U16Vec4" | "glam::IVec4" | "glam::UVec4" | "glam::I64Vec4" | "glam::U64Vec4" | "glam::BVec4":
+                            render_two(layout, obj, key)
+                        case "glam::Quat" | "glam::DQuat":
+                            render_two(layout, obj, key)
+                        case _:
+                            layout.label(text=key + ":")
+                            render_two(layout.box(), obj, key)
             except AttributeError:
                 layout.label(text=key + ":")
                 render_two(layout.box(), obj, key)

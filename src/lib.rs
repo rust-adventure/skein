@@ -43,6 +43,7 @@ use serde::{
 };
 use serde_json::Value;
 use tracing::{instrument, warn};
+mod internal;
 
 /// Presets provide defaults and preset
 /// configurations of values from Bevy to Blender.
@@ -466,11 +467,8 @@ impl GltfExtensionHandler for GltfExtensionHandlerSkein {
         Box::new((*self).clone())
     }
 
-    fn on_root(&mut self, gltf: &gltf::Gltf) {
-        for image in gltf.images() {
-            dbg!(image);
-        }
-    }
+    fn on_root(&mut self, _gltf: &gltf::Gltf) {}
+
     fn on_texture(
         &mut self,
         gltf_texture: &gltf::Texture,

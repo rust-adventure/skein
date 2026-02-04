@@ -6,8 +6,19 @@ import inspect
 
 # the class we use to create PropertyGroups dynamically
 class ComponentData(bpy.types.PropertyGroup):
-    type_path: bpy.props.StringProperty(name="type_path", default="Unknown") # type: ignore
+    # type_path: bpy.props.StringProperty(name="type_path", default="Unknown") # type: ignore
     name: bpy.props.StringProperty(name="Name", default="Unknown") # type: ignore
+
+class BevyTexture(bpy.types.PropertyGroup):
+    image: bpy.props.PointerProperty(
+        name="Image",
+        type=bpy.types.Image,
+    ) # type: ignore
+    test: bpy.props.IntProperty(
+        min=0,
+        max=255,
+    ) # type: ignore
+
 
 # capitalize a word without lowercasing the result
 # of the word. This means TeamMember stays and doesn't
@@ -77,10 +88,42 @@ def make_property(
 
     match type_path:
         case "bevy_asset::handle::Handle<bevy_image::image::Image>":
-            return bpy.props.PointerProperty(
+            annotations = {}
+            # TODO: try ImageSampler paths that have existed
+            # since 0.18. if none exist in the registry, do not create this 
+            # type
+            annotations["image"] = bpy.props.PointerProperty(
+                name="Image",
                 type=bpy.types.Image,
                 override={"LIBRARY_OVERRIDABLE"},
             )
+            property = make_property(
+                skein_property_groups,
+                registry,
+                "#/$defs/bevy_skein::internal::ImageSampler"
+            )
+            annotations["sampler"] = bpy.props.PointerProperty(
+                name="sampler",
+                type=property,
+                override={"LIBRARY_OVERRIDABLE"},
+            )
+            bevy_texture = type("BevyTextured", (bpy.types.PropertyGroup,), {
+                '__annotations__': annotations,
+                'custom_type': 'BevyTexture',
+            })
+            bpy.utils.register_class(bevy_texture)
+            return bevy_texture;
+#  annotations["skein_enum_index"] = bpy.props.EnumProperty(
+#                         name="variant",
+#                         items=items,
+#                         override={"LIBRARY_OVERRIDABLE"},
+#                     )
+            # return bpy.props.PointerProperty(
+            #     # type=bpy.types.Image,
+            #     type=BevyTexture,
+            #     # type=bpy.types.Material,
+            #     override={"LIBRARY_OVERRIDABLE"},
+            # )
 
     if "kind" not in component:
         if debug:

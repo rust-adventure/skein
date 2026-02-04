@@ -117,8 +117,29 @@ class glTF2ExportUserExtension:
             self.gather_skein_two(blender_object, gltf2_object, export_settings)
             
     def gather_mesh_hook(self, gltf2_mesh, blender_mesh, blender_object, vertex_groups, modifiers, materials, export_settings):
+        print("gather_mesh_hook", gltf2_mesh, blender_mesh, blender_object, modifiers)
+        print("mesh:", dir(blender_mesh))
+        print("gltf2_mesh", dir(gltf2_mesh))
+        print("gltf2_mesh", dir(blender_object))
         if self.properties.enabled:
             self.gather_skein_two(blender_mesh, gltf2_mesh, export_settings)
+
+        try:
+            # python allows checking for empty arrays by "if array"
+            if gltf2_mesh.extras is None:
+                gltf2_mesh.extras = {}
+            gltf2_mesh.extras["TESTING_OUTPUT"] = {"some": "Thing"}
+        except:
+            pass
+            # if extension-based exporting is enabled, set the appropriate
+            # extensions data.
+        if gltf2_mesh.extensions is None:
+            gltf2_mesh.extensions = {}
+        gltf2_mesh.extensions["NOT_BEVY_EXTENSION"] = self.Extension(
+            name="NOT_BEVY_EXTENSION",
+            extension={"components": "Here"},
+            required=False
+        )
 
     def gather_material_hook(self, gltf2_material, blender_material, export_settings):
         if self.properties.enabled:
@@ -160,17 +181,15 @@ class glTF2ExportUserExtension:
     # #     print("debug: ")
     # # def gather_gltf_extensions_hook(self, gltf2_plan, export_settings):
     # #     print("debug: ")
-    def gather_image_hook(self, gltf2_image, mapping, blender_shader_sockets, export_settings):
-        print("debug: gather_image_hook")
+    # def gather_image_hook(self, gltf2_image, mapping, blender_shader_sockets, export_settings):
+    #     print("debug: gather_image_hook")
     # # def gather_joint_hook(self, gltf2_node, blender_bone, export_settings):
     # #     print("debug: gather_joint_hook")
-    # # def gather_material_hook(self, gltf2_material, blender_material, export_settings):
-    # #     print("debug: ")
+    # def gather_material_hook(self, gltf2_material, blender_material, export_settings):
+    #     print("debug: gather_material_hook")
     # # def gather_material_pbr_metallic_roughness_hook(self, gltf2_material, blender_material, orm_texture, export_settings):
     # #     print("debug: ")
     # # def gather_material_unlit_hook(self, gltf2_material, blender_material, export_settings):
-    # #     print("debug: ")
-    # # def gather_mesh_hook(self, gltf2_mesh, blender_mesh, blender_object, vertex_groups, modifiers, materials, export_settings):
     # #     print("debug: ")
     # # def gather_node_hook(self, gltf2_node, blender_object, export_settings):
     # #     print("debug: ")
@@ -254,8 +273,8 @@ class glTF2ExportUserExtension:
     #     print("debug: gather_attribute_change")
     # def gather_attributes_change(self, attributes, export_settings):
     #     print("debug: gather_attributes_change")
-    # def gather_gltf_additional_textures_hook(self, json, additioan_json_textures, export_settings):
-    #     print("debug: gather_gltf_additional_textures_hook")
+    def gather_gltf_additional_textures_hook(self, json, additioan_json_textures, export_settings):
+        print("debug: gather_gltf_additional_textures_hook")
     # def gather_node_mesh_hook(self, option, blender_object, export_settings):
     #     print("debug: gather_node_mesh_hook")
     # def extra_animation_manage(self, extra_samplers, obj_uuid, blender_object, blender_action, gltf_channels, export_settings):
@@ -264,24 +283,30 @@ class glTF2ExportUserExtension:
     #     print("debug: animation_action_hook")
     def gather_skein_two(self, source, sink, export_settings):
         if "skein_two" in dir(source):
+            print("skein_two in dir(source):")
             objs = []
             skein_property_groups = bpy.context.window_manager.skein_property_groups
+            print("loop:")
             for component in source.skein_two:
+                print(component)
                 obj = {}
                 type_path = component["selected_type_path"]
+                print(type_path)
 
                 if inspect.isclass(skein_property_groups[type_path]):
-                    try:
+                    print("isclass: ", type_path)
+                    if hasattr(skein_property_groups[type_path], "force_default"):
                         match skein_property_groups[type_path].force_default:
                             case "object":
                                 obj[type_path] = {}
                             case "list":
                                 obj[type_path] = []
                         objs.append(obj)
-                    except AttributeError:
+                    else:
                         value = get_data_from_active_editor(
                             component,
                             hash_over_64(type_path),
+                            export_settings
                         )
                         obj[type_path] = value
                         objs.append(obj)
@@ -289,7 +314,7 @@ class glTF2ExportUserExtension:
                     # if the component is a tuple struct, etc
                     # retrieve the value directly instead of
                     # recursing
-                    print(type_path)
+                    print("else: ", type_path)
                     value = getattr(component, hash_over_64(type_path))
                     handled = False
                     try:
@@ -307,7 +332,12 @@ class glTF2ExportUserExtension:
                         obj[type_path] = value
                         print(getattr(component, hash_over_64(type_path)))
                         objs.append(obj)
-
+            print("after loop")
+            try:
+                print(source.skein_two)
+                print(source["skein_two"])
+            except Exception as e:
+                print(e)
             # storing data on glTF extras is the original way Skein worked
             # and for the time being is easy to keep supporting, so we will.
             # but we can also enable turning extras off.

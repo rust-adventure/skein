@@ -8,7 +8,7 @@ from .op_insert_component import register as register_op_insert_component, unreg
 from .op_registry_loading import FetchRemoteTypeRegistry, ReloadSkeinRegistryJson
 from .op_remove_component import register as register_op_remove_component, unregister as unregister_op_remove_component
 from .op_debug_check_components import DebugCheckComponents
-from .property_groups import ComponentData
+from .property_groups import ComponentData, BevyTexture
 from .skein_panel import register as register_skein_panel, unregister as unregister_skein_panel
 from .skein_panel_presets import register as register_skein_panel_presets, unregister as unregister_skein_panel_presets
 from .skein_sidepanel import register as register_skein_sidepanel, unregister as unregister_skein_sidepanel
@@ -115,6 +115,7 @@ def register():
     # for quick access.
     bpy.utils.register_class(ComponentTypeData)
     bpy.utils.register_class(ComponentData)
+    bpy.utils.register_class(BevyTexture)
     bpy.utils.register_class(PGSkeinWindowProps)
     bpy.types.WindowManager.skein = bpy.props.PointerProperty(type=PGSkeinWindowProps)
 
@@ -225,6 +226,7 @@ def unregister():
     bpy.utils.unregister_class(PGSkeinWindowProps)
     bpy.utils.unregister_class(ComponentTypeData)
     bpy.utils.unregister_class(ComponentData)
+    bpy.utils.unregister_class(BevyTexture)
     # operations
     bpy.utils.unregister_class(FetchRemoteTypeRegistry)
     bpy.utils.unregister_class(ReloadSkeinRegistryJson)

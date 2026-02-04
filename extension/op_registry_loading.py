@@ -223,7 +223,7 @@ def process_registry(context, registry):
                 component = global_skein.components.add()
                 component.name = type_path
                 component.value = type_path
-                component.type_path = type_path
+                # component.type_path = type_path
                 component.short_path = value["shortPath"]
 
                 component_list.append((type_path, value["shortPath"], type_path))

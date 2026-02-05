@@ -1,5 +1,9 @@
+import bpy
+from io_scene_gltf2.blender.exp.material.image import get_gltf_image_from_blender_image
+from io_scene_gltf2.io.com.gltf2_io import Texture, Sampler
+
 # get json data from an active_editor
-def get_data_from_active_editor(context, context_key):
+def get_data_from_active_editor(context, context_key, export_settings):
     """get the data from a ComponentContainer
     The initial context is typically the ComponentContainer and the 
     typical context_key is the type_path of the Component
@@ -10,6 +14,29 @@ def get_data_from_active_editor(context, context_key):
     # The current PropertyGroup we're working with
     obj = getattr(context, context_key)
 
+    if hasattr(obj, "custom_type") and obj.custom_type == "BevyTexture":
+        image = getattr(obj, "image")
+        gltf_image = get_gltf_image_from_blender_image(image.name, export_settings)
+        # extensions, extras, mag_filter, min_filter, name, wrap_s, wrap_t
+        # magFilter
+        #     9728 NEAREST
+        #     9729 LINEAR
+        # minFilter
+        #     9728 NEAREST
+        #     9729 LINEAR
+        #     9984 NEAREST_MIPMAP_NEAREST
+        #     9985 LINEAR_MIPMAP_NEAREST
+        #     9986 NEAREST_MIPMAP_LINEAR
+        #     9987 LINEAR_MIPMAP_LINEAR
+        # wrapS/wrapT (u,v)
+        #     33071 CLAMP_TO_EDGE
+        #     33648 MIRRORED_REPEAT
+        #     10497 REPEAT
+        sampler = Sampler({}, {}, 9729, 9729, image.name + "_skein_sampler", 10497, 10497)
+        # extensions, extras, name, sampler, source
+        return Texture({}, {}, image.name, sampler, gltf_image)
+    # if isinstance(obj, bpy.types.Image):
+    #     return get_gltf_image_from_blender_image(obj.name, export_settings)
     # get the annotations, which will give us all of the field names
     # and their value types for this PropertyGroup
     annotations = getattr(obj, "__annotations__")
@@ -23,7 +50,7 @@ def get_data_from_active_editor(context, context_key):
                     return None
                 case "Some":
                     if "PointerProperty" == annotations["Some"].function.__name__:
-                        return get_data_from_active_editor(obj, "Some")
+                        return get_data_from_active_editor(obj, "Some", export_settings)
                     else:
                         return getattr(obj, "Some")
     except AttributeError:
@@ -46,7 +73,7 @@ def get_data_from_active_editor(context, context_key):
             case value:
                 if "PointerProperty" == annotations[value].function.__name__:
                     return {
-                        value: get_data_from_active_editor(obj, value)
+                        value: get_data_from_active_editor(obj, value, export_settings)
                     }
                 else:
                     return { 
@@ -203,7 +230,7 @@ def get_data_from_active_editor(context, context_key):
     data = {}
     for key, value in annotations.items():
         if "PointerProperty" == value.function.__name__:
-            data[key] = get_data_from_active_editor(obj, key)
+            data[key] = get_data_from_active_editor(obj, key, export_settings)
         else:
             data[key] = getattr(obj, key)
     return data

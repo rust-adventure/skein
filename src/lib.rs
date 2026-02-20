@@ -401,6 +401,7 @@ impl GltfExtensionHandler for GltfExtensionHandlerSkein {
         mesh: &gltf::Mesh,
         material: &gltf::Material,
         entity: &mut EntityWorldMut,
+        _material_label: &str,
     ) {
         if let Some(value) =
             primitive.extension_value(EXTENSION)

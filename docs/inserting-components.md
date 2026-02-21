@@ -53,7 +53,7 @@ This can be important when inserting Components that require being inserted on E
 
 ### Materials
 
-Components can be inserted on Meshes under the <span class="text-red-500 dark:text-red-400">red sphere</span> material icon.
+Components can be inserted on Materials under the <span class="text-red-500 dark:text-red-400">red sphere</span> material icon.
 
 ![Material Panel](/images/the-blender-addon/material-panel.avif)
 

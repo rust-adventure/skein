@@ -45,7 +45,7 @@ To make it concrete, let's image a potential API change.
 Let's say `has_team` is no longer serving our needs and we want to label the specific team the `Player` is on using an enum.
 
 ```rust
-struct Team {
+enum Team {
     Red,
     Green,
     Blue,

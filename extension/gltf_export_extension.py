@@ -60,7 +60,7 @@ def draw_export(context, layout):
     # if context.collection.name != "Coll":
     #     return
 
-    header, body = layout.panel("GLTF_addon_example_exporter", default_closed=False)
+    header, body = layout.panel("GLTF_addon_skein_exporter", default_closed=False)
 
     # TODO: True or False here (and in panels)? Affects visual layout
     header.use_property_split = False

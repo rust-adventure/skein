@@ -195,7 +195,7 @@ def register():
 
     # Use the following 2 lines to register the UI for the gltf extension hook
     from io_scene_gltf2 import exporter_extension_layout_draw # type: ignore
-    exporter_extension_layout_draw['Example glTF Extension'] = draw_export # Make sure to use the same name in unregister()
+    exporter_extension_layout_draw['Skein'] = draw_export # Make sure to use the same name in unregister()
 
 def unregister():
     global_skein = bpy.context.window_manager.skein
@@ -255,4 +255,4 @@ def unregister():
 
     # Use the following 2 lines to unregister the UI for this hook
     from io_scene_gltf2 import exporter_extension_layout_draw # type: ignore
-    del exporter_extension_layout_draw['Example glTF Extension'] # Make sure to use the same name in register()
+    del exporter_extension_layout_draw['Skein'] # Make sure to use the same name in register()

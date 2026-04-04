@@ -8,8 +8,8 @@ use bevy::{
     },
     prelude::*,
 };
-use bevy_scene::SceneInstanceReady;
 use bevy_skein::SkeinPlugin;
+use bevy_world_serialization::WorldInstanceReady;
 use serde::{Deserialize, Serialize};
 
 fn main() {
@@ -25,13 +25,11 @@ fn main() {
 }
 
 fn check_insertions(
-    scene_instance_ready: On<SceneInstanceReady>,
+    ready: On<WorldInstanceReady>,
     children: Query<&Children>,
     levels: Query<&PowerLevel>,
 ) {
-    for entity in children
-        .iter_descendants(scene_instance_ready.entity)
-    {
+    for entity in children.iter_descendants(ready.entity) {
         let Ok(level) = levels.get(entity) else {
             continue;
         };
@@ -66,7 +64,7 @@ fn setup(
     });
 
     // replace this .gltf file to show data
-    commands.spawn(SceneRoot(asset_server.load(
+    commands.spawn(WorldAssetRoot(asset_server.load(
         GltfAssetLabel::Scene(0).from_asset("debug.gltf"),
     )));
 
@@ -74,7 +72,7 @@ fn setup(
     commands.spawn((
         Text::default(),
         TextFont {
-            font_size: 15.,
+            font_size: FontSize::Px(15.),
             ..default()
         },
         Node {

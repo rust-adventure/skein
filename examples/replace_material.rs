@@ -86,7 +86,7 @@ fn setup(
         Bloom::default(),
     ));
 
-    commands.spawn(SceneRoot(asset_server.load(
+    commands.spawn(WorldAssetRoot(asset_server.load(
         GltfAssetLabel::Scene(0).from_asset(
             "replace_material/replace_material.gltf",
         ),

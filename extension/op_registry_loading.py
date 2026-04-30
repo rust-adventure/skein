@@ -153,6 +153,38 @@ class ReloadSkeinRegistryJson(bpy.types.Operator):
 
         return {'FINISHED'}
 
+
+def __compute_make_property_settings():
+    """
+    Compute settings for make_property:
+    - gather extensions from loaded addons
+
+    :return: the settings for make_property
+    """
+    import sys
+
+    debug = False
+    if __package__ in bpy.context.preferences.addons:
+        debug = bpy.context.preferences.addons[__package__].preferences.debug
+
+    settings = {}
+
+    extensions = []
+    preferences = bpy.context.preferences
+    for addon_name in preferences.addons.keys():
+        try:
+            module = sys.modules[addon_name]
+        except Exception:
+            continue
+        if hasattr(module, 'skein_make_property_extension'):
+            extensions.append(module.skein_make_property_extension)
+            if debug:
+                print(f'Found skein_make_property_extension in {addon_name}')
+    settings['extensions'] = extensions
+
+    return settings
+
+
 def process_registry(context, registry):
     """
     registry is a dict
@@ -200,6 +232,8 @@ def process_registry(context, registry):
     # Clear the list that held the PropertyGroups because we are about
     # to re-fill it.
     skein_property_groups.clear()
+
+    make_property_settings = __compute_make_property_settings()
 
     # for each user-defined type, make a PropertyGroup that represents
     # that type. These will be used to build out user-accessible forms

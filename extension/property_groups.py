@@ -78,6 +78,14 @@ def make_property(
     if "kind" not in component:
         if debug:
             print("kind not in ", type_path, component)
+
+    if "extensions" in make_property_settings:
+        # Run extension first in case they override this component
+        for extension in make_property_settings["extensions"]:
+            ext = extension(skein_property_groups, component, type_path, make_property_settings)
+            if ext is not None:
+                return ext
+
     match component["kind"]:
         # Array is fixed-size arrays
         case "Array":
@@ -221,7 +229,8 @@ def make_property(
                     property = make_property(
                         skein_property_groups,
                         registry,
-                        component["properties"][key]["type"]["$ref"]
+                        component["properties"][key]["type"]["$ref"],
+                        make_property_settings,
                     )
                     if inspect.isclass(property):
                         annotations[key] = bpy.props.PointerProperty(
@@ -254,7 +263,8 @@ def make_property(
                 skein_property_groups[type_path] = make_property(
                     skein_property_groups,
                     registry,
-                    component["prefixItems"][0]["type"]["$ref"]
+                    component["prefixItems"][0]["type"]["$ref"],
+                    make_property_settings,
                 )
                 return skein_property_groups[type_path]
             else:

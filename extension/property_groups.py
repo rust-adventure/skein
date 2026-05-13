@@ -4,6 +4,11 @@ import bpy # type: ignore
 import re
 import inspect
 
+# tracks where the editor is currently at while drawing, so the operators for updating lists can work properly
+class PathKeyGroup(bpy.types.PropertyGroup):
+    value: bpy.props.StringProperty(name="Value")
+    is_index: bpy.props.BoolProperty(name="Is_Index")
+
 # the class we use to create PropertyGroups dynamically
 class ComponentData(bpy.types.PropertyGroup):
     type_path: bpy.props.StringProperty(name="type_path", default="Unknown") # type: ignore
@@ -176,16 +181,40 @@ def make_property(
                         print("unknown Enum type: ", component["type"], "\n  ", type_path)
                     return
         case "List":
-            # Vecs/Lists are not well handled yet
-            skein_property_groups[type_path] = type(hash_type_path(capitalize_path(type_path)), (ComponentData,), {
-                '__annotations__': {},
-                # force_default bypasses recursion and forces
-                # an empty data structure in the output
-                "force_default": "list"
-            })
-            bpy.utils.register_class(
-                skein_property_groups[type_path]
-            )
+            item_type_path = component["items"]["type"]["$ref"]
+            
+            item_property = make_property(
+                    skein_property_groups,
+                    registry,
+                    item_type_path
+                )
+            if item_property is not None:
+                property = bpy.props.CollectionProperty(type=item_property)
+                skein_property_groups[type_path] = type(hash_type_path(capitalize_path(type_path)), (ComponentData,), {
+                    '__annotations__': {
+                        "list_wrapper": property
+                    },
+                    'is_list': True,
+                })
+            else:
+                skein_property_groups[type_path] = type(hash_type_path(capitalize_path(type_path)), (ComponentData,), {
+                    '__annotations__': {
+                        "force_default": "list"
+                    },
+                })
+            try:
+                bpy.utils.register_class(
+                    skein_property_groups[type_path]
+                )
+            except: #fallback to default empty list in case some item type is invalid
+                skein_property_groups[type_path] = type(hash_type_path(capitalize_path(type_path)), (ComponentData,), {
+                    '__annotations__': {
+                        "force_default": "list"
+                    },
+                })
+                bpy.utils.register_class(
+                    skein_property_groups[type_path]
+                )
             return skein_property_groups[type_path]
         case "Map":
             skein_property_groups[type_path] = type(hash_type_path(capitalize_path(type_path)), (ComponentData,), {
@@ -200,15 +229,41 @@ def make_property(
             return skein_property_groups[type_path]
         case "Set":
             # Handle Sets in the same way as Vecs/Lists
-            skein_property_groups[type_path] = type(hash_type_path(capitalize_path(type_path)), (ComponentData,), {
-                '__annotations__': {},
-                # force_default bypasses recursion and forces
-                # an empty data structure in the output
-                "force_default": "list"
-            })
-            bpy.utils.register_class(
-                skein_property_groups[type_path]
-            )
+            item_type_path = component["items"]["type"]["$ref"]
+            
+            item_property = make_property(
+                    skein_property_groups,
+                    registry,
+                    item_type_path
+                )
+            if item_property is not None:
+                property = bpy.props.CollectionProperty(type=item_property)
+                skein_property_groups[type_path] = type(hash_type_path(capitalize_path(type_path)), (ComponentData,), {
+                    '__annotations__': {
+                        "list_wrapper": property
+                    },
+                    'is_list': True,
+                })
+            else:
+                skein_property_groups[type_path] = type(hash_type_path(capitalize_path(type_path)), (ComponentData,), {
+                    '__annotations__': {
+                        "force_default": "list"
+                    },
+                })
+            try:
+                bpy.utils.register_class(
+                    skein_property_groups[type_path]
+                )
+            except: #fallback to default empty list in case some item type is invalid
+                skein_property_groups[type_path] = type(hash_type_path(capitalize_path(type_path)), (ComponentData,), {
+                    '__annotations__': {
+                        "force_default": "list"
+                    },
+                })
+                bpy.utils.register_class(
+                    skein_property_groups[type_path]
+                )
+
             return skein_property_groups[type_path]
         case "Struct":
             annotations = {}
@@ -230,7 +285,7 @@ def make_property(
                         )
                     else:
                         annotations[key] = property
-
+            
             # add this struct type to the skein_property_groups so it 
             # can be accessed elsewhere by type_path
             t = hash_type_path(capitalize_path(type_path))
@@ -258,9 +313,35 @@ def make_property(
                 )
                 return skein_property_groups[type_path]
             else:
-                if debug:
-                    print("Tuple is unimplemented in make_property for lengths longer than 1 element: ", type_path)
-                return
+                annotations = {}
+                for i, prefix_item in enumerate(component["prefixItems"]):
+                    prefix_item_type_path = prefix_item["type"]["$ref"]
+
+                    property = make_property(
+                        skein_property_groups,
+                        registry,
+                        prefix_item_type_path
+                    )
+
+                    if inspect.isclass(property):
+                        annotations[str(i)] = bpy.props.PointerProperty(
+                            type=property,
+                            override={"LIBRARY_OVERRIDABLE"},
+                        )
+                    else:
+                        annotations[str(i)] = property
+
+                t = hash_type_path(capitalize_path(type_path))
+                skein_property_groups[type_path] = type(t, (ComponentData,), {
+                    '__annotations__': annotations,
+                    'tuple_length': len(component["prefixItems"]),
+                    'is_tuple': True,
+                    'type_override': type_path
+                })
+                bpy.utils.register_class(
+                    skein_property_groups[type_path]
+                )
+                return skein_property_groups[type_path]
         case "TupleStruct":
             # single element tuple struct is a special case
             # because the reflection format treats it as a
@@ -276,12 +357,52 @@ def make_property(
                 )
                 return skein_property_groups[type_path]
             else:
-                if debug:
-                    print("TupleStruct is unimplemented in make_property for lengths longer than 1 element: ", type_path)
-                return
+                annotations = {}
+                for i, prefix_item in enumerate(component["prefixItems"]):
+                    prefix_item_type_path = prefix_item["type"]["$ref"]
+                    property = make_property(
+                        skein_property_groups,
+                        registry,
+                        prefix_item_type_path
+                    )
+                    
+                    if inspect.isclass(property):
+                        annotations[str(i)] = bpy.props.PointerProperty(
+                            type=property,
+                            override={"LIBRARY_OVERRIDABLE"},
+                        )
+                    else:
+                        annotations[str(i)] = property
+
+                t = hash_type_path(capitalize_path(type_path))
+                skein_property_groups[type_path] = type(t, (ComponentData,), {
+                    '__annotations__': annotations,
+                    'tuple_length': len(component["prefixItems"]),
+                    'is_tuple': True,
+                    'type_override': type_path
+                })
+                bpy.utils.register_class(
+                    skein_property_groups[type_path]
+                )
+                return skein_property_groups[type_path]
         case "Value":
-            # print("- component[type]:  ", component["type"])
-            match component["type"]:
+            value_prop = make_value_property(component, type_path, skein_property_groups, debug)
+            if value_prop is None:
+                return
+            skein_property_groups[type_path] = value_prop
+            bpy.utils.register_class(
+                skein_property_groups[type_path]
+            )
+            return skein_property_groups[type_path]
+        # If an exact match is not confirmed, this last case will be used if provided
+        case _:
+            if debug:
+                print("unhandled kind:", component["kind"], "\n  ", type_path)
+            return "Something's wrong with the world"
+
+# creates or gets a property for primitive data types. This does NOT register with bpy.utils.register_class
+def make_value_property(component, type_path, skein_property_groups, debug):
+    match component["type"]:
                 case "boolean":
                     return bpy.props.BoolProperty(
                         override={"LIBRARY_OVERRIDABLE"}
@@ -390,6 +511,7 @@ def make_property(
                         print("component: ", component)
                     match component["typePath"]:
                         case "core::num::NonZeroU8":
+
                             return bpy.props.IntProperty(
                                 min=0,
                                 max=255,
@@ -511,8 +633,3 @@ def make_property(
                     if debug:
                         print("unhandled type: ", component["type"])
                     return
-        # If an exact match is not confirmed, this last case will be used if provided
-        case _:
-            if debug:
-                print("unhandled kind:", component["kind"], "\n  ", type_path)
-            return "Something's wrong with the world"

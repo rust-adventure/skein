@@ -1,14 +1,17 @@
 # get json data from an active_editor
-def get_data_from_active_editor(context, context_key):
+def get_data_from_active_editor(context, context_key, index = None):
     """get the data from a ComponentContainer
     The initial context is typically the ComponentContainer and the 
     typical context_key is the type_path of the Component
     """
     if context_key not in context:
         return {}
-    
+
     # The current PropertyGroup we're working with
     obj = getattr(context, context_key)
+
+    if index is not None: # traverse into arrays, lists etc. if an index is
+        obj = obj[index]  # provided in addition to the context_key
 
     # get the annotations, which will give us all of the field names
     # and their value types for this PropertyGroup
@@ -29,6 +32,30 @@ def get_data_from_active_editor(context, context_key):
     except AttributeError:
         # Not all PropertyGroups have the is_core_option attribute, so
         # this is a common failure case that doesn't actually mean failure
+        pass
+
+    # Handle tuples by merging their fields into an array 
+    # to match what serde json expects them to look like
+    try:
+        if obj.is_tuple:
+            tuple_length = getattr(obj, 'tuple_length')
+            data = []
+            for i in range(tuple_length): 
+                data.append(get_data_from_active_editor(obj, str(i)))
+            return data
+    except AttributeError:
+        # Same as for obj.is_core_option, not having an is_tuple field is not a hard failure
+        pass
+
+    # Handle lists (and sets) by traversing into the inner 'list_wrapper'
+    # CollectionProperty and gathering all values from it into a list
+    try:
+        if obj.is_list:
+            data = []
+            for i, item in enumerate(getattr(obj, "list_wrapper")):
+                data.append(get_data_from_active_editor(obj, "list_wrapper", i))
+            return data
+    except AttributeError:
         pass
 
     # If we have a `skein_enum_index`, then we have the representation

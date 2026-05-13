@@ -1,6 +1,6 @@
 # put json data into an active_editor
 # This is the inverse of `form_to_object`
-def object_to_form(context, context_key, data):
+def object_to_form(context, context_key, data, index = None):
     """insert data into a ComponentContainer
     context is the ComponentContainer
     context_key is the type_path
@@ -11,6 +11,9 @@ def object_to_form(context, context_key, data):
     
     # The current PropertyGroup we're working with
     obj = getattr(context, context_key)
+
+    if index is not None: # traverse into arrays, lists etc. if an index is
+        obj = obj[index]  # provided in addition to the context_key
 
     # get the annotations, which will give us all of the field names
     # and their value types for this PropertyGroup
@@ -34,6 +37,27 @@ def object_to_form(context, context_key, data):
     except AttributeError:
         # Not all PropertyGroups have the is_core_option attribute, so
         # this is a common failure case that doesn't actually mean failure
+        pass
+
+    # Handle tuples by merging their fields into an array 
+    # to match what serde json expects them to look like
+    try:
+        if obj.is_tuple:
+            for i, item in enumerate(data):
+                object_to_form(obj, str(i), item)
+            return
+    except AttributeError:
+        # Same as for obj.is_core_option, not having an is_tuple field is not a hard failure
+        pass
+
+    # Handle lists (and sets) by traversing into the inner 'list_wrapper'
+    # CollectionProperty and gathering all values from it into a list
+    try:
+        if obj.is_list:
+            for i, item in enumerate(data):
+                object_to_form(obj, "list_wrapper", item, i)
+            return
+    except AttributeError:
         pass
 
     # If we have a `skein_enum_index`, then we have the representation
@@ -68,7 +92,6 @@ def object_to_form(context, context_key, data):
     # properly indicating that a Vec3 has x,y,z fields. BUT the serialization
     # is overridden and actually needs to be an array of 3 values
     try:
-        print("obj.type_override", obj.type_override)
         match obj.type_override:
             case "glam::Vec2" | "glam::DVec2" | "glam::I8Vec2" | "glam::U8Vec2" | "glam::I16Vec2" | "glam::U16Vec2" | "glam::IVec2" | "glam::UVec2" | "glam::I64Vec2" | "glam::U64Vec2" | "glam::BVec2":
                 return [

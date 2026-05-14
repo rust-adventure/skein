@@ -95,39 +95,39 @@ def object_to_form(context, context_key, data, index = None):
         match obj.type_override:
             case "glam::Vec2" | "glam::DVec2" | "glam::I8Vec2" | "glam::U8Vec2" | "glam::I16Vec2" | "glam::U16Vec2" | "glam::IVec2" | "glam::UVec2" | "glam::I64Vec2" | "glam::U64Vec2" | "glam::BVec2":
                 return [
-                    setattr(obj, "x", data[0]),
-                    setattr(obj, "y", data[1]),
+                    setattr(obj.x, "inner", data[0]),
+                    setattr(obj.y, "inner", data[1]),
                 ]
             case "glam::Vec3" | "glam::Vec3A" | "glam::DVec3" | "glam::I8Vec3" | "glam::U8Vec3" | "glam::I16Vec3" | "glam::U16Vec3" | "glam::IVec3" | "glam::UVec3" | "glam::I64Vec3" | "glam::U64Vec3" | "glam::BVec3":
                 return [
-                    setattr(obj, "x", data[0]),
-                    setattr(obj, "y", data[1]),
-                    setattr(obj, "z", data[2]),
+                    setattr(obj.x, "inner", data[0]),
+                    setattr(obj.y, "inner", data[1]),
+                    setattr(obj.z, "inner", data[2]),
                 ]
             case "glam::Vec4" | "glam::DVec4" | "glam::I8Vec4" | "glam::U8Vec4" | "glam::I16Vec4" | "glam::U16Vec4" | "glam::IVec4" | "glam::UVec4" | "glam::I64Vec4" | "glam::U64Vec4" | "glam::BVec4":
                 return [
-                    setattr(obj, "x", data[0]),
-                    setattr(obj, "y", data[1]),
-                    setattr(obj, "z", data[2]),
-                    setattr(obj, "w", data[3]),
+                    setattr(obj.x, "inner", data[0]),
+                    setattr(obj.y, "inner", data[1]),
+                    setattr(obj.z, "inner", data[2]),
+                    setattr(obj.w, "inner", data[3]),
                 ]
             case "glam::Quat" | "glam::DQuat":
                 return [
-                    setattr(obj, "x", data[0]),
-                    setattr(obj, "y", data[1]),
-                    setattr(obj, "z", data[2]),
-                    setattr(obj, "w", data[3]),
+                    setattr(obj.x, "inner", data[0]),
+                    setattr(obj.y, "inner", data[1]),
+                    setattr(obj.z, "inner", data[2]),
+                    setattr(obj.w, "inner", data[3]),
                 ]
             case "glam::Mat2" | "glam::DMat2":
                 x_axis = getattr(obj, "x_axis")
                 y_axis = getattr(obj, "y_axis")
                 
                 return [
-                    setattr(x_axis, "x", data[0]),
-                    setattr(x_axis, "y", data[1]),
+                    setattr(x_axis.x, "inner", data[0]),
+                    setattr(x_axis.y, "inner", data[1]),
 
-                    setattr(y_axis, "x", data[2]),
-                    setattr(y_axis, "y", data[3]),
+                    setattr(y_axis.x, "inner", data[2]),
+                    setattr(y_axis.y, "inner", data[3]),
                 ]
 
             case "glam::Mat3" | "glam::Mat3A" | "glam::DMat3":
@@ -136,17 +136,17 @@ def object_to_form(context, context_key, data, index = None):
                 z_axis = getattr(obj, "z_axis")
                 
                 return [
-                    setattr(x_axis, "x", data[0]),
-                    setattr(x_axis, "y", data[1]),
-                    setattr(x_axis, "z", data[2]),
+                    setattr(x_axis.x, "inner", data[0]),
+                    setattr(x_axis.y, "inner", data[1]),
+                    setattr(x_axis.z, "inner", data[2]),
 
-                    setattr(y_axis, "x", data[3]),
-                    setattr(y_axis, "y", data[4]),
-                    setattr(y_axis, "z", data[5]),
+                    setattr(y_axis.x, "inner", data[3]),
+                    setattr(y_axis.y, "inner", data[4]),
+                    setattr(y_axis.z, "inner", data[5]),
 
-                    setattr(z_axis, "x", data[6]),
-                    setattr(z_axis, "y", data[7]),
-                    setattr(z_axis, "z", data[8]),
+                    setattr(z_axis.x, "inner", data[6]),
+                    setattr(z_axis.y, "inner", data[7]),
+                    setattr(z_axis.z, "inner", data[8]),
                 ]
             case "glam::Mat4" | "glam::DMat4":
                 x_axis = getattr(obj, "x_axis")
@@ -155,25 +155,25 @@ def object_to_form(context, context_key, data, index = None):
                 w_axis = getattr(obj, "w_axis")
                 
                 return [
-                    setattr(x_axis, "x", data[0]),
-                    setattr(x_axis, "y", data[1]),
-                    setattr(x_axis, "z", data[2]),
-                    setattr(x_axis, "w", data[3]),
+                    setattr(x_axis.x, "inner", data[0]),
+                    setattr(x_axis.y, "inner", data[1]),
+                    setattr(x_axis.z, "inner", data[2]),
+                    setattr(x_axis.w, "inner", data[3]),
 
-                    setattr(y_axis, "x", data[4]),
-                    setattr(y_axis, "y", data[5]),
-                    setattr(y_axis, "z", data[6]),
-                    setattr(y_axis, "w", data[7]),
+                    setattr(y_axis.x, "inner", data[4]),
+                    setattr(y_axis.y, "inner", data[5]),
+                    setattr(y_axis.z, "inner", data[6]),
+                    setattr(y_axis.w, "inner", data[7]),
 
-                    setattr(z_axis, "x", data[8]),
-                    setattr(z_axis, "y", data[9]),
-                    setattr(z_axis, "z", data[10]),
-                    setattr(z_axis, "w", data[11]),
+                    setattr(z_axis.x, "inner", data[8]),
+                    setattr(z_axis.y, "inner", data[9]),
+                    setattr(z_axis.z, "inner", data[10]),
+                    setattr(z_axis.w, "inner", data[11]),
 
-                    setattr(w_axis, "x", data[12]),
-                    setattr(w_axis, "y", data[13]),
-                    setattr(w_axis, "z", data[14]),
-                    setattr(w_axis, "w", data[15]),
+                    setattr(w_axis.x, "inner", data[12]),
+                    setattr(w_axis.y, "inner", data[13]),
+                    setattr(w_axis.z, "inner", data[14]),
+                    setattr(w_axis.w, "inner", data[15]),
                 ]
   
             case "glam::Affine2" | "glam::DAffine2":
@@ -183,12 +183,12 @@ def object_to_form(context, context_key, data, index = None):
                 translation = getattr(obj, "translation")
                 
                 return [
-                    setattr(x_axis, "x", data[0]),
-                    setattr(x_axis, "y", data[1]),
-                    setattr(y_axis, "x", data[2]),
-                    setattr(y_axis, "y", data[3]),
-                    setattr(translation, "x", data[4]),
-                    setattr(translation, "y", data[5]),
+                    setattr(x_axis.x, "inner", data[0]),
+                    setattr(x_axis.y, "inner", data[1]),
+                    setattr(y_axis.x, "inner", data[2]),
+                    setattr(y_axis.y, "inner", data[3]),
+                    setattr(translation.x, "inner", data[4]),
+                    setattr(translation.y, "inner", data[5]),
                 ]
             case "glam::Affine3A" | "glam::DAffine3":
                 mat = getattr(obj, "matrix3")
@@ -198,18 +198,18 @@ def object_to_form(context, context_key, data, index = None):
                 translation = getattr(obj, "translation")
                 
                 return [
-                    setattr(x_axis, "x", data[0]),
-                    setattr(x_axis, "y", data[1]),
-                    setattr(x_axis, "z", data[2]),
-                    setattr(y_axis, "x", data[3]),
-                    setattr(y_axis, "y", data[4]),
-                    setattr(y_axis, "z", data[5]),
-                    setattr(z_axis, "x", data[6]),
-                    setattr(z_axis, "y", data[7]),
-                    setattr(z_axis, "z", data[8]),
-                    setattr(translation, "x", data[9]),
-                    setattr(translation, "y", data[10]),
-                    setattr(translation, "z", data[11]),
+                    setattr(x_axis.x, "inner", data[0]),
+                    setattr(x_axis.y, "inner", data[1]),
+                    setattr(x_axis.z, "inner", data[2]),
+                    setattr(y_axis.x, "inner", data[3]),
+                    setattr(y_axis.y, "inner", data[4]),
+                    setattr(y_axis.z, "inner", data[5]),
+                    setattr(z_axis.x, "inner", data[6]),
+                    setattr(z_axis.y, "inner", data[7]),
+                    setattr(z_axis.z, "inner", data[8]),
+                    setattr(translation.x, "inner", data[9]),
+                    setattr(translation.y, "inner", data[10]),
+                    setattr(translation.z, "inner", data[11]),
                 ]
             
     except AttributeError:
@@ -225,5 +225,5 @@ def object_to_form(context, context_key, data, index = None):
         if isinstance(data[key], list) or isinstance(data[key], dict) or value.function.__name__ == "PointerProperty":
             object_to_form(getattr(context, context_key), key, data[key])
         else:
-            setattr(obj, key, data[key])
+            setattr(getattr(obj, key), "inner", data[key])
     return

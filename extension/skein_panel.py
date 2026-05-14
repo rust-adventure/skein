@@ -217,7 +217,6 @@ def render_two(layout, context, context_key, execute_mode, property_path = [], l
     if context_key not in context:
         layout.label(text=context_key + " not in context")
         return
-    
 
     # The current PropertyGroup we're working with
     obj = getattr(context, context_key)
@@ -281,6 +280,13 @@ def render_two(layout, context, context_key, execute_mode, property_path = [], l
                     layout.prop(obj, value)
         return
 
+    try:
+        if obj.is_value:
+            layout.prop(obj, "inner", text=f"{property_path[-1]['value']}")
+            return
+    except AttributeError:
+        pass
+
     # attempt to handle any type overrides, like glam::Vec3
     # Currently all of the types here are *also* hardcoded 
     # because their serialization format differs from their
@@ -290,33 +296,33 @@ def render_two(layout, context, context_key, execute_mode, property_path = [], l
     try:
         match obj.type_override:
             case "glam::Vec2" | "glam::DVec2" | "glam::I8Vec2" | "glam::U8Vec2" | "glam::I16Vec2" | "glam::U16Vec2" | "glam::IVec2" | "glam::UVec2" | "glam::I64Vec2" | "glam::U64Vec2" | "glam::BVec2":
-                col = layout.column(align=True)
-                col.label(text=context_key + ":")
-                col.prop(obj, "x")
-                col.prop(obj, "y")
+                row = layout.row(align=True)
+                row.label(text=context_key + ":")
+                row.prop(obj.x, "inner", text="x")
+                row.prop(obj.y, "inner", text="y")
                 return
             case "glam::Vec3" | "glam::Vec3A" | "glam::DVec3" | "glam::I8Vec3" | "glam::U8Vec3" | "glam::I16Vec3" | "glam::U16Vec3" | "glam::IVec3" | "glam::UVec3" | "glam::I64Vec3" | "glam::U64Vec3" | "glam::BVec3":
-                col = layout.column(align=True)
-                col.label(text=context_key + ":")
-                col.prop(obj, "x")
-                col.prop(obj, "y")
-                col.prop(obj, "z")
+                row = layout.row(align=True)
+                row.label(text=context_key + ":")
+                row.prop(obj.x, "inner", text="x")
+                row.prop(obj.y, "inner", text="y")
+                row.prop(obj.z, "inner", text="z")
                 return
             case "glam::Vec4" | "glam::DVec4" | "glam::I8Vec4" | "glam::U8Vec4" | "glam::I16Vec4" | "glam::U16Vec4" | "glam::IVec4" | "glam::UVec4" | "glam::I64Vec4" | "glam::U64Vec4" | "glam::BVec4":
-                col = layout.column(align=True)
-                col.label(text=context_key + ":")
-                col.prop(obj, "x")
-                col.prop(obj, "y")
-                col.prop(obj, "z")
-                col.prop(obj, "w")
+                row = layout.row(align=True)
+                row.label(text=context_key + ":")
+                row.prop(obj.x, "inner", text="x")
+                row.prop(obj.y, "inner", text="y")
+                row.prop(obj.z, "inner", text="z")
+                row.prop(obj.w, "inner", text="w")
                 return
             case "glam::Quat" | "glam::DQuat":
-                col = layout.column(align=True)
-                col.label(text=context_key + ":")
-                col.prop(obj, "x")
-                col.prop(obj, "y")
-                col.prop(obj, "z")
-                col.prop(obj, "w")
+                row = layout.row(align=True)
+                row.label(text=context_key + ":")
+                row.prop(obj.x, "inner", text="x")
+                row.prop(obj.y, "inner", text="y")
+                row.prop(obj.z, "inner", text="z")
+                row.prop(obj.w, "inner", text="w")
                 return
             
     except AttributeError:
@@ -344,13 +350,28 @@ def render_two(layout, context, context_key, execute_mode, property_path = [], l
     except AttributeError:
         pass
 
+
+
     # No more special handling, just take the keys and values that are
     # in the annotations, and plug them into the object
     for key, value in annotations.items():
         sub_property_path = property_path + [{"value": key, "is_index": False}]            
+
+
         try:
             if "PointerProperty" == value.function.__name__:
                 next_type = getattr(obj, key)
+
+                try:
+                    if next_type.is_value:
+                        try:
+                            layout.prop(next_type, "inner", text=key)
+                        except:
+                            pass
+                        continue
+                except AttributeError:
+                    pass
+
                 match next_type.type_override:
                     case "glam::Vec2" | "glam::DVec2" | "glam::I8Vec2" | "glam::U8Vec2" | "glam::I16Vec2" | "glam::U16Vec2" | "glam::IVec2" | "glam::UVec2" | "glam::I64Vec2" | "glam::U64Vec2" | "glam::BVec2":
                         render_two(layout, obj, key, execute_mode, sub_property_path)

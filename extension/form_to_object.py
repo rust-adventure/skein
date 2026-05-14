@@ -90,39 +90,39 @@ def get_data_from_active_editor(context, context_key, index = None):
         match obj.type_override:
             case "glam::Vec2" | "glam::DVec2" | "glam::I8Vec2" | "glam::U8Vec2" | "glam::I16Vec2" | "glam::U16Vec2" | "glam::IVec2" | "glam::UVec2" | "glam::I64Vec2" | "glam::U64Vec2" | "glam::BVec2":
                 return [
-                    getattr(obj, "x"),
-                    getattr(obj, "y"),
+                    getattr(obj.x, "inner"),
+                    getattr(obj.y, "inner"),
                 ]
             case "glam::Vec3" | "glam::Vec3A" | "glam::DVec3" | "glam::I8Vec3" | "glam::U8Vec3" | "glam::I16Vec3" | "glam::U16Vec3" | "glam::IVec3" | "glam::UVec3" | "glam::I64Vec3" | "glam::U64Vec3" | "glam::BVec3":
                 return [
-                    getattr(obj, "x"),
-                    getattr(obj, "y"),
-                    getattr(obj, "z"),   
+                    getattr(obj.x, "inner"),
+                    getattr(obj.y, "inner"),
+                    getattr(obj.z, "inner"),   
                 ]
             case "glam::Vec4" | "glam::DVec4" | "glam::I8Vec4" | "glam::U8Vec4" | "glam::I16Vec4" | "glam::U16Vec4" | "glam::IVec4" | "glam::UVec4" | "glam::I64Vec4" | "glam::U64Vec4" | "glam::BVec4":
                 return [
-                    getattr(obj, "x"),
-                    getattr(obj, "y"),
-                    getattr(obj, "z"),
-                    getattr(obj, "w"),
+                    getattr(obj.x, "inner"),
+                    getattr(obj.y, "inner"),
+                    getattr(obj.z, "inner"),
+                    getattr(obj.w, "inner"),
                 ]
             case "glam::Quat" | "glam::DQuat":
                 return [
-                    getattr(obj, "x"),
-                    getattr(obj, "y"),
-                    getattr(obj, "z"),
-                    getattr(obj, "w"),
+                    getattr(obj.x, "inner"),
+                    getattr(obj.y, "inner"),
+                    getattr(obj.z, "inner"),
+                    getattr(obj.w, "inner"),
                 ]
             case "glam::Mat2" | "glam::DMat2":
                 x_axis = getattr(obj, "x_axis")
                 y_axis = getattr(obj, "y_axis")
                 
                 return [
-                    getattr(x_axis, "x"),
-                    getattr(x_axis, "y"),
+                    getattr(x_axis.x, "inner"),
+                    getattr(x_axis.y, "inner"),
 
-                    getattr(y_axis, "x"),
-                    getattr(y_axis, "y"),
+                    getattr(y_axis.x, "inner"),
+                    getattr(y_axis.y, "inner"),
                 ]
 
             case "glam::Mat3" | "glam::Mat3A" | "glam::DMat3":
@@ -131,17 +131,17 @@ def get_data_from_active_editor(context, context_key, index = None):
                 z_axis = getattr(obj, "z_axis")
                 
                 return [
-                    getattr(x_axis, "x"),
-                    getattr(x_axis, "y"),
-                    getattr(x_axis, "z"),
+                    getattr(x_axis.x, "inner"),
+                    getattr(x_axis.y, "inner"),
+                    getattr(x_axis.z, "inner"),
 
-                    getattr(y_axis, "x"),
-                    getattr(y_axis, "y"),
-                    getattr(y_axis, "z"),
+                    getattr(y_axis.x, "inner"),
+                    getattr(y_axis.y, "inner"),
+                    getattr(y_axis.z, "inner"),
 
-                    getattr(z_axis, "x"),
-                    getattr(z_axis, "y"),
-                    getattr(z_axis, "z"),
+                    getattr(z_axis.x, "inner"),
+                    getattr(z_axis.y, "inner"),
+                    getattr(z_axis.z, "inner"),
                 ]
             case "glam::Mat4" | "glam::DMat4":
                 x_axis = getattr(obj, "x_axis")
@@ -150,25 +150,25 @@ def get_data_from_active_editor(context, context_key, index = None):
                 w_axis = getattr(obj, "w_axis")
                 
                 return [
-                    getattr(x_axis, "x"),
-                    getattr(x_axis, "y"),
-                    getattr(x_axis, "z"),
-                    getattr(x_axis, "w"),
+                    getattr(x_axis.x, "inner"),
+                    getattr(x_axis.y, "inner"),
+                    getattr(x_axis.z, "inner"),
+                    getattr(x_axis.w, "inner"),
 
-                    getattr(y_axis, "x"),
-                    getattr(y_axis, "y"),
-                    getattr(y_axis, "z"),
-                    getattr(y_axis, "w"),
+                    getattr(y_axis.x, "inner"),
+                    getattr(y_axis.y, "inner"),
+                    getattr(y_axis.z, "inner"),
+                    getattr(y_axis.w, "inner"),
 
-                    getattr(z_axis, "x"),
-                    getattr(z_axis, "y"),
-                    getattr(z_axis, "z"),
-                    getattr(z_axis, "w"),
+                    getattr(z_axis.x, "inner"),
+                    getattr(z_axis.y, "inner"),
+                    getattr(z_axis.z, "inner"),
+                    getattr(z_axis.w, "inner"),
 
-                    getattr(w_axis, "x"),
-                    getattr(w_axis, "y"),
-                    getattr(w_axis, "z"),
-                    getattr(w_axis, "w"),
+                    getattr(w_axis.x, "inner"),
+                    getattr(w_axis.y, "inner"),
+                    getattr(w_axis.z, "inner"),
+                    getattr(w_axis.w, "inner"),
                 ]
   
             case "glam::Affine2" | "glam::DAffine2":
@@ -178,12 +178,12 @@ def get_data_from_active_editor(context, context_key, index = None):
                 translation = getattr(obj, "translation")
                 
                 return [
-                    getattr(x_axis, "x"),
-                    getattr(x_axis, "y"),
-                    getattr(y_axis, "x"),
-                    getattr(y_axis, "y"),
-                    getattr(translation, "x"),
-                    getattr(translation, "y"),
+                    getattr(x_axis.x, "inner"),
+                    getattr(x_axis.y, "inner"),
+                    getattr(y_axis.x, "inner"),
+                    getattr(y_axis.y, "inner"),
+                    getattr(translation.x, "inner"),
+                    getattr(translation.y, "inner"),
                 ]
             case "glam::Affine3A" | "glam::DAffine3":
                 mat = getattr(obj, "matrix3")
@@ -193,18 +193,18 @@ def get_data_from_active_editor(context, context_key, index = None):
                 translation = getattr(obj, "translation")
                 
                 return [
-                    getattr(x_axis, "x"),
-                    getattr(x_axis, "y"),
-                    getattr(x_axis, "z"),
-                    getattr(y_axis, "x"),
-                    getattr(y_axis, "y"),
-                    getattr(y_axis, "z"),
-                    getattr(z_axis, "x"),
-                    getattr(z_axis, "y"),
-                    getattr(z_axis, "z"),
-                    getattr(translation, "x"),
-                    getattr(translation, "y"),
-                    getattr(translation, "z"),
+                    getattr(x_axis.x, "inner"),
+                    getattr(x_axis.y, "inner"),
+                    getattr(x_axis.z, "inner"),
+                    getattr(y_axis.x, "inner"),
+                    getattr(y_axis.y, "inner"),
+                    getattr(y_axis.z, "inner"),
+                    getattr(z_axis.x, "inner"),
+                    getattr(z_axis.y, "inner"),
+                    getattr(z_axis.z, "inner"),
+                    getattr(translation.x, "inner"),
+                    getattr(translation.y, "inner"),
+                    getattr(translation.z, "inner"),
                 ]
             
     except AttributeError:
@@ -230,6 +230,15 @@ def get_data_from_active_editor(context, context_key, index = None):
     data = {}
     for key, value in annotations.items():
         if "PointerProperty" == value.function.__name__:
+            try:
+                if getattr(obj, key).is_value:
+                    try:
+                        data[key] = get_data_from_active_editor(value, "inner")
+                    except:
+                        pass
+                    continue
+            except AttributeError as e:
+                pass
             data[key] = get_data_from_active_editor(obj, key)
         else:
             data[key] = getattr(obj, key)

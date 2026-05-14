@@ -189,6 +189,7 @@ def make_property(
                     item_type_path
                 )
             if item_property is not None:
+                print(f"{item_type_path}: {item_property} is class: {inspect.isclass(item_property)}")
                 property = bpy.props.CollectionProperty(type=item_property)
                 skein_property_groups[type_path] = type(hash_type_path(capitalize_path(type_path)), (ComponentData,), {
                     '__annotations__': {
@@ -207,6 +208,7 @@ def make_property(
                     skein_property_groups[type_path]
                 )
             except: #fallback to default empty list in case some item type is invalid
+                print(f"registration failed for item_type: {item_type_path}")
                 skein_property_groups[type_path] = type(hash_type_path(capitalize_path(type_path)), (ComponentData,), {
                     '__annotations__': {
                         "force_default": "list"
@@ -263,7 +265,6 @@ def make_property(
                 bpy.utils.register_class(
                     skein_property_groups[type_path]
                 )
-
             return skein_property_groups[type_path]
         case "Struct":
             annotations = {}
@@ -386,12 +387,20 @@ def make_property(
                 )
                 return skein_property_groups[type_path]
         case "Value":
+            annotations = {}
             value_prop = make_value_property(component, type_path, skein_property_groups, debug)
             if value_prop is None:
                 return
-            skein_property_groups[type_path] = value_prop
+            t = hash_type_path(capitalize_path(type_path))
+            annotations['inner'] = value_prop
+            value_wrapper = type(t, (ComponentData,), {
+                    '__annotations__': annotations,
+                    'is_value': True,
+                    'type_override': type_path
+                })
+            skein_property_groups[type_path] = value_wrapper
             bpy.utils.register_class(
-                skein_property_groups[type_path]
+                skein_property_groups[type_path]    
             )
             return skein_property_groups[type_path]
         # If an exact match is not confirmed, this last case will be used if provided

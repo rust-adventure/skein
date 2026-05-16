@@ -36,10 +36,9 @@ def hash_type_path(data):
 # cause classes to fail to register
 # TODO: could this be a getter on ComponentContainer?
 def hash_over_64(type_path):
-    maybe_hashed_type_path = type_path
-    if len(type_path) > 63:
-        maybe_hashed_type_path = hash_type_path(type_path)
-    
+    maybe_hashed_type_path = capitalize_path(type_path)
+    if len(maybe_hashed_type_path) > 63:
+        maybe_hashed_type_path = hash_type_path(maybe_hashed_type_path)
     return maybe_hashed_type_path
 
 def make_property(
@@ -155,14 +154,14 @@ def make_property(
                     if "core::option::Option<" in type_path and component["modulePath"] == "core::option" and "Option<" in component["shortPath"]:
                         # add this struct type to the skein_property_groups so it 
                         # can be accessed elsewhere by type_path
-                        skein_property_groups[type_path] = type(hash_type_path(capitalize_path(type_path)), (ComponentData,), {
+                        skein_property_groups[type_path] = type(hash_over_64(type_path), (ComponentData,), {
                             '__annotations__': annotations,
                             "is_core_option": True
                         })
                     else:
                         # add this struct type to the skein_property_groups so it 
                         # can be accessed elsewhere by type_path
-                        skein_property_groups[type_path] = type(hash_type_path(capitalize_path(type_path)), (ComponentData,), {
+                        skein_property_groups[type_path] = type(hash_over_64(type_path), (ComponentData,), {
                             '__annotations__': annotations,
                         })
 
@@ -189,16 +188,15 @@ def make_property(
                     item_type_path
                 )
             if item_property is not None:
-                print(f"{item_type_path}: {item_property} is class: {inspect.isclass(item_property)}")
                 property = bpy.props.CollectionProperty(type=item_property)
-                skein_property_groups[type_path] = type(hash_type_path(capitalize_path(type_path)), (ComponentData,), {
+                skein_property_groups[type_path] = type(hash_over_64(type_path), (ComponentData,), {
                     '__annotations__': {
                         "list_wrapper": property
                     },
                     'is_list': True,
                 })
             else:
-                skein_property_groups[type_path] = type(hash_type_path(capitalize_path(type_path)), (ComponentData,), {
+                skein_property_groups[type_path] = type(hash_over_64(type_path), (ComponentData,), {
                     '__annotations__': {
                         "force_default": "list"
                     },
@@ -208,8 +206,9 @@ def make_property(
                     skein_property_groups[type_path]
                 )
             except: #fallback to default empty list in case some item type is invalid
-                print(f"registration failed for item_type: {item_type_path}")
-                skein_property_groups[type_path] = type(hash_type_path(capitalize_path(type_path)), (ComponentData,), {
+                if debug:
+                    print(f"registration failed for item_type: {item_type_path}")
+                skein_property_groups[type_path] = type(hash_over_64(type_path), (ComponentData,), {
                     '__annotations__': {
                         "force_default": "list"
                     },
@@ -219,7 +218,7 @@ def make_property(
                 )
             return skein_property_groups[type_path]
         case "Map":
-            skein_property_groups[type_path] = type(hash_type_path(capitalize_path(type_path)), (ComponentData,), {
+            skein_property_groups[type_path] = type(hash_over_64(type_path), (ComponentData,), {
                 '__annotations__': {},
                 # force_default bypasses recursion and forces
                 # an empty data structure in the output
@@ -240,14 +239,14 @@ def make_property(
                 )
             if item_property is not None:
                 property = bpy.props.CollectionProperty(type=item_property)
-                skein_property_groups[type_path] = type(hash_type_path(capitalize_path(type_path)), (ComponentData,), {
+                skein_property_groups[type_path] = type(hash_over_64(type_path), (ComponentData,), {
                     '__annotations__': {
                         "list_wrapper": property
                     },
                     'is_list': True,
                 })
             else:
-                skein_property_groups[type_path] = type(hash_type_path(capitalize_path(type_path)), (ComponentData,), {
+                skein_property_groups[type_path] = type(hash_over_64(type_path), (ComponentData,), {
                     '__annotations__': {
                         "force_default": "list"
                     },
@@ -257,7 +256,7 @@ def make_property(
                     skein_property_groups[type_path]
                 )
             except: #fallback to default empty list in case some item type is invalid
-                skein_property_groups[type_path] = type(hash_type_path(capitalize_path(type_path)), (ComponentData,), {
+                skein_property_groups[type_path] = type(hash_over_64(type_path), (ComponentData,), {
                     '__annotations__': {
                         "force_default": "list"
                     },
@@ -289,7 +288,7 @@ def make_property(
             
             # add this struct type to the skein_property_groups so it 
             # can be accessed elsewhere by type_path
-            t = hash_type_path(capitalize_path(type_path))
+            t = hash_over_64(type_path)
             skein_property_groups[type_path] = type(t, (ComponentData,), {
                 '__annotations__': annotations,
                 'type_override': type_path
@@ -332,7 +331,7 @@ def make_property(
                     else:
                         annotations[str(i)] = property
 
-                t = hash_type_path(capitalize_path(type_path))
+                t = hash_over_64(type_path)
                 skein_property_groups[type_path] = type(t, (ComponentData,), {
                     '__annotations__': annotations,
                     'tuple_length': len(component["prefixItems"]),
@@ -375,7 +374,7 @@ def make_property(
                     else:
                         annotations[str(i)] = property
 
-                t = hash_type_path(capitalize_path(type_path))
+                t = hash_over_64(type_path)
                 skein_property_groups[type_path] = type(t, (ComponentData,), {
                     '__annotations__': annotations,
                     'tuple_length': len(component["prefixItems"]),
@@ -391,7 +390,7 @@ def make_property(
             value_prop = make_value_property(component, type_path, skein_property_groups, debug)
             if value_prop is None:
                 return
-            t = hash_type_path(capitalize_path(type_path))
+            t = hash_over_64(type_path)
             annotations['inner'] = value_prop
             value_wrapper = type(t, (ComponentData,), {
                     '__annotations__': annotations,

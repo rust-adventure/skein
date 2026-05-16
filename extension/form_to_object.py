@@ -233,13 +233,15 @@ def get_data_from_active_editor(context, context_key, index = None):
             try:
                 if getattr(obj, key).is_value:
                     try:
-                        data[key] = get_data_from_active_editor(value, "inner")
-                    except:
+                        data[key] = getattr(obj, key).inner
+                    except Exception as e:
                         pass
                     continue
             except AttributeError as e:
                 pass
+            print(obj)
             data[key] = get_data_from_active_editor(obj, key)
         else:
+            print(obj)
             data[key] = getattr(obj, key)
     return data

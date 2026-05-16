@@ -28,7 +28,7 @@ def get_data_from_active_editor(context, context_key, index = None):
                     if "PointerProperty" == annotations["Some"].function.__name__:
                         return get_data_from_active_editor(obj, "Some")
                     else:
-                        return getattr(obj, "Some")
+                        return getattr(obj, "Some").inner
     except AttributeError:
         # Not all PropertyGroups have the is_core_option attribute, so
         # this is a common failure case that doesn't actually mean failure
@@ -77,7 +77,7 @@ def get_data_from_active_editor(context, context_key, index = None):
                     }
                 else:
                     return { 
-                        value: getattr(obj, value)
+                        value: getattr(obj, value).inner
                     }
 
     # attempt to handle any type overrides, like glam::Vec3
@@ -224,6 +224,12 @@ def get_data_from_active_editor(context, context_key, index = None):
                     return []
     except AttributeError:
         pass
+    
+    try:
+        if obj.is_value:
+            return obj.inner
+    except AttributeError:
+        pass
 
     # No more special handling, just take the keys and values that are
     # in the annotations, and plug them into the object
@@ -239,9 +245,11 @@ def get_data_from_active_editor(context, context_key, index = None):
                     continue
             except AttributeError as e:
                 pass
-            print(obj)
             data[key] = get_data_from_active_editor(obj, key)
         else:
-            print(obj)
-            data[key] = getattr(obj, key)
+            try:
+                if getattr(obj, key).is_value:
+                    data[key] = getattr(obj, key).inner
+            except:
+                data[key] = getattr(obj, key)
     return data

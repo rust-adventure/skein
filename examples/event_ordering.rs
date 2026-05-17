@@ -2,8 +2,8 @@
 //! added before a SceneInstanceReady is handled
 use bevy::prelude::*;
 use bevy_log::tracing::instrument;
-use bevy_scene::SceneInstanceReady;
 use bevy_skein::SkeinPlugin;
+use bevy_world_serialization::WorldInstanceReady;
 use serde::{Deserialize, Serialize};
 
 fn main() {
@@ -16,19 +16,13 @@ fn main() {
         .run();
 }
 
-#[instrument(skip(
-    on_scene_instance_ready,
-    children,
-    levels
-))]
-fn on_scene_instance_ready(
-    on_scene_instance_ready: On<SceneInstanceReady>,
+#[instrument(skip(ready, children, levels))]
+fn on_world_instance_ready(
+    ready: On<WorldInstanceReady>,
     children: Query<&Children>,
     levels: Query<&Character>,
 ) {
-    for entity in children
-        .iter_descendants(on_scene_instance_ready.entity)
-    {
+    for entity in children.iter_descendants(ready.entity) {
         let Ok(level) = levels.get(entity) else {
             continue;
         };
@@ -55,16 +49,16 @@ fn setup(
     ));
 
     commands.spawn(DirectionalLight {
-        shadows_enabled: true,
+        shadow_maps_enabled: true,
         ..default()
     });
 
     commands
-        .spawn(SceneRoot(
+        .spawn(WorldAssetRoot(
             asset_server.load(
                 GltfAssetLabel::Scene(0)
                     .from_asset("event_ordering.gltf"),
             ),
         ))
-        .observe(on_scene_instance_ready);
+        .observe(on_world_instance_ready);
 }

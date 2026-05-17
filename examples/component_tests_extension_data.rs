@@ -5,8 +5,8 @@
 //! point light with extension data on basically
 //! every object.
 use bevy::prelude::*;
-use bevy_scene::SceneInstanceReady;
 use bevy_skein::{SkeinAppExt, SkeinPlugin};
+use bevy_world_serialization::WorldInstanceReady;
 use test_components::*;
 
 fn main() {
@@ -29,7 +29,7 @@ fn main() {
         ))
         .add_systems(Startup, setup)
         .add_observer(
-            |ready: On<SceneInstanceReady>,
+            |ready: On<WorldInstanceReady>,
              children: Query<&Children>,
              query: Query<(
                 Option<&TeamMember>,
@@ -57,7 +57,7 @@ fn setup(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
 ) {
-    commands.spawn(SceneRoot(asset_server.load(
+    commands.spawn(WorldAssetRoot(asset_server.load(
         GltfAssetLabel::Scene(0).from_asset(
             "test_extension_data/bevy_skein_extension_usage.gltf",
         ),

@@ -67,8 +67,9 @@ def draw_export(context, layout):
 
     props = bpy.context.scene.skein_extension_properties
 
-    header.prop(props, 'enabled')
+    header.prop(props, 'enabled', text="")
     if body != None:
+        header.label(text="Skein")
         body.prop(props, 'extras')
         body.prop(props, 'extensions')
 

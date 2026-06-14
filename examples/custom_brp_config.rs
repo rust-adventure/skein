@@ -44,13 +44,13 @@ fn setup(
 
     commands.spawn((
         PointLight {
-            shadows_enabled: true,
+            shadow_maps_enabled: true,
             ..default()
         },
         Transform::from_xyz(4.0, 8.0, 4.0),
     ));
 
-    commands.spawn(SceneRoot(asset_server.load(
+    commands.spawn(WorldAssetRoot(asset_server.load(
         GltfAssetLabel::Scene(0).from_asset(
             "components_on_bone/components_on_bone.gltf",
         ),

@@ -18,7 +18,8 @@ use bevy_gltf::{
     GltfExtras, GltfMaterialExtras, GltfMeshExtras,
     GltfSceneExtras,
     extensions::{
-        GltfExtensionHandler, GltfExtensionHandlers,
+        ErasedGltfExtensionHandler, GltfExtensionHandler,
+        GltfExtensionHandlers,
     },
 };
 use bevy_log::{error, trace};
@@ -390,7 +391,9 @@ struct GltfExtensionHandlerSkein {
 }
 
 impl GltfExtensionHandler for GltfExtensionHandlerSkein {
-    fn dyn_clone(&self) -> Box<dyn GltfExtensionHandler> {
+    fn dyn_clone(
+        &self,
+    ) -> Box<dyn ErasedGltfExtensionHandler> {
         Box::new((*self).clone())
     }
 
@@ -401,6 +404,7 @@ impl GltfExtensionHandler for GltfExtensionHandlerSkein {
         mesh: &gltf::Mesh,
         material: &gltf::Material,
         entity: &mut EntityWorldMut,
+        _material_label: &str,
     ) {
         if let Some(value) =
             primitive.extension_value(EXTENSION)

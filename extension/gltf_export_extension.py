@@ -11,7 +11,6 @@ glTF_extension_name = "BEVY_skein"
 
 # is this extension required to view the glTF?
 extension_is_required = False
-
 LIGHTS = {
     "POINT": "point",
     "SUN": "directional",
@@ -68,8 +67,8 @@ def draw_export(context, layout):
     props = bpy.context.scene.skein_extension_properties
 
     header.prop(props, 'enabled', text="")
+    header.label(text="Skein")
     if body != None:
-        header.label(text="Skein")
         body.prop(props, 'extras')
         body.prop(props, 'extensions')
 
@@ -86,8 +85,8 @@ class glTF2ExportUserExtension:
         self.Extension = Extension
         self.properties = bpy.context.scene.skein_extension_properties
     
-    # def passthrough_extension_data(self, passthrough_extensions, gltf2_plan, export_settings):
-    #     passthrough_extensions.append(glTF_extension_name)
+    def passthrough_extension_data(self, passthrough_extensions, gltf2_plan, export_settings):
+        passthrough_extensions.append(glTF_extension_name)
 
     def gather_node_hook(self, gltf2_object, blender_object, export_settings):
         # Note: If you are using Collection Exporters, you may want to restrict the export for some collections

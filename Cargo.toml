@@ -17,18 +17,18 @@ exclude = [
     "Justfile",
     "DESIGN.md",
 ]
-rust-version = "1.89.0"
+rust-version = "1.95.0"
 
 [dependencies]
-bevy_app = "0.19.0-rc.0"
-bevy_log = "0.19.0-rc.0"
-bevy_ecs = "0.19.0-rc.0"
-bevy_gltf = "0.19.0-rc.0"
-bevy_reflect = "0.19.0-rc.0"
-bevy_world_serialization = "0.19.0-rc.0"
-bevy_platform = "0.19.0-rc.0"
-bevy_asset = "0.19.0-rc.0"
-bevy_tasks = "0.19.0-rc.0"
+bevy_app = "0.19.0"
+bevy_log = "0.19.0"
+bevy_ecs = "0.19.0"
+bevy_gltf = "0.19.0"
+bevy_reflect = "0.19.0"
+bevy_world_serialization = "0.19.0"
+bevy_platform = "0.19.0"
+bevy_asset = "0.19.0"
+bevy_tasks = "0.19.0"
 serde = "1.0"
 serde_json = "1.0"
 tracing = "0.1"
@@ -36,11 +36,11 @@ gltf = "1.4.0"
 
 # wasm can't support brp, so disable the dependency entirely
 [target.'cfg(not(target_family = "wasm"))'.dependencies]
-bevy_remote = { version = "0.19.0-rc.0", optional = true }
+bevy_remote = { version = "0.19.0", optional = true }
 
 
 [dev-dependencies]
-bevy = { version = "0.19.0-rc.0" }
+bevy = { version = "0.19.0" }
 
 serde = { version = "1.0", features = ["derive"] }
 test-components = { path = "./test-components" }

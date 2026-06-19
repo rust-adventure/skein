@@ -1,4 +1,6 @@
-use bevy::{prelude::*, scene::SceneInstanceReady};
+use bevy::{
+    prelude::*, world_serialization::WorldInstanceReady,
+};
 use bevy_skein::SkeinPlugin;
 
 fn main() {
@@ -9,7 +11,7 @@ fn main() {
         ))
         .add_observer(
             // log the component from the gltf spawn
-            |ready: On<SceneInstanceReady>,
+            |ready: On<WorldInstanceReady>,
              children: Query<&Children>,
              characters: Query<&Character>| {
                 for entity in
@@ -24,7 +26,7 @@ fn main() {
                 }
             },
         )
-        .add_systems(Startup, startup)
+        .add_systems(Startup, startup.spawn())
         .run();
 }
 
@@ -35,12 +37,8 @@ struct Character {
     name: String,
 }
 
-fn startup(
-    mut commands: Commands,
-    asset_server: Res<AssetServer>,
-) {
-    commands.spawn(SceneRoot(asset_server.load(
-        // Change this to your exported gltf file
-        GltfAssetLabel::Scene(0).from_asset("demo.gltf"),
-    )));
+fn startup() -> impl Scene {
+    bsn! {
+        WorldAssetRoot("demo.gltf#Scene0")
+    }
 }

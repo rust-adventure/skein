@@ -1,4 +1,4 @@
-use bevy_ecs::system::Resource;
+use bevy_ecs::resource::Resource;
 use cinnog::expect_resource;
 use leptos::prelude::*;
 
@@ -13,7 +13,7 @@ pub struct NavLink {
     pub href: &'static str,
 }
 
-#[derive(Resource, Clone)]
+#[derive(bevy_ecs::resource::Resource, Clone)]
 pub struct NavigationItems(pub Vec<NavItem>);
 
 const COLORS: [&str; 9] = [

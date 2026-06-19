@@ -11,7 +11,7 @@ leptos_meta.workspace = true
 tracing.workspace = true
 bevy_ecs.workspace = true
 serde.workspace = true
-leptos-use = "0.15.7"
+leptos-use = "0.18"
 semver.workspace = true
 
 leptos_router = { workspace = true, features = ["nightly"] }

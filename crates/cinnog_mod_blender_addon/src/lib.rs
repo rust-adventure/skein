@@ -3,9 +3,7 @@ use bevy_ecs::{
     component::Component,
     entity::Entity,
     prelude::{Commands, Query, Resource},
-    schedule::{
-        IntoSystemConfigs, IntoSystemSetConfigs, SystemSet,
-    },
+    schedule::{IntoScheduleConfigs, SystemSet},
     system::Res,
 };
 use cinnog::Ingest;

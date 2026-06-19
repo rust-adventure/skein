@@ -3,9 +3,7 @@ use bevy_ecs::{
     component::Component,
     entity::Entity,
     prelude::{Commands, Query, Resource},
-    schedule::{
-        IntoSystemConfigs, IntoSystemSetConfigs, SystemSet,
-    },
+    schedule::{IntoScheduleConfigs, SystemSet},
     system::Res,
 };
 use cinnog::Ingest;
@@ -178,11 +176,13 @@ fn read_markdown<
 ) -> io::Result<Entity> {
     let file = read_to_string(path)?;
     let matter = Matter::<YAML>::new();
-    let markdown = matter.parse(&file);
+    let markdown: gray_matter::ParsedEntity =
+        matter.parse(&file).unwrap();
     let mut file = commands.spawn(());
     if let Some(front_matter) = markdown.data {
-        let parsed_front_matter =
-            front_matter.deserialize::<FrontMatter>()?;
+        let parsed_front_matter = front_matter
+            .deserialize::<FrontMatter>()
+            .unwrap();
         parsed_front_matter.ingest_path(&mut file, path);
         parsed_front_matter.ingest(&mut file);
     }

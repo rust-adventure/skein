@@ -3,23 +3,23 @@ resolver = "2"
 members = ["app", "frontend", "generator", "crates/*"]
 
 [workspace.dependencies]
-cinnog = { version = "0.4", features = ["ron", "markdown"] }
+cinnog = { version = "0.6", features = ["ron", "markdown"] }
 #cinnog = { path = "../cinnog", features = ["ron", "markdown"] }
 
-leptos = { version = "0.7.0", features = ["nightly", "islands"] }
-leptos_meta = { version = "0.7.0" }
-leptos_router = { version = "0.7.0", features = ["nightly"] }
+leptos = { version = "0.8", features = ["nightly", "islands"] }
+leptos_meta = { version = "0.8" }
+leptos_router = { version = "0.8", features = ["nightly"] }
 #leptos = { path = "../leptos/leptos", features = ["nightly", "islands"] }
 #leptos_meta = { path = "../leptos/meta", features = ["nightly"] }
 #leptos_router = { path = "../leptos/router", features = ["nightly"] }
 
 # Pinned to stay compatible with cargo-leptos
-wasm-bindgen = "=0.2.105"
+wasm-bindgen = "=0.2.125"
 console_error_panic_hook = "0.1"
-tracing = "0.1.40"
+tracing = "0.1"
 
-bevy_ecs = { version = "0.15" }
-bevy_app = { version = "0.15" }
+bevy_ecs = { version = "0.18" }
+bevy_app = { version = "0.18" }
 
 semver = { version = "1", features = ["serde"] }
 serde = { version = "1", features = ["derive"] }

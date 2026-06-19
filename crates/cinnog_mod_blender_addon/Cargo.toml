@@ -8,9 +8,9 @@ cinnog.workspace = true
 bevy_ecs.workspace = true
 bevy_app.workspace = true
 serde.workspace = true
-toml = { version = "0.8.20", optional = true }
+toml = { version = "1.1.2+spec-1.1.0", optional = true }
 semver = { workspace = true, features = ["serde"] }
-zip = { version = "2.6.1", optional = true }
+zip = { version = "8", optional = true }
 walkdir = { version = "2", optional = true }
 
 [features]

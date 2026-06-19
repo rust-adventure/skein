@@ -1492,7 +1492,7 @@ dependencies = [
 
 [[package]]
 name = "bevy_skein"
-version = "0.6.0-rc.1"
+version = "0.6.0"
 dependencies = [
  "bevy",
  "bevy_app",

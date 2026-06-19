@@ -62,18 +62,20 @@ All versions of `bevy_skein` are currently compatible with all versions of the `
 
 | Bevy version | `bevy_skein` version |
 | :----------- | :------------------- |
-| `0.18`       | `0.5`.               |
+| `0.19`       | `0.6`                |
+| `0.18`       | `0.5`                |
 | `0.17`       | `0.3-4`              |
 | `0.16`       | `0.2`                |
 | `0.15`       | `0.1`                |
 
 The skein addon current release and main branch support as far back as 4.2. Upgrading Blender to new versions requires updating the addon to at least the minimum version here as well.
 
-| Blender version  | `skein` minimum addon version |
-| :--------------- | :---------------------------- |
-| `>=5.0`          | `0.1.13`                      |
-| `>=4.2 && < 5.0` | `0.1.0`                       |
-| `>=4.2`          | branch `main`                 |
+| Blender version  | `skein` minimum addon version | notes                                                                         |
+| :--------------- | :---------------------------- | ----------------------------------------------------------------------------- |
+| `>=5.2`          | `0.1.16`                      | upstream glTF exporter has critical bug fixes for `extensions` export feature |
+| `>=5.0`          | `0.1.13`                      |                                                                               |
+| `>=4.2 && < 5.0` | `0.1.0`                       |                                                                               |
+| `>=4.2`          | branch `main`                 |                                                                               |
 
 ## Why is it named Skein?
 

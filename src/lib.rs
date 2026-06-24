@@ -122,8 +122,8 @@ impl Plugin for SkeinPlugin {
                 bevy_remote::http::DEFAULT_PORT
             );
             app.add_plugins((
-                // We only add the defaults. If a user wants 
-                // a different configuration, they can set 
+                // We only add the defaults. If a user wants
+                // a different configuration, they can set
                 // the plugins up themselves.
                 bevy_remote::RemotePlugin::default(),
                 bevy_remote::http::RemoteHttpPlugin::default(),
@@ -359,11 +359,7 @@ fn skein_processing(
             let type_registry = type_registry.read();
 
             // deserialize
-            let reflect_deserializer =
-                ReflectDeserializer::new(&type_registry);
-            let reflect_value = match reflect_deserializer
-                .deserialize(json_component)
-            {
+            let reflect_value = match try_reflect_deserialize(&type_registry, json_component) {
                 Ok(value) => value,
                 Err(err) => {
                     error!(
@@ -383,6 +379,42 @@ fn skein_processing(
                 .insert_reflect(reflect_value);
         }
     }
+}
+
+/// Detect if the given value is the form:
+///
+/// ```json
+/// { "type_path": {} }
+/// ```
+/// If so, return that "type_path".
+///
+/// (see [ReflectDeserializer] `Input` docs for guarantee of this)
+
+fn get_type_path_if_empty_object<'a>(json_component: &'a Value) -> Option<&'a String> {
+    if let Some(object) = json_component.as_object()
+    && object.len() == 1
+    && let Some((type_path, data)) = object.iter().next()
+    && let Some(inner_object) = data.as_object()
+    && inner_object.is_empty() {
+        Some(type_path)
+    } else {
+        None
+    }
+}
+
+/// Deserialize the `json_component` using `type_registry` to deserialize.
+fn try_reflect_deserialize(type_registry: &TypeRegistry, json_component: &Value) -> Result<Box<dyn PartialReflect>, serde_json::Error> {
+    ReflectDeserializer::new(&type_registry)
+        .deserialize(json_component)
+        .or_else(|err| get_type_path_if_empty_object(json_component)
+            .map_or_else(|| Err(err),
+            |type_key| {
+                // OK, try to re-deserialize as unit struct.
+                let mut empty = serde_json::Map::new();
+                empty.insert(type_key.clone(), Value::Null);
+                ReflectDeserializer::new(&type_registry).deserialize(&Value::Object(empty))
+            })
+        )
 }
 
 #[derive(Default, Clone)]
@@ -556,10 +588,7 @@ fn insert_components(
     // insert it
     for json_component in skein.iter() {
         // deserialize
-        let reflect_deserializer =
-            ReflectDeserializer::new(&type_registry);
-        let reflect_value = match reflect_deserializer
-            .deserialize(json_component)
+        let reflect_value = match try_reflect_deserialize(type_registry, json_component)
         {
             Ok(value) => value,
             Err(err) => {

@@ -49,4 +49,4 @@ commands
 ## Caveats
 
 If a Component uses a custom serde Serialization, that is not represented in the type registry metadata.
-This is also true for types like Vec3 in the `glam` crate, but since these types are so important, they are implemented manually.
+This is also true for types like `Vec3` in the `glam` crate, but since these types are so important, they are implemented manually.

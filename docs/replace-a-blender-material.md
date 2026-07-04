@@ -103,7 +103,7 @@ fn setup(
 }
 ```
 
-## Trobuleshooting: UVs
+## Troubleshooting: UVs
 
 > [!CAUTION]  
 > Any mesh that hasn't been UV unwrapped may seem like it isn't working. This shows up in .gltf files as a missing `TEXCOORD_0` field. `Suzanne` in the following example glTF data has it, and `rock` does not. This is something you can check for in Blender.

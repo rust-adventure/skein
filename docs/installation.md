@@ -44,13 +44,13 @@ The only thing you need to do is set up the plugin.
 **Skein** operates on the `GltfExtras` that the Blender addon sets up in the .gltf/.glb file, so spawning a scene from a `.gltf` exported with the addon data will "just work".
 
 ```rust
-commands.spawn(SceneRoot(asset_server.load(
+commands.spawn(WorldAssetRoot(asset_server.load(
     GltfAssetLabel::Scene(0).from_asset("my_export.gltf"),
 )));
 ```
 
 > [!NOTE]  
-> Using `GltfAssetLabel` with `SceneRoot` is a quick way to spawn a scene, but you may want to load and access the `Gltf` asset or use `SceneSpawner` for more control.
+> Using a path in `bsn!` or `GltfAssetLabel` with `WorldAssetRoot` is a quick way to spawn a scene, but you may want to load and access the `Gltf` asset or use `SceneSpawner` for more control.
 
 ---
 

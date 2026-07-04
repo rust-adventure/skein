@@ -24,9 +24,9 @@ If you want to look at the output, then pick `.gltf`. For production you'll want
 
 ### The exported data
 
-Skein supports two export modes currently.
+Skein supports two export modes currently, which are configurable when exporting.
 The Extension data is the modern form, and the Extras data is the older form.
-Utilizing Extension data in Bevy was not possible until 0.18, so the older Extras form is still supported but you should prefer the Extension approach.
+Utilizing Extension data in Bevy was not possible until 0.18, and Blender's glTF exporter had a bug until 5.2, so the older Extras form is still supported but you should prefer the Extension approach if you can update to Bevy 0.18+ and Blender 5.2+.
 
 Assuming we inserted a Component named `Character` structured like this
 

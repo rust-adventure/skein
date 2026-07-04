@@ -6,6 +6,20 @@ opengraph_image: /opengraph/opengraph-using-sub-assets.jpg
 
 There are many elements of a glTF file including Scenes, Nodes, Meshes, Materials, Skins, Nodes, AnimationClips, etc. With appropriate care, these elements can be used to build up specific hierarchies for niche use cases.
 
+## Basics
+
+If you want to access a Bevy `Mesh` (which is a glTF `Primitive`) and a `StandardMateria` directly, you can do that using the sub-asset labels as such. Since you are accessing the `Mesh` and `StandardMaterial` directly, there is no additional data of any kind (which includes _no component data_).
+
+```rust
+bsn! {
+  Mesh3d("stuff.gltf#Mesh0/Primitive0")
+  MeshMaterial3d::<StandardMaterial>("stuff.gltf#Material0/std")
+  Transform
+}
+```
+
+Alternatively, you can use Bevy's `Gltf` struct and the `extras` export option.
+
 ## Bevy's Gltf struct
 
 Bevy's [`Gltf`](https://docs.rs/bevy/latest/bevy/gltf/struct.Gltf.html) struct contains the processed glTF data, with and without names.

@@ -8,15 +8,15 @@ When Components are inserted onto an Entity, such as the ones we've defined in B
 
 ## Hooks
 
-Bevy's [Component Hooks](https://docs.rs/bevy/0.16.0-rc.3/bevy/prelude/trait.Component.html#adding-components-hooks) run basically immediately when a Component is added to an `Entity`. It is possible to define at least the following hooks for a Component:
+Bevy's [Component Hooks](https://docs.rs/bevy/0.19.0/bevy/prelude/trait.Component.html#adding-components-hooks) run basically immediately when a Component is added to an `Entity`. It is possible to define at least the following hooks for a Component:
 
 - `on_add`
 - `on_insert`
 - `on_replace`
-- `on_remove`
+- `on_discard`
 - `on_despawn`
 
-A practial use case for hooks is shown in [Replace a Blender Material](/docs/replace-a-blender-material).
+A practical use case for hooks is shown in [Replace a Blender Material](/docs/replace-a-blender-material).
 
 Defining a hook can be done via attribute macro:
 
@@ -49,15 +49,15 @@ fn on_add_use_force_field_material(
 
 ## Observers
 
-[Observers](https://docs.rs/bevy/0.16.0-rc.3/bevy/ecs/observer/struct.Observer.html) can react to more events than hooks and are thus more flexible. Observers run just after Hooks.
+[Observers](https://docs.rs/bevy/0.19.0/bevy/ecs/observer/struct.Observer.html) can react to more events than hooks and are thus more flexible. Observers run just after Hooks.
 
 Similar to Hooks, Observers can trigger on many of the same events:
 
-- [`OnAdd`](https://docs.rs/bevy/0.16.0-rc.3/bevy/ecs/prelude/struct.OnAdd.html)
-- [`OnInsert`](https://docs.rs/bevy/0.16.0-rc.3/bevy/ecs/prelude/struct.OnInsert.html)
-- [`OnRemove`](https://docs.rs/bevy/0.16.0-rc.3/bevy/ecs/prelude/struct.OnRemove.html)
-- [`OnReplace`](https://docs.rs/bevy/0.16.0-rc.3/bevy/ecs/prelude/struct.OnReplace.html)
-- [`OnDespawn`](https://docs.rs/bevy/0.16.0-rc.3/bevy/ecs/world/struct.OnDespawn.html)
+- [`OnAdd`](https://docs.rs/bevy/0.19.0/bevy/ecs/prelude/struct.OnAdd.html)
+- [`OnInsert`](https://docs.rs/bevy/0.19.0/bevy/ecs/prelude/struct.OnInsert.html)
+- [`OnDiscard`](https://docs.rs/bevy/0.19.0/bevy/ecs/prelude/struct.OnDiscard.html)
+- [`OnReplace`](https://docs.rs/bevy/0.19.0/bevy/ecs/prelude/struct.OnReplace.html)
+- [`OnDespawn`](https://docs.rs/bevy/0.19.0/bevy/ecs/world/struct.OnDespawn.html)
 
 A global observer can be added at the `App` level.
 

@@ -260,13 +260,12 @@ struct SkeinPresetRegistry(
 ))]
 fn skein_processing(
     on_add: On<
-        Add,
-        (
+        Add<(
             GltfExtras,
             GltfMaterialExtras,
             GltfMeshExtras,
             GltfSceneExtras,
-        ),
+        )>,
     >,
     type_registry: Res<AppTypeRegistry>,
     gltf_extras: Query<&GltfExtras>,

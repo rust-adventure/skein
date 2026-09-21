@@ -244,7 +244,6 @@ def process_registry(context, registry):
                 else:
                     fake_component_enum_annotations[maybe_hashed_type_path] = property_group_or_property
 
-
         except Exception as e:
             if debug:
                 print("failed to make_property for: ", type_path)

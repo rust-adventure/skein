@@ -1,8 +1,9 @@
 import bpy # type: ignore
 import json
 import inspect
+import copy
 
-from .property_groups import hash_over_64
+from .property_groups import hash_over_64, PathKeyGroup
 
 # ---------------------------------- #
 #  Skein Panel for adding components #
@@ -203,22 +204,25 @@ def draw_generic_panel(context, obj, layout, execute_mode, skein_preset_panel_id
 
             row = layout.row()
             row.separator()
-
+            
             if inspect.isclass(skein_property_groups[type_path]):
                 if hash_over_64(type_path) not in active_component_data:
                     layout.label(text=active_component_data.name + " has no data to edit")
                 else:
-                    render_two(layout, active_component_data, hash_over_64(type_path))
+                    render_two(layout, active_component_data, hash_over_64(type_path), execute_mode)
             else:
                 layout.prop(active_component_data, hash_over_64(type_path))
 
-def render_two(layout, context, context_key):
+def render_two(layout, context, context_key, execute_mode, property_path = [], list_idx = None):
     if context_key not in context:
         layout.label(text=context_key + " not in context")
         return
-    
+
     # The current PropertyGroup we're working with
     obj = getattr(context, context_key)
+    if list_idx is not None:
+        obj = obj[list_idx]
+
 
     try:
         match obj.force_default:
@@ -247,7 +251,7 @@ def render_two(layout, context, context_key):
                 case "Some":
                     layout.separator(type="LINE")
                     if "PointerProperty" == annotations["Some"].function.__name__:
-                        render_two(layout, obj, "Some")
+                        render_two(layout, obj, "Some", execute_mode, property_path)
                     else:
                         layout.prop(obj, "Some")
             return
@@ -271,10 +275,17 @@ def render_two(layout, context, context_key):
             # recurse down into the enum
             case value:
                 if "PointerProperty" == annotations[value].function.__name__:
-                    render_two(layout.box(), obj, value)
+                    render_two(layout.box(), obj, value, execute_mode, property_path)
                 else:
                     layout.prop(obj, value)
         return
+
+    try:
+        if obj.is_value:
+            layout.prop(obj, "inner", text=f"{property_path[-1]['value']}")
+            return
+    except AttributeError:
+        pass
 
     # attempt to handle any type overrides, like glam::Vec3
     # Currently all of the types here are *also* hardcoded 
@@ -285,157 +296,99 @@ def render_two(layout, context, context_key):
     try:
         match obj.type_override:
             case "glam::Vec2" | "glam::DVec2" | "glam::I8Vec2" | "glam::U8Vec2" | "glam::I16Vec2" | "glam::U16Vec2" | "glam::IVec2" | "glam::UVec2" | "glam::I64Vec2" | "glam::U64Vec2" | "glam::BVec2":
-                col = layout.column(align=True)
-                col.label(text=context_key + ":")
-                col.prop(obj, "x")
-                col.prop(obj, "y")
+                row = layout.row(align=True)
+                row.label(text=context_key + ":")
+                row.prop(obj.x, "inner", text="x")
+                row.prop(obj.y, "inner", text="y")
                 return
             case "glam::Vec3" | "glam::Vec3A" | "glam::DVec3" | "glam::I8Vec3" | "glam::U8Vec3" | "glam::I16Vec3" | "glam::U16Vec3" | "glam::IVec3" | "glam::UVec3" | "glam::I64Vec3" | "glam::U64Vec3" | "glam::BVec3":
-                col = layout.column(align=True)
-                col.label(text=context_key + ":")
-                col.prop(obj, "x")
-                col.prop(obj, "y")
-                col.prop(obj, "z")
+                row = layout.row(align=True)
+                row.label(text=context_key + ":")
+                row.prop(obj.x, "inner", text="x")
+                row.prop(obj.y, "inner", text="y")
+                row.prop(obj.z, "inner", text="z")
                 return
             case "glam::Vec4" | "glam::DVec4" | "glam::I8Vec4" | "glam::U8Vec4" | "glam::I16Vec4" | "glam::U16Vec4" | "glam::IVec4" | "glam::UVec4" | "glam::I64Vec4" | "glam::U64Vec4" | "glam::BVec4":
-                col = layout.column(align=True)
-                col.label(text=context_key + ":")
-                col.prop(obj, "x")
-                col.prop(obj, "y")
-                col.prop(obj, "z")
-                col.prop(obj, "w")
+                row = layout.row(align=True)
+                row.label(text=context_key + ":")
+                row.prop(obj.x, "inner", text="x")
+                row.prop(obj.y, "inner", text="y")
+                row.prop(obj.z, "inner", text="z")
+                row.prop(obj.w, "inner", text="w")
                 return
             case "glam::Quat" | "glam::DQuat":
-                col = layout.column(align=True)
-                col.label(text=context_key + ":")
-                col.prop(obj, "x")
-                col.prop(obj, "y")
-                col.prop(obj, "z")
-                col.prop(obj, "w")
+                row = layout.row(align=True)
+                row.label(text=context_key + ":")
+                row.prop(obj.x, "inner", text="x")
+                row.prop(obj.y, "inner", text="y")
+                row.prop(obj.z, "inner", text="z")
+                row.prop(obj.w, "inner", text="w")
                 return
-    #         case "glam::Mat2" | "glam::DMat2":
-    #             x_axis = getattr(obj, "x_axis")
-    #             y_axis = getattr(obj, "y_axis")
-                
-    #             return [
-    #                 getattr(x_axis, "x"),
-    #                 getattr(x_axis, "y"),
-
-    #                 getattr(y_axis, "x"),
-    #                 getattr(y_axis, "y"),
-    #             ]
-
-    #         case "glam::Mat3" | "glam::Mat3A" | "glam::DMat3":
-    #             x_axis = getattr(obj, "x_axis")
-    #             y_axis = getattr(obj, "y_axis")
-    #             z_axis = getattr(obj, "z_axis")
-                
-    #             return [
-    #                 getattr(x_axis, "x"),
-    #                 getattr(x_axis, "y"),
-    #                 getattr(x_axis, "z"),
-
-    #                 getattr(y_axis, "x"),
-    #                 getattr(y_axis, "y"),
-    #                 getattr(y_axis, "z"),
-
-    #                 getattr(z_axis, "x"),
-    #                 getattr(z_axis, "y"),
-    #                 getattr(z_axis, "z"),
-    #             ]
-    #         case "glam::Mat4" | "glam::DMat4":
-    #             x_axis = getattr(obj, "x_axis")
-    #             y_axis = getattr(obj, "y_axis")
-    #             z_axis = getattr(obj, "z_axis")
-    #             w_axis = getattr(obj, "w_axis")
-                
-    #             return [
-    #                 getattr(x_axis, "x"),
-    #                 getattr(x_axis, "y"),
-    #                 getattr(x_axis, "z"),
-    #                 getattr(x_axis, "w"),
-
-    #                 getattr(y_axis, "x"),
-    #                 getattr(y_axis, "y"),
-    #                 getattr(y_axis, "z"),
-    #                 getattr(y_axis, "w"),
-
-    #                 getattr(z_axis, "x"),
-    #                 getattr(z_axis, "y"),
-    #                 getattr(z_axis, "z"),
-    #                 getattr(z_axis, "w"),
-
-    #                 getattr(w_axis, "x"),
-    #                 getattr(w_axis, "y"),
-    #                 getattr(w_axis, "z"),
-    #                 getattr(w_axis, "w"),
-    #             ]
-  
-    #         case "glam::Affine2" | "glam::DAffine2":
-    #             mat = getattr(obj, "matrix2")
-    #             x_axis = getattr(mat, "x_axis")
-    #             y_axis = getattr(mat, "y_axis")
-    #             translation = getattr(obj, "translation")
-                
-    #             return [
-    #                 getattr(x_axis, "x"),
-    #                 getattr(x_axis, "y"),
-    #                 getattr(y_axis, "x"),
-    #                 getattr(y_axis, "y"),
-    #                 getattr(translation, "x"),
-    #                 getattr(translation, "y"),
-    #             ]
-    #         case "glam::Affine3A" | "glam::DAffine3":
-    #             mat = getattr(obj, "matrix3")
-    #             x_axis = getattr(mat, "x_axis")
-    #             y_axis = getattr(mat, "y_axis")
-    #             z_axis = getattr(mat, "z_axis")
-    #             translation = getattr(obj, "translation")
-                
-    #             return [
-    #                 getattr(x_axis, "x"),
-    #                 getattr(x_axis, "y"),
-    #                 getattr(x_axis, "z"),
-    #                 getattr(y_axis, "x"),
-    #                 getattr(y_axis, "y"),
-    #                 getattr(y_axis, "z"),
-    #                 getattr(z_axis, "x"),
-    #                 getattr(z_axis, "y"),
-    #                 getattr(z_axis, "z"),
-    #                 getattr(translation, "x"),
-    #                 getattr(translation, "y"),
-    #                 getattr(translation, "z"),
-    #             ]
             
     except AttributeError:
         # Not all PropertyGroups have the type_override attribute, so
         # this is a common failure case that doesn't actually mean failure
         pass
+    
+    # Handle lists by traversing into the inner 'list_wrapper' 
+    # property and drawing all contained elements individually
+    try:
+        if obj.is_list:
+            sub_property_path = property_path + [{"value": "list_wrapper", "is_index": False}]
+            for i, item in enumerate(getattr(obj, "list_wrapper")):
+                indexed_sub_property_path = sub_property_path + [{"value": f"{i}", "is_index": True}]
+                row = layout.row()
+                row.label(text=f"Element {i}:")
+                remove_props = row.operator(operator=f"{execute_mode}.remove_component_list_entry", text="remove")
+                remove_props["path"] = indexed_sub_property_path
+
+                render_two(layout.box(), obj, "list_wrapper", execute_mode, indexed_sub_property_path, i)
+
+            append_props = layout.operator(operator=f"{execute_mode}.append_component_list_entry", text="add")
+            append_props["path"] = property_path + [{"value": "list_wrapper", "is_index": False}]
+            return
+    except AttributeError:
+        pass
+
+
 
     # No more special handling, just take the keys and values that are
     # in the annotations, and plug them into the object
     for key, value in annotations.items():
-        if "PointerProperty" == value.function.__name__:
-            try:
+        sub_property_path = property_path + [{"value": key, "is_index": False}]            
+
+
+        try:
+            if "PointerProperty" == value.function.__name__:
                 next_type = getattr(obj, key)
+
+                try:
+                    if next_type.is_value:
+                        try:
+                            layout.prop(next_type, "inner", text=key)
+                        except:
+                            pass
+                        continue
+                except AttributeError:
+                    pass
+
                 match next_type.type_override:
                     case "glam::Vec2" | "glam::DVec2" | "glam::I8Vec2" | "glam::U8Vec2" | "glam::I16Vec2" | "glam::U16Vec2" | "glam::IVec2" | "glam::UVec2" | "glam::I64Vec2" | "glam::U64Vec2" | "glam::BVec2":
-                        render_two(layout, obj, key)
+                        render_two(layout, obj, key, execute_mode, sub_property_path)
                     case "glam::Vec3" | "glam::Vec3A" | "glam::DVec3" | "glam::I8Vec3" | "glam::U8Vec3" | "glam::I16Vec3" | "glam::U16Vec3" | "glam::IVec3" | "glam::UVec3" | "glam::I64Vec3" | "glam::U64Vec3" | "glam::BVec3":
-                        render_two(layout, obj, key)
+                        render_two(layout, obj, key, execute_mode, sub_property_path)
                     case "glam::Vec4" | "glam::DVec4" | "glam::I8Vec4" | "glam::U8Vec4" | "glam::I16Vec4" | "glam::U16Vec4" | "glam::IVec4" | "glam::UVec4" | "glam::I64Vec4" | "glam::U64Vec4" | "glam::BVec4":
-                        render_two(layout, obj, key)
+                        render_two(layout, obj, key, execute_mode, sub_property_path)
                     case "glam::Quat" | "glam::DQuat":
-                        render_two(layout, obj, key)
+                        render_two(layout, obj, key, execute_mode, sub_property_path)
                     case _:
                         layout.label(text=key + ":")
-                        render_two(layout.box(), obj, key)
-            except AttributeError:
-                layout.label(text=key + ":")
-                render_two(layout.box(), obj, key)
-        else:
-            layout.prop(obj, key)
-    return
+                        render_two(layout.box(), obj, key, execute_mode, sub_property_path)
+            else:
+                layout.prop(obj, key)
+        except AttributeError:
+            layout.label(text=key + ":")
+            render_two(layout.box(), obj, key, execute_mode, sub_property_path)
 
 classes = (
     SkeinPanelObject,

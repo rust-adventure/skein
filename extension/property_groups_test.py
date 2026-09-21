@@ -39,7 +39,8 @@ class TestClass:
             bpy.types.Scene.test_data = make_property(
                 skein_property_groups,
                 registry,
-                'test_components::Marker'
+                'test_components::Marker',
+                {}
             )
             assert "test_components::Marker" in skein_property_groups
 
@@ -56,7 +57,8 @@ def check_fields(type_path, fields):
         bpy.types.Scene.active_editor = make_property(
             skein_property_groups,
             registry,
-            type_path
+            type_path,
+            {}
         )
 
         assert type_path in skein_property_groups

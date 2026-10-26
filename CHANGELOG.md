@@ -1,8 +1,12 @@
-# Blender Addon Changelog
+# Bevy Plugin Changelog
 
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+
+## [0.7.0]
+
+Update to Bevy 0.20
 
 ## [0.5.0]
 

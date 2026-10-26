@@ -28,6 +28,8 @@ fn main() {
 
 #[derive(Component, Reflect, Debug)]
 #[reflect(Component)]
+// type_path change is optional, but suggested
+#[type_path = "api"]
 struct Player {
     name: String,
     power: f32,
@@ -43,7 +45,7 @@ struct Player {
 - Spawn a Scene from the glTF file, which will have components instantiated
 
 ```rust ignore
-commands.spawn(SceneRoot(asset_server.load(
+commands.spawn(WorldAssetRoot(asset_server.load(
     GltfAssetLabel::Scene(0).from_asset("my_export.gltf"),
 )));
 ```
@@ -62,6 +64,7 @@ All versions of `bevy_skein` are currently compatible with all versions of the `
 
 | Bevy version | `bevy_skein` version |
 | :----------- | :------------------- |
+| `0.20`       | `0.7`                |
 | `0.19`       | `0.6`                |
 | `0.18`       | `0.5`                |
 | `0.17`       | `0.3-4`              |

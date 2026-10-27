@@ -5,10 +5,12 @@ from .op_apply_preset import register as register_op_apply_preset, unregister as
 from .cli_dump_component_data import dump_component_data # type: ignore
 from .cli_change_component_path import change_component_path # type: ignore
 from .op_insert_component import register as register_op_insert_component, unregister as unregister_op_insert_component
+from .op_append_component_list_entry import register as register_op_append_component_list_entry, unregister as unregister_op_append_component_list_entry
 from .op_registry_loading import FetchRemoteTypeRegistry, ReloadSkeinRegistryJson
 from .op_remove_component import register as register_op_remove_component, unregister as unregister_op_remove_component
+from .op_remove_component_list_entry import register as register_op_remove_component_list_entry, unregister as unregister_op_remove_component_list_entry
 from .op_debug_check_components import DebugCheckComponents
-from .property_groups import ComponentData
+from .property_groups import ComponentData, PathKeyGroup
 from .skein_panel import register as register_skein_panel, unregister as unregister_skein_panel
 from .skein_panel_presets import register as register_skein_panel_presets, unregister as unregister_skein_panel_presets
 from .skein_sidepanel import register as register_skein_sidepanel, unregister as unregister_skein_sidepanel
@@ -115,6 +117,7 @@ def register():
     # for quick access.
     bpy.utils.register_class(ComponentTypeData)
     bpy.utils.register_class(ComponentData)
+    bpy.utils.register_class(PathKeyGroup)
     bpy.utils.register_class(PGSkeinWindowProps)
     bpy.types.WindowManager.skein = bpy.props.PointerProperty(type=PGSkeinWindowProps)
 
@@ -169,8 +172,10 @@ def register():
     bpy.utils.register_class(DebugCheckComponents)
     ## Insertion Operations
     register_op_insert_component()
+    register_op_append_component_list_entry()
     ## Remove Operations
     register_op_remove_component()
+    register_op_remove_component_list_entry()
     ## Export Operations
     register_op_trigger_collection_exporters()
     ## Preset Operations
@@ -231,8 +236,10 @@ def unregister():
     bpy.utils.unregister_class(DebugCheckComponents)
     ## Insertion Operations
     unregister_op_insert_component()
+    unregister_op_append_component_list_entry()
     ## Remove Operations
     unregister_op_remove_component()
+    unregister_op_remove_component_list_entry()
     ## Export Operations
     unregister_op_trigger_collection_exporters()
     ## Preset Operations
